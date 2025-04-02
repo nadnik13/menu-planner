@@ -16,7 +16,20 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
     );
     return plan;
   }
+
+  List<MealPlan> getPlanForWeek() {
+    final today = DateTime.now();
+    final nextWeek = today.add(Duration(days: 7));
+    return state.where((plan) {
+        return
+          plan.date.isAfter(today.subtract(const Duration(days: 1))) &&
+            plan.date.isBefore(nextWeek);
+      }).toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
+  }
 }
 
-final mealPlanProvider = StateNotifierProvider<MealPlanNotifier, List<MealPlan>>(
-  (ref) => MealPlanNotifier());
+final mealPlanProvider =
+    StateNotifierProvider<MealPlanNotifier, List<MealPlan>>(
+      (ref) => MealPlanNotifier(),
+    );
