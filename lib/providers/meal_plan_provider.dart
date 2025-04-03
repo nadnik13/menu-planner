@@ -14,11 +14,9 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
     state = _box.values.toList();
   }
 
-  void removePlan(MealPlan plan) {
-    print("removePlan");
-    print("state length: ${state.length}");
-    final key = plan.date.dateKey;
-    if (_box.get(plan.date.dateKey) == plan) {
+  void removePlanByDate(DateTime date) {
+    final key = date.dateKey;
+    if (_box.get(date.dateKey) != null) {
       _box.delete(key);
       state = _box.values.toList();
     }
@@ -29,16 +27,6 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
     final key = date.dateKey;
     return _box.get(key);
   }
-
-  List<MealPlan> getPlanForWeek() {
-    final today = DateTime.now();
-    final nextWeek = today.add(Duration(days: 7));
-    return state.where((plan) {
-        return plan.date.isAfter(today.subtract(const Duration(days: 1))) &&
-            plan.date.isBefore(nextWeek);
-      }).toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
-  }
 }
 
 final mealPlanProvider =
@@ -46,3 +34,14 @@ final mealPlanProvider =
       final box = Hive.box<MealPlan>('MealPlanBox');
       return MealPlanNotifier(box);
     });
+
+final weekPlanProvider = Provider<List<MealPlan>>((ref) {
+  final plans = ref.watch(mealPlanProvider);
+  final today = DateTime.now();
+  final nextWeek = today.add(Duration(days: 7));
+  return plans.where((plan) {
+      return plan.date.isAfter(today.subtract(const Duration(days: 1))) &&
+          plan.date.isBefore(nextWeek);
+    }).toList()
+    ..sort((a, b) => a.date.compareTo(b.date));
+});

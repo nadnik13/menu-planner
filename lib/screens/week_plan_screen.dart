@@ -8,30 +8,39 @@ class WeekPlanScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final plan = ref.watch(mealPlanProvider.notifier).getPlanForWeek();
+    final weekPlans = ref.watch(weekPlanProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text('Меню на неделю')),
       body:
-          plan.isEmpty
+          weekPlans.isEmpty
               ? Center(child: Text('Нет запланированных блюд'))
               : ListView.builder(
-                  itemCount: plan.length,
-                  itemBuilder: (context, index) {
-                    final planItem = plan[index];
-                    final recipeDate = DateFormat(
-                      'dd.MM.yyyy',
-                    ).format(planItem.date);
-                    return ListTile(
-                      title: Text(planItem.recipe.title),
-                      subtitle: Text('Дата: $recipeDate'),
-                      trailing: IconButton(
-                          onPressed: () =>
-                            ref.read(mealPlanProvider.notifier).removePlan(planItem),
-                          icon: Icon(Icons.delete)),
-                    );
-                  },
-                ),
+                itemCount: weekPlans.length,
+                itemBuilder: (context, index) {
+                  final planItem = weekPlans[index];
+                  final recipeDate = DateFormat(
+                    'dd.MM.yyyy',
+                  ).format(planItem.date);
+                  return ListTile(
+                    title: Text(planItem.recipe.title),
+                    subtitle: Text('Дата: $recipeDate'),
+                    trailing: IconButton(
+                      onPressed: () {
+                        ref
+                            .read(mealPlanProvider.notifier)
+                            .removePlanByDate(planItem.date);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('План на ${recipeDate} удален.'),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                  );
+                },
+              ),
     );
   }
 }
