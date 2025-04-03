@@ -18,8 +18,9 @@ void main() async{
   }
 
   test('Добавление и чтение рецепта', () async{
+
     final title = 'Салат Цезарь';
-    final recipe = Recipe(title);
+    final recipe = Recipe(0, title);
     await box.add(recipe);
 
     final allRecipes = box.values.toList();
@@ -30,7 +31,7 @@ void main() async{
 
   test('Удаление рецепта', () async{
     final title = 'Курица песто';
-    final recipe = Recipe(title);
+    final recipe = Recipe(0, title);
     final id = await box.add(recipe);
     expect(box.length, 1);
     await box.delete(id);

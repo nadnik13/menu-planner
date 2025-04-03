@@ -1,7 +1,7 @@
 import '../models/recipe.dart';
 import 'package:hive/hive.dart';
 import 'hive_type_ids.dart';
-
+import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 part 'meal_plan.g.dart';
 
 @HiveType(typeId: HiveTypeId.mealPlan)
@@ -13,18 +13,15 @@ class MealPlan {
 
   MealPlan({required this.date, required this.recipe});
 
-  // TODO: может свой тип date создать чтобы не мучаться?
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is MealPlan &&
             other.runtimeType == runtimeType &&
             recipe == other.recipe &&
-            date.year == other.date.year &&
-            date.month == other.date.month &&
-            date.day == other.date.day);
+            date.dateOnly == other.date.dateOnly);
   }
 
   @override
-  int get hashCode => Object.hash(recipe, date.year, date.month, date.day);
+  int get hashCode => Object.hash(recipe, date.dateOnly);
 }

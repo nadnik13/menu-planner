@@ -44,7 +44,7 @@ class PlanScreen extends ConsumerWidget {
                 onSave: () {
                   final plan = MealPlan(
                       date: selectedDate, recipe: selectedRecipe!);
-                  ref.read(mealPlanProvider.notifier).addPlan(selectedDate, plan);
+                  ref.read(mealPlanProvider.notifier).addOrReplacePlan(selectedDate, plan);
                   //TODO: Возможно стоит выделить отдельно так как это UI
                   ScaffoldMessenger.of(
                     context,

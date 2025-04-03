@@ -7,12 +7,16 @@ part 'recipe.g.dart';
 @HiveType(typeId: HiveTypeId.recipe)
 class Recipe {
   @HiveField(0)
+  final int id;
+
+  @HiveField(1)
   final String title;
 
-  Recipe(this.title);
+  Recipe(this.id, this.title);
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
-    return Recipe(json['title'] as String);
+    final id = int.tryParse(json['id'].toString()) ?? 0;
+    return Recipe(id, json['title'] as String);
   }
 
   @override
@@ -20,8 +24,8 @@ class Recipe {
       identical(this, other) ||
       other is Recipe &&
           runtimeType == other.runtimeType &&
-          other.title == title;
+          other.id == id;
 
   @override
-  int get hashCode => title.hashCode;
+  int get hashCode => id.hashCode;
 }

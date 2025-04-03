@@ -19,15 +19,17 @@ class RecipeNotifier extends StateNotifier<Set<Recipe>> {
   }
 
   void addRecipe(String title) {
-    final recipe = Recipe(title);
+
+    final id = DateTime.now().millisecondsSinceEpoch;
+    final recipe = Recipe(id, title);
 
     _box.add(recipe);
     state = _box.values.toSet();
   }
 
-  void addRecipes(List<Recipe> recipes) {
-    //TODO нужно ли делать более безопасно как сверху через создание нового списка
-    state.addAll(recipes);
+  void addOrReplaceRecipe(Recipe recipe) {
+    _box.put(recipe.id, recipe);
+    state = _box.values.toSet();
   }
 
   void removeRecipe(Recipe recipe) {

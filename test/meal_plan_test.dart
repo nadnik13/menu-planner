@@ -19,7 +19,8 @@ void main() async {
   }
 
   test('Добавление плана', () async {
-    final plan = MealPlan(date: DateTime.now(), recipe: Recipe('Борщь'));
+    final id = DateTime.now().millisecondsSinceEpoch;
+    final plan = MealPlan(date: DateTime.now(), recipe: Recipe(id, 'Борщь'));
     expect(box.length, 0);
     await box.add(plan);
 
@@ -30,11 +31,14 @@ void main() async {
   });
 
   test('Удаление плана', () async {
-    final plan = MealPlan(date: DateTime.now(), recipe: Recipe('Борщь'));
-    final id = await box.add(plan);
+    final id = DateTime.now().millisecondsSinceEpoch;
+    final plan = MealPlan(date: DateTime.now(), recipe: Recipe(id, 'Борщь'));
+    final key = await box.add(plan);
     expect(box.length, 1);
+    final date = DateTime.now();
 
-    box.delete(id);
+    print('Date: ${DateTime(date.year, date.month, date.day).toString()}');
+    box.delete(key);
     final allMealPlans = box.values.toList();
     expect(allMealPlans.length, 0);
     tearDown();
