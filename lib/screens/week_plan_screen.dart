@@ -25,6 +25,10 @@ class WeekPlanScreen extends ConsumerWidget {
                     return ListTile(
                       title: Text(planItem.recipe.title),
                       subtitle: Text('Дата: $recipeDate'),
+                      trailing: IconButton(
+                          onPressed: () =>
+                            ref.read(mealPlanProvider.notifier).removePlan(planItem),
+                          icon: Icon(Icons.delete)),
                     );
                   },
                 ),

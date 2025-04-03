@@ -1,20 +1,28 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/recipe.dart';
 
-class RecipeNotifier extends StateNotifier<List<Recipe>> {
-  RecipeNotifier() : super([]);
+class RecipeNotifier extends StateNotifier<Set<Recipe>> {
+  final Box<Recipe> _box;
+  RecipeNotifier(this._box) : super(_box.values.toSet());
 
   Future<void> loadFromAssets() async {
     final jsonString = await rootBundle.loadString('assets/recipes.json');
     final List<dynamic> jsonList = json.decode(jsonString);
-    state = jsonList.map((e) => Recipe.fromJson(e)).toList();
+    final recipesFromJson = jsonList.map((e) => Recipe.fromJson(e));
+
+    final unloadedRecipes = recipesFromJson.where((e) => !state.contains(e));
+    _box.addAll(unloadedRecipes);
+    state = _box.values.toSet();
   }
 
   void addRecipe(String title) {
     final recipe = Recipe(title);
-    state = [...state, recipe];
+
+    _box.add(recipe);
+    state = _box.values.toSet();
   }
 
   void addRecipes(List<Recipe> recipes) {
@@ -23,10 +31,18 @@ class RecipeNotifier extends StateNotifier<List<Recipe>> {
   }
 
   void removeRecipe(Recipe recipe) {
-    state = state.where((r) => r != recipe).toList();
+    _box.delete(recipe);
+    final key = _box.keys.firstWhere((k) => _box.get(k) == recipe
+        , orElse: () => null);
+    _box.delete(key);
+    state = _box.values.toSet();
+
   }
 }
 
-final recipeProvider = StateNotifierProvider<RecipeNotifier, List<Recipe>>(
-  (ref) => RecipeNotifier(),
+final recipeProvider = StateNotifierProvider<RecipeNotifier, Set<Recipe>>(
+    (ref) {
+      final box = Hive.box<Recipe>('RecipeBox');
+      return RecipeNotifier(box);
+    }
 );

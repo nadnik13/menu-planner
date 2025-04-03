@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:my_recipe_app/screens/plan_screen.dart';
 import 'package:my_recipe_app/screens/week_plan_screen.dart';
 import '../models/recipe.dart';
@@ -15,6 +16,13 @@ class RecipeScreen extends ConsumerStatefulWidget {
 class _RecipeScreenState extends ConsumerState<RecipeScreen> {
   final TextEditingController _controller = TextEditingController();
 
+  void _printRecipeBox(){
+    final box = Hive.box<Recipe>('recipeBox');
+    print('📦 Всего рецептов: ${box.length}');
+    box.toMap().forEach((key, value) {
+      print('🔑 $key → ${value.title}');
+    });
+  }
   @override
   void initState() {
     super.initState();
@@ -22,9 +30,11 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     Future.microtask(() {
       ref.read(recipeProvider.notifier).loadFromAssets();
     });
+    _printRecipeBox();
   }
 
   void _addRecipe() {
+    _printRecipeBox();
     final text = _controller.text.trim();
     if (text.isEmpty) {
       ScaffoldMessenger.of(
@@ -84,6 +94,14 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
           Expanded(
             child: _RecipeList(recipes: recipes, onRemove: _removeRecipe),
           ),
+          IconButton(
+              onPressed: () async {
+                await Hive.box<Recipe>('recipeBox').clear();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('База рецептов очищена')));
+                _printRecipeBox();
+              },
+              icon: Icon(Icons.delete_forever))
         ],
       ),
     );
@@ -120,7 +138,7 @@ class _RecipeInput extends StatelessWidget {
 
 class _RecipeList extends StatelessWidget {
   final void Function(Recipe) onRemove;
-  final List<Recipe> recipes;
+  final Set<Recipe> recipes;
 
   const _RecipeList({required this.recipes, required this.onRemove});
 
@@ -129,10 +147,11 @@ class _RecipeList extends StatelessWidget {
     if (recipes.isEmpty) {
       return const Center(child: Text('Нет добавленных рецептов'));
     }
+    final recipesList = recipes.toList();
     return ListView.builder(
       itemCount: recipes.length,
       itemBuilder: (context, index) {
-        final recipe = recipes[index];
+        final recipe = recipesList[index];
         return ListTile(
           title: Text(recipe.title),
           trailing: IconButton(
