@@ -14,15 +14,17 @@ class RecipeScreen extends ConsumerStatefulWidget {
 }
 
 class _RecipeScreenState extends ConsumerState<RecipeScreen> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
 
-  void _printRecipeBox(){
+  void _printRecipeBox() {
     final box = Hive.box<Recipe>('recipeBox');
     print('📦 Всего рецептов: ${box.length}');
     box.toMap().forEach((key, value) {
       print('🔑 $key → ${value.title}');
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -35,17 +37,17 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 
   void _addRecipe() {
     _printRecipeBox();
-    final text = _controller.text.trim();
-    if (text.isEmpty) {
+    final title = _titleController.text.trim();
+    final description = _descController.text.trim();
+    if (title.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(
-          const SnackBar(content: Text("Введите название"))
-      );
+      ).showSnackBar(const SnackBar(content: Text("Введите название")));
     }
-    if (text.isNotEmpty) {
-      ref.read(recipeProvider.notifier).addRecipe(text);
-      _controller.clear();
+    if (title.isNotEmpty) {
+      ref.read(recipeProvider.notifier).addRecipe(title, description);
+      _titleController.clear();
+      _descController.clear();
     }
   }
 
@@ -86,22 +88,26 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: _RecipeInput(
-              controller: _controller,
+              titleController: _titleController,
+              descController: _descController,
               onAdd: _addRecipe,
               onOpenWeekPlan: _navigateToWeekPlan,
             ),
           ),
+
           Expanded(
             child: _RecipeList(recipes: recipes, onRemove: _removeRecipe),
           ),
           IconButton(
-              onPressed: () async {
-                await Hive.box<Recipe>('recipeBox').clear();
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('База рецептов очищена')));
-                _printRecipeBox();
-              },
-              icon: Icon(Icons.delete_forever))
+            onPressed: () async {
+              await Hive.box<Recipe>('recipeBox').clear();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('База рецептов очищена')),
+              );
+              _printRecipeBox();
+            },
+            icon: Icon(Icons.delete_forever),
+          ),
         ],
       ),
     );
@@ -109,30 +115,46 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 }
 
 class _RecipeInput extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController titleController;
+  final TextEditingController descController;
   final VoidCallback onAdd;
   final VoidCallback onOpenWeekPlan;
 
   const _RecipeInput({
-    required this.controller,
+    required this.titleController,
+    required this.descController,
     required this.onAdd,
     required this.onOpenWeekPlan,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: titleController,
+                decoration: const InputDecoration(hintText: 'Введите название'),
+              ),
+            ),
+            IconButton(onPressed: onAdd, icon: const Icon(Icons.add)),
+            IconButton(onPressed: onOpenWeekPlan, icon: Icon(Icons.list_alt)),
+          ],
+        ),
+        Row(
+    children: [
         Expanded(
-          child: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: 'Введите рецепт'),
+          child:
+          TextField(
+            controller: descController,
+            decoration: const InputDecoration(hintText: "Введите описание"),
           ),
         ),
-        IconButton(onPressed: onAdd, icon: const Icon(Icons.add)),
-        IconButton(onPressed: onOpenWeekPlan, icon: Icon(Icons.list_alt)),
       ],
-    );
+    )
+    ]);
   }
 }
 

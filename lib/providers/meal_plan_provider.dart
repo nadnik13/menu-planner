@@ -8,8 +8,8 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
 
   MealPlanNotifier(this._box) : super(_box.values.toList());
 
-  void addOrReplacePlan(DateTime date, MealPlan plan) {
-    final dateKey = date.dateKey;
+  void addOrReplacePlan(MealPlan plan) {
+    final dateKey = plan.date.dateKey;
     _box.put(dateKey, plan);
     state = _box.values.toList();
   }

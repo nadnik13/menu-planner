@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/screens/recipe_screen.dart';
+import 'package:my_recipe_app/screens/recipes_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'models/meal_plan.dart';

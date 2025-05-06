@@ -12,11 +12,14 @@ class Recipe {
   @HiveField(1)
   final String title;
 
-  Recipe(this.id, this.title);
+  @HiveField(2)
+  final String description;
+
+  Recipe(this.id, this.title, this.description);
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     final id = int.tryParse(json['id'].toString()) ?? 0;
-    return Recipe(id, json['title'] as String);
+    return Recipe(id, json['title'] as String, json['description'] as String);
   }
 
   @override

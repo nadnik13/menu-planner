@@ -18,10 +18,10 @@ class RecipeNotifier extends StateNotifier<Set<Recipe>> {
     state = _box.values.toSet();
   }
 
-  void addRecipe(String title) {
+  void addRecipe(String title, String description) {
 
     final id = DateTime.now().millisecondsSinceEpoch;
-    final recipe = Recipe(id, title);
+    final recipe = Recipe(id, title, description);
 
     _box.add(recipe);
     state = _box.values.toSet();
