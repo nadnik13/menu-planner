@@ -19,6 +19,7 @@ class Recipe {
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     final id = int.tryParse(json['id'].toString()) ?? 0;
+    print("id: $id");
     return Recipe(id, json['title'] as String, json['description'] as String);
   }
 

@@ -1,7 +1,8 @@
+import 'package:my_recipe_app/core/extensions/date_extensions.dart';
+
 import '../models/recipe.dart';
 import 'package:hive/hive.dart';
 import 'hive_type_ids.dart';
-import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 part 'meal_plan.g.dart';
 
 @HiveType(typeId: HiveTypeId.mealPlan)

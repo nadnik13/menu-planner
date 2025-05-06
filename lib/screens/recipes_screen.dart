@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:my_recipe_app/screens/plan_screen.dart';
 import 'package:my_recipe_app/screens/week_plan_screen.dart';
 import '../models/recipe.dart';
+import '../providers/recipe_loader_provider.dart';
 import '../providers/recipe_provider.dart';
 
 class RecipeScreen extends ConsumerStatefulWidget {
@@ -16,6 +17,7 @@ class RecipeScreen extends ConsumerStatefulWidget {
 class _RecipeScreenState extends ConsumerState<RecipeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
+  bool _didLoadDefaultRecipes = false;
 
   void _printRecipeBox() {
     final box = Hive.box<Recipe>('recipeBox');
@@ -28,10 +30,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
   @override
   void initState() {
     super.initState();
-    // Отложенно вызываем загрузку из assets
-    Future.microtask(() {
-      ref.read(recipeProvider.notifier).loadFromAssets();
-    });
+
     _printRecipeBox();
   }
 
@@ -45,15 +44,16 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
       ).showSnackBar(const SnackBar(content: Text("Введите название")));
     }
     if (title.isNotEmpty) {
-      ref.read(recipeProvider.notifier).addRecipe(title, description);
+      final id = DateTime.now().millisecondsSinceEpoch;
+      final recipe = Recipe(id, title, description);
+      ref.read(recipeProvider.notifier).addRecipe(recipe);
       _titleController.clear();
       _descController.clear();
     }
   }
 
-  void _removeRecipe(Recipe recipe) {
+  void _removeRecipe(Recipe recipe) =>
     ref.read(recipeProvider.notifier).removeRecipe(recipe);
-  }
 
   void _navigateToPlan() {
     Navigator.push(
@@ -71,6 +71,17 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_didLoadDefaultRecipes) {
+      ref.listen<AsyncValue<List<Recipe>>>(
+        recipeJsonLoaderProvider,
+            (prev, next) {
+          next.whenData((recipes) {
+            ref.read(recipeProvider.notifier).addRecipes(recipes);
+          });
+        },
+      );
+      _didLoadDefaultRecipes = true;
+    }
     final recipes = ref.watch(recipeProvider);
 
     return Scaffold(

@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import 'package:my_recipe_app/providers/plan_state_providers.dart';
-import '../models/meal_plan.dart';
 import '../models/recipe.dart';
 import '../providers/meal_plan_provider.dart';
 import '../providers/recipe_provider.dart';
@@ -24,9 +23,7 @@ class PlanScreen extends ConsumerWidget {
             _DatePickerRow(
                 selectedDate: selectedDate,
                 onDateChanged: (value) {
-                  ref
-                      .read(selectedDateProvider.notifier)
-                      .state = value;
+                  ref.read(selectedDateProvider.notifier).update(value);
                 }),
             const SizedBox(height: 16),
             _RecipeDropdown(
@@ -42,10 +39,8 @@ class PlanScreen extends ConsumerWidget {
                 selectedRecipe: selectedRecipe,
                 selectedDate: selectedDate,
                 onSave: () {
-                  final plan = MealPlan(
-                      date: selectedDate, recipe: selectedRecipe!);
-                  ref.read(mealPlanProvider.notifier).addOrReplacePlan(plan);
-                  //TODO: Возможно стоит выделить отдельно так как это UI
+                  ref.read(mealPlanProvider.notifier).saveRecipe(selectedDate, selectedRecipe);
+
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(const SnackBar(content: Text('План добавлен')));
@@ -67,7 +62,7 @@ class _DatePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = DateFormat('dd.MM.yyyy').format(selectedDate);
+    final formattedDate = selectedDate.dateKey;
     return Row(
       children: [
         Expanded(

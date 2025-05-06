@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
+import 'package:my_recipe_app/models/recipe.dart';
 import '../models/meal_plan.dart';
 
 class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
@@ -27,6 +28,13 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
     final key = date.dateKey;
     return _box.get(key);
   }
+
+  void saveRecipe(DateTime date, Recipe? recipe){
+    if (recipe != null) {
+      addOrReplacePlan(MealPlan(date: date, recipe: recipe));
+    }
+  }
+
 }
 
 final mealPlanProvider =
