@@ -21,7 +21,6 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
       _box.delete(key);
       state = _box.values.toList();
     }
-    print("state length: ${state.length}");
   }
 
   MealPlan? getPlanByDate(DateTime date) {
@@ -29,12 +28,11 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
     return _box.get(key);
   }
 
-  void saveRecipe(DateTime date, Recipe? recipe){
+  void saveRecipe(DateTime date, Recipe? recipe) {
     if (recipe != null) {
       addOrReplacePlan(MealPlan(date: date, recipe: recipe));
     }
   }
-
 }
 
 final mealPlanProvider =

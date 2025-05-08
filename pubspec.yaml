@@ -41,6 +41,10 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.0.12
 
+  logger: ^2.0.2
+
+  uuid: ^4.4.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

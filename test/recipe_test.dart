@@ -4,6 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_recipe_app/models/recipe.dart';
 import 'dart:io';
 
+import 'package:uuid/uuid.dart';
+
 void main() async{
 
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +20,9 @@ void main() async{
   }
 
   test('Добавление и чтение рецепта', () async{
-
+    final id = Uuid().v4();
     final title = 'Салат Цезарь';
-    final recipe = Recipe(0, title, '');
+    final recipe = Recipe(id, title, '');
     await box.add(recipe);
 
     final allRecipes = box.values.toList();
@@ -30,9 +32,7 @@ void main() async{
   });
 
   test('Удаление рецепта', () async{
-    final title = 'Курица песто';
-    final recipe = Recipe(0, title, '');
-    final id = await box.add(recipe);
+    final id = Uuid().v4();
     expect(box.length, 1);
     await box.delete(id);
     final allRecipes = box.values.toList();

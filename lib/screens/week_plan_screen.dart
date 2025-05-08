@@ -13,37 +13,40 @@ class WeekPlanScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Меню на неделю')),
       body:
-      weekPlans.isEmpty
-          ? Center(child: Text('Нет запланированных блюд'))
-          : ListView.builder(
-        itemCount: weekPlans.length,
-        itemBuilder: (context, index) {
-          final planItem = weekPlans[index];
-          final recipeDate = planItem.date.dateKey;
-          return ListTile(
-            title: Text(planItem.recipe.title),
-            subtitle: Text('Дата: $recipeDate'),
-            trailing: IconButton(
-              onPressed: () {
-                final planNotifier = ref.read(mealPlanProvider.notifier);
-                planNotifier.removePlanByDate(planItem.date);
+          weekPlans.isEmpty
+              ? Center(child: Text('Нет запланированных блюд'))
+              : ListView.builder(
+                itemCount: weekPlans.length,
+                itemBuilder: (context, index) {
+                  final planItem = weekPlans[index];
+                  final recipeDate = planItem.date.dateKey;
+                  return ListTile(
+                    title: Text(planItem.recipe.title),
+                    subtitle: Text('Дата: $recipeDate'),
+                    trailing: IconButton(
+                      onPressed: () {
+                        final planNotifier = ref.read(
+                          mealPlanProvider.notifier,
+                        );
+                        planNotifier.removePlanByDate(planItem.date);
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('План на $recipeDate удален.'),
-                        action: SnackBarAction(
-                          label: 'Отменить',
-                          onPressed: () {
-                            planNotifier.addOrReplacePlan(planItem);
-                          },
-                        )
-                    ));
-              },
-              icon: Icon(Icons.delete),
-            ),
-          );
-        },
-      ),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('План на $recipeDate удален.'),
+                            action: SnackBarAction(
+                              label: 'Отменить',
+                              onPressed: () {
+                                planNotifier.addOrReplacePlan(planItem);
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                  );
+                },
+              ),
     );
   }
 }
