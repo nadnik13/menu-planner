@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/screens/plan_screen.dart';
 import 'package:my_recipe_app/screens/week_plan_screen.dart';
+import 'package:uuid/uuid.dart';
+import '../core/logger.dart';
 import '../models/recipe.dart';
-import '../providers/recipe_loader_provider.dart';
-import '../providers/recipe_provider.dart';
+import '../providers/recipe/recipe_provider.dart';
 
 class RecipeScreen extends ConsumerStatefulWidget {
   const RecipeScreen({super.key});
@@ -17,20 +18,18 @@ class RecipeScreen extends ConsumerStatefulWidget {
 class _RecipeScreenState extends ConsumerState<RecipeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
-  bool _didLoadDefaultRecipes = false;
 
   void _printRecipeBox() {
     final box = Hive.box<Recipe>('recipeBox');
-    print('📦 Всего рецептов: ${box.length}');
+    logger.d('📦 Всего рецептов: ${box.length}');
     box.toMap().forEach((key, value) {
-      print('🔑 $key → ${value.title}');
+      logger.d('🔑 $key → ${value.title}');
     });
   }
 
   @override
   void initState() {
     super.initState();
-
     _printRecipeBox();
   }
 
@@ -44,16 +43,18 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
       ).showSnackBar(const SnackBar(content: Text("Введите название")));
     }
     if (title.isNotEmpty) {
-      final id = DateTime.now().millisecondsSinceEpoch;
+      final uuid = Uuid();
+      final id = uuid.v4();
+      ;
       final recipe = Recipe(id, title, description);
-      ref.read(recipeProvider.notifier).addRecipe(recipe);
+      ref.read(recipeProvider.notifier).addOrReplaceRecipe(recipe);
       _titleController.clear();
       _descController.clear();
     }
   }
 
   void _removeRecipe(Recipe recipe) =>
-    ref.read(recipeProvider.notifier).removeRecipe(recipe);
+      ref.read(recipeProvider.notifier).removeRecipe(recipe);
 
   void _navigateToPlan() {
     Navigator.push(
@@ -71,17 +72,6 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_didLoadDefaultRecipes) {
-      ref.listen<AsyncValue<List<Recipe>>>(
-        recipeJsonLoaderProvider,
-            (prev, next) {
-          next.whenData((recipes) {
-            ref.read(recipeProvider.notifier).addRecipes(recipes);
-          });
-        },
-      );
-      _didLoadDefaultRecipes = true;
-    }
     final recipes = ref.watch(recipeProvider);
 
     return Scaffold(
@@ -105,7 +95,6 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
               onOpenWeekPlan: _navigateToWeekPlan,
             ),
           ),
-
           Expanded(
             child: _RecipeList(recipes: recipes, onRemove: _removeRecipe),
           ),
@@ -155,17 +144,17 @@ class _RecipeInput extends StatelessWidget {
           ],
         ),
         Row(
-    children: [
-        Expanded(
-          child:
-          TextField(
-            controller: descController,
-            decoration: const InputDecoration(hintText: "Введите описание"),
-          ),
+          children: [
+            Expanded(
+              child: TextField(
+                controller: descController,
+                decoration: const InputDecoration(hintText: "Введите описание"),
+              ),
+            ),
+          ],
         ),
       ],
-    )
-    ]);
+    );
   }
 }
 
