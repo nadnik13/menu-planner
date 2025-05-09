@@ -39,12 +39,15 @@ class PlanScreen extends ConsumerWidget {
               selectedDate: selectedDate,
               isActive: selectedRecipe != null,
               onSave: () {
-                ref
-                    .read(mealPlanProvider.notifier)
-                    .saveRecipe(selectedDate, selectedRecipe);
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('План добавлен')));
+                if (selectedRecipe != null) {
+                  ref
+                      .read(mealPlanProvider.notifier)
+                      .saveRecipe(selectedDate, selectedRecipe);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(
+                      const SnackBar(content: Text('План добавлен')));
+                }
               },
             ),
           ],

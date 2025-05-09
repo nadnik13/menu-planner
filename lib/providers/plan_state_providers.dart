@@ -6,7 +6,7 @@ class SelectedDateNotifier extends Notifier<DateTime> {
   DateTime build() => DateTime.now();
 
   void update(DateTime newDate) {
-    if (state != newDate) state = newDate;
+    state = newDate;
   }
 }
 
