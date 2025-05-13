@@ -7,13 +7,22 @@ import '../providers/meal_plan_provider.dart';
 import '../providers/recipe/recipe_provider.dart';
 import '../widgets/save_button.dart';
 
-class PlanScreen extends ConsumerWidget {
+class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
+  @override
+  ConsumerState<PlanScreen> createState() => PlanScreenState();
+}
+
+class PlanScreenState extends ConsumerState<PlanScreen>{
+  PlanScreenState();
+  int portion = 1;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    //:TODO это явно должно выглядеть как-то иначе в итоге
     final selectedDate = ref.watch(selectedDateProvider);
     final selectedRecipe = ref.watch(selectedRecipeProvider);
+    final maxPortion = selectedRecipe?.portion ?? 0;
 
     return Scaffold(
       appBar: AppBar(title: const Text('План')),
@@ -35,14 +44,23 @@ class PlanScreen extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 16),
+            if (selectedRecipe != null) Row(
+              children: [
+                Text('Количество порций:'),
+                SizedBox(width: 10),
+                IconButton(onPressed: () => portion > 1 ? setState( () => portion--) : null, icon: Icon(Icons.remove)),
+                Text('$portion(из $maxPortion)'),
+                IconButton(onPressed: () => portion < maxPortion ? setState( () => portion++) : null, icon: Icon(Icons.add)),
+              ],
+            ),
+            const SizedBox(height: 16),
             SaveButton(
-              selectedDate: selectedDate,
               isActive: selectedRecipe != null,
               onSave: () {
                 if (selectedRecipe != null) {
                   ref
                       .read(mealPlanProvider.notifier)
-                      .saveRecipe(selectedDate, selectedRecipe);
+                      .saveRecipe(selectedDate, selectedRecipe, portion);
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(
