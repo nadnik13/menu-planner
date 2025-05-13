@@ -28,8 +28,9 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
     return _box.get(key);
   }
 
-  void saveRecipe(DateTime date, Recipe recipe) {
-      addOrReplacePlan(MealPlan(date: date, recipe: recipe));
+  void saveRecipe(DateTime date, Recipe recipe, int portion) {
+    final plan = MealPlan(date: date, recipe: recipe, portion: portion);
+    addOrReplacePlan(plan);
   }
 }
 
