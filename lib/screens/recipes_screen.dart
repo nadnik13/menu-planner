@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:my_recipe_app/providers/meal_provider.dart';
 import 'package:my_recipe_app/screens/recipe_editor.dart';
-import 'package:my_recipe_app/screens/meal_plan_screen.dart';
-import 'package:my_recipe_app/screens/week_plan_screen.dart';
 import '../core/logger.dart';
 import '../models/recipe.dart';
 import '../providers/recipe/recipe_provider.dart';
@@ -40,18 +39,12 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     );
   }
 
-  void _navigateToPlan() {
-    Navigator.push(
+  void _addMeal(Recipe recipe) {
+    ref.read(mealProvider.notifier).addMealByRecipe(recipe);
+    ScaffoldMessenger.of(
       context,
-      MaterialPageRoute(builder: (_) => const PlanScreen()),
-    );
-  }
-
-  void _navigateToWeekPlan() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const WeekPlanScreen()),
-    );
+    ).showSnackBar(const SnackBar(content: Text('Блюдо добавлено')));
+    logger.d('Добавлено блюдо ${recipe.title}');
   }
 
   @override
@@ -67,26 +60,16 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
             icon: const Icon(Icons.add),
             tooltip: "Добавить рецепт",
           ),
-          IconButton(
-            onPressed: _navigateToWeekPlan,
-            icon: Icon(Icons.list_alt),
-            tooltip: "Недельный рецепт",
-          ),
-          IconButton(
-            onPressed: _navigateToPlan,
-            icon: const Icon(Icons.calendar_month),
-            tooltip: "Добавить план",
-          ),
         ],
       ),
       body: Column(
         children: [
-
           Expanded(
             child: //Text("_RecipeList")
                 _RecipeList(
               recipes: recipes,
               onRemove: _removeRecipe,
+              onAdd: _addMeal,
               onEdit: _editRecipe,
             ),
           ),
@@ -109,11 +92,13 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 class _RecipeList extends StatelessWidget {
   final void Function(Recipe) onRemove;
   final void Function(Recipe) onEdit;
+  final void Function(Recipe) onAdd;
   final Set<Recipe> recipes;
 
   const _RecipeList({
     required this.recipes,
     required this.onRemove,
+    required this.onAdd,
     required this.onEdit,
   });
 
@@ -140,6 +125,10 @@ class _RecipeList extends StatelessWidget {
               IconButton(
                 onPressed: () => onRemove(recipe),
                 icon: const Icon(Icons.delete),
+              ),
+              IconButton(
+                onPressed: () => onAdd(recipe),
+                icon: const Icon(Icons.edit_calendar_outlined),
               ),
             ],
           ),

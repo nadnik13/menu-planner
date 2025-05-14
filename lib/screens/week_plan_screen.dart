@@ -22,7 +22,7 @@ class WeekPlanScreen extends ConsumerWidget {
                   final recipeDate = planItem.date.dateKey;
                   final recipePortion = planItem.portion;
                   return ListTile(
-                    title: Text(planItem.recipe.title),
+                    title: Text(planItem.meal.title),
                     subtitle: Text('Дата: $recipeDate\nПорций: $recipePortion'),
                     trailing: IconButton(
                       onPressed: () {
