@@ -23,7 +23,12 @@ class Recipe {
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     final id = json['id'];
-    return Recipe(id, json['title'] as String, json['description'] as String?, json['portion'] as int);
+    return Recipe(
+      id,
+      json['title'] as String,
+      json['description'] as String?,
+      json['portion'] as int,
+    );
   }
 
   factory Recipe.add(String title, String? description, int portion) {
@@ -32,11 +37,10 @@ class Recipe {
     return Recipe(id, title, description, portion);
   }
 
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Recipe && runtimeType == other.runtimeType && other.id == id;
+      other is Recipe && other.id == id;
 
   @override
   int get hashCode => id.hashCode;
