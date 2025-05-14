@@ -173,8 +173,7 @@ class _MealDropdown extends ConsumerWidget {
       hint: const Text("Выбрать блюдо"),
       isExpanded: true,
       items:
-          meals.where((e) => e.availablePortion > 0)
-              .map((meal) {
+          meals.where((e) => e.availablePortion > 0).map((meal) {
             return DropdownMenuItem<Meal>(value: meal, child: Text(meal.title));
           }).toList(),
       onChanged: onSelectedMeal,
