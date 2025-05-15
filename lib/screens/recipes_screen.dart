@@ -53,7 +53,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Кулинарная книга'),
+        title: const Text('Все рецепты'),
         actions: [
           IconButton(
             onPressed: () => _editRecipe(null),

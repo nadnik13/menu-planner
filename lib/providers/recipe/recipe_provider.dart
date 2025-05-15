@@ -28,6 +28,14 @@ class RecipeNotifier extends StateNotifier<Set<Recipe>> {
     _box.delete(recipe.id);
     state = _box.values.toSet();
   }
+
+  Recipe? findByTitle(String title) {
+    final recipe = state.firstWhere(
+      (e) => e.title == title,
+      orElse: () => Recipe.empty,
+    );
+    return recipe.id.isEmpty ? null : recipe;
+  }
 }
 
 final recipeProvider = StateNotifierProvider<RecipeNotifier, Set<Recipe>>((

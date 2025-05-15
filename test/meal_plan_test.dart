@@ -23,7 +23,7 @@ void main() async {
   test('Добавление плана', () async {
     final plan = MealPlan(
       date: DateTime.now(),
-      meal: Meal.add(Recipe.add('Борщь', '', 5)),
+      meal: Meal.add(Recipe.add(title: 'Борщь', type: '', portion: 5)),
       portion: 2,
     );
 

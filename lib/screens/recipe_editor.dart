@@ -22,28 +22,22 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   late TextEditingController _descController;
   late int _portion;
   bool isActive = false;
-  String? selectedMeal;
-  final List<String> mealTypes = ['Завтрак', 'Обед', 'Ужин', 'Перекус'];
+  String? _recipeType;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.recipe?.title ?? "");
-    _descController = TextEditingController(
-      text: widget.recipe?.description ?? "",
-    );
+    _recipeType = widget.recipe?.type;
     _portion = widget.recipe?.portion ?? 1;
-
     isActive = _isValid;
 
     _titleController.addListener(_updateActiveState);
-    _descController.addListener(_updateActiveState);
   }
 
   bool get _isValid =>
       _titleController.text.trim().isNotEmpty &&
-      _descController.text.trim().isNotEmpty &&
-      selectedMeal != null &&
+      _recipeType != null &&
       _portion > 0;
 
   void _updateActiveState() {
@@ -58,11 +52,15 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   void _save() {
     //:TODO Возможно стоит вынести логику добавления рецепта и в pop посылать результат
     Navigator.of(context).pop();
+    final title = _titleController.text.trim();
+
+    final recipeId = ref.read(recipeProvider.notifier).findByTitle(title)?.id;
 
     final editedRecipe = Recipe.add(
-      _titleController.text.trim(),
-      _descController.text.trim(),
-      _portion,
+      id: recipeId,
+      title: title,
+      type: _recipeType,
+      portion: _portion,
     );
     ref.read(recipeProvider.notifier).addOrReplaceRecipe(editedRecipe);
 
@@ -93,19 +91,14 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
               decoration: InputDecoration(hintText: 'Название'),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _descController,
-              decoration: InputDecoration(hintText: 'Описание'),
-            ),
-            const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: selectedMeal,
+              value: _recipeType,
               decoration: const InputDecoration(
                 labelText: "Приём пищи",
                 border: OutlineInputBorder(),
               ),
               items:
-                  mealTypes.map((meal) {
+                  Recipe.types.map((meal) {
                     return DropdownMenuItem<String>(
                       value: meal,
                       child: Text(meal),
@@ -113,7 +106,7 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
                   }).toList(),
               onChanged: (value) {
                 setState(() {
-                  selectedMeal = value;
+                  _recipeType = value;
                   _updateActiveState();
                 });
               },
