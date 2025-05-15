@@ -28,7 +28,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
+      theme: ThemeData(
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Colors.tealAccent, // или любой другой основной цвет
+        shape: const CircleBorder(),  // 👈 Возвращает стандартную круглую форму
+    ),
+      ),
       home: const StartupScreen(),
     );
   }

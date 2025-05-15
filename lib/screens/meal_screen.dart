@@ -98,6 +98,10 @@ class _MealScreenState extends ConsumerState<MealScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToRecipes,
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
@@ -116,7 +120,7 @@ class _MealList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (meals.isEmpty) {
-      return const Center(child: Text('Нет добавленных рецептов'));
+      return const Center(child: Text('Нет добавленных блюд'));
     }
     final mealsList = meals.toList();
     return ListView.builder(
