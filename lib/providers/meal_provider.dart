@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/models/recipe.dart';
+import '../core/logger.dart';
 import '../models/meal.dart';
 
 class MealNotifier extends StateNotifier<Set<Meal>> {
@@ -17,6 +18,16 @@ class MealNotifier extends StateNotifier<Set<Meal>> {
   void updateMeal({required Meal meal, required int usedCntPortion}) {
     final updatedMeal = meal.copyWith(usedCntPortion: usedCntPortion);
     addOrReplaceMeal(updatedMeal);
+  }
+
+  void updateMeals({required Map<String, int> mealsMap}) {
+    mealsMap.forEach((key, value) {
+      final meal = _box.get(key);
+      if (meal != null) {
+        updateMeal(meal: meal, usedCntPortion: value);
+      }
+    });
+    logger.d("updateMeals: $state");
   }
 
   void addMealByRecipe(Recipe recipe) {

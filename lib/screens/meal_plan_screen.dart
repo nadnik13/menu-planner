@@ -1,12 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/core/logger.dart';
-import 'package:my_recipe_app/providers/meal_provider.dart';
 import 'package:my_recipe_app/providers/plan_state_providers.dart';
 import '../models/meal.dart';
-import '../providers/meal_plan_provider.dart';
-import '../widgets/save_button.dart';
+import '../widgets/meal_list.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {
   final Meal? meal;
@@ -35,16 +32,6 @@ class PlanScreenState extends ConsumerState<PlanScreen> {
   Widget build(BuildContext context) {
     //:TODO это явно должно выглядеть как-то иначе в итоге
     final selectedDate = ref.watch(selectedDateProvider);
-    final selectedMeal = ref.watch(selectedMealProvider);
-    logger.d(
-      'Portion: ${selectedMeal?.usedCntPortion} ${selectedMeal?.addedCntPortion} ${selectedMeal?.availablePortion}',
-    );
-    final availableCntPortion = selectedMeal?.availablePortion ?? 0;
-
-    if (availableCntPortion < 1) {
-      portion = 0;
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('План')),
       body: Padding(
@@ -58,58 +45,9 @@ class PlanScreenState extends ConsumerState<PlanScreen> {
               },
             ),
             const SizedBox(height: 16),
-            _MealDropdown(
-              selectedMeal: selectedMeal,
-              onSelectedMeal: (meal) {
-                ref.read(selectedMealProvider.notifier).state = meal;
-              },
-            ),
+            //MealList(key: ValueKey(selectedDate), selectedDate: selectedDate),
+            MealList(selectedDate: selectedDate),
             const SizedBox(height: 16),
-            if (selectedMeal != null)
-              Row(
-                children: [
-                  Text('Количество порций:'),
-                  SizedBox(width: 10),
-                  IconButton(
-                    onPressed:
-                        () => portion > 1 ? setState(() => portion--) : null,
-                    icon: Icon(Icons.remove),
-                  ),
-                  Text('$portion(из $availableCntPortion)'),
-                  IconButton(
-                    onPressed:
-                        () =>
-                            portion < availableCntPortion
-                                ? setState(() => portion++)
-                                : null,
-                    icon: Icon(Icons.add),
-                  ),
-                ],
-              ),
-            const SizedBox(height: 16),
-            SaveButton(
-              isActive: selectedMeal != null && availableCntPortion > 0,
-              onSave: () {
-                if (selectedMeal != null && availableCntPortion > 0) {
-                  ref
-                      .read(mealPlanProvider.notifier)
-                      .saveMealPlan(
-                        date: selectedDate,
-                        meal: selectedMeal,
-                        portion: portion,
-                      );
-
-                  ref
-                      .read(mealProvider.notifier)
-                      .updateMeal(meal: selectedMeal, usedCntPortion: portion);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('План добавлен')),
-                  );
-                  ref.invalidate(selectedMealProvider);
-                }
-              },
-            ),
           ],
         ),
       ),
@@ -152,31 +90,6 @@ class _DatePickerRow extends StatelessWidget {
           icon: Icon(Icons.edit),
         ),
       ],
-    );
-  }
-}
-
-class _MealDropdown extends ConsumerWidget {
-  final Meal? selectedMeal;
-  final ValueChanged<Meal?> onSelectedMeal;
-
-  const _MealDropdown({
-    required this.selectedMeal,
-    required this.onSelectedMeal,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final meals = ref.watch(mealProvider);
-    return DropdownButton<Meal>(
-      value: selectedMeal,
-      hint: const Text("Выбрать блюдо"),
-      isExpanded: true,
-      items:
-          meals.where((e) => e.availablePortion > 0).map((meal) {
-            return DropdownMenuItem<Meal>(value: meal, child: Text(meal.title));
-          }).toList(),
-      onChanged: onSelectedMeal,
     );
   }
 }

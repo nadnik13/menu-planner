@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import '../models/meal.dart';
 import '../models/meal_plan.dart';
 
 class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
@@ -30,10 +29,10 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
 
   void saveMealPlan({
     required DateTime date,
-    required Meal meal,
-    required int portion,
+    required Map<String, int> mealCntMap,
   }) {
-    final plan = MealPlan(date: date, meal: meal, portion: portion);
+    final plan = MealPlan(date: date, mealPortions: mealCntMap);
+
     addOrReplacePlan(plan);
   }
 }
