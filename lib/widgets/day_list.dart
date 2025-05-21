@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import 'package:my_recipe_app/models/meal_plan.dart';
-import 'package:my_recipe_app/providers/meal_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:my_recipe_app/screens/plan_screen.dart';
+import 'package:my_recipe_app/screens/plan_editor.dart';
 
-import '../providers/meal_plan_provider.dart';
+import '../providers/meal/meal_provider.dart';
+import '../providers/meal_plan/meal_plan_notifier.dart';
 
 class DayList extends ConsumerStatefulWidget {
   const DayList({super.key});
@@ -17,7 +17,7 @@ class DayList extends ConsumerStatefulWidget {
 }
 
 class _DayListState extends ConsumerState<DayList> {
-  final int range = 10;
+  final int range = 5;
   final ScrollController _scrollController = ScrollController();
   late List<GlobalKey> _itemKeys;
 

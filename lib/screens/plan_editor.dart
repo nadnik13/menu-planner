@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/providers/plan_state_providers.dart';
+import 'package:my_recipe_app/providers/selected_date_notifier.dart';
 import '../widgets/meal_list.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {

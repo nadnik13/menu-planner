@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/providers/meal_provider.dart';
 import 'package:my_recipe_app/screens/recipes_screen.dart';
-import 'package:my_recipe_app/screens/week_plan_screen.dart';
+import 'package:my_recipe_app/screens/days_plan_screen.dart';
 import '../core/logger.dart';
 import '../models/meal.dart';
+import '../providers/meal/meal_provider.dart';
 
 class MealScreen extends ConsumerStatefulWidget {
   const MealScreen({super.key});

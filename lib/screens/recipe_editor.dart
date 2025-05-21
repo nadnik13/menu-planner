@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/providers/recipe/recipe_provider.dart';
+import 'package:my_recipe_app/providers/recipe/recipe_notifier.dart';
 import 'package:my_recipe_app/widgets/save_button.dart';
 
 import '../models/recipe.dart';

@@ -4,8 +4,8 @@ import 'package:my_recipe_app/core/logger.dart';
 import 'package:my_recipe_app/models/meal_plan.dart';
 import 'package:my_recipe_app/widgets/save_button.dart';
 
-import '../providers/meal_plan_provider.dart';
-import '../providers/meal_provider.dart';
+import '../providers/meal/meal_provider.dart';
+import '../providers/meal_plan/meal_plan_notifier.dart';
 
 class MealList extends ConsumerStatefulWidget {
   final DateTime selectedDate;
