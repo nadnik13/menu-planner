@@ -4,8 +4,8 @@ import 'package:my_recipe_app/widgets/day_list.dart';
 import 'plan_editor.dart';
 import 'meal_screen.dart';
 
-class WeekPlanScreen extends ConsumerWidget {
-  const WeekPlanScreen({super.key});
+class DaysPlanScreen extends ConsumerWidget {
+  const DaysPlanScreen({super.key});
 
   void _navigateToPlanEditor(DateTime? date, BuildContext context) {
     Navigator.push(

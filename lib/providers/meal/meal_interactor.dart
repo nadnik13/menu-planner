@@ -1,13 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:my_recipe_app/models/recipe.dart';
 import 'package:my_recipe_app/providers/meal/meal_repository.dart';
 import '../../models/meal.dart';
-import 'meal_provider.dart';
 
 class MealInteractor {
   final MealRepository repo;
 
   MealInteractor(this.repo);
+
+  Future<Set<Meal>> loadMeals() async => await repo.fetchAllMeals();
+
+  Future<void> addMeal(Meal meal) async {
+    await repo.addOrReplaceMeal(meal);
+  }
 
   //:TODO что лучше Meal или meal.id
   Future<void> updateMeal({
@@ -50,6 +56,11 @@ class MealInteractor {
     await repo.removeMealById(meal.id);
   }
 }
+
+final mealRepositoryProvider = Provider((ref) {
+  final box = Hive.box<Meal>('MealBox');
+  return MealRepository(box);
+});
 
 final mealInteractorProvider = Provider((ref) {
   return MealInteractor(ref.read(mealRepositoryProvider));

@@ -41,7 +41,7 @@ class _DayListState extends ConsumerState<DayList> {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now().dateOnly;
-    final mealPlans = ref.watch(weekPlanProvider);
+    final mealPlans = ref.watch(daysPlanProvider);
     return ListView.builder(
       controller: _scrollController,
       scrollDirection: Axis.vertical,

@@ -42,7 +42,7 @@ class _MealScreenState extends ConsumerState<MealScreen> {
   void _navigateToWeekPlan() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const WeekPlanScreen()),
+      MaterialPageRoute(builder: (_) => const DaysPlanScreen()),
     );
   }
 

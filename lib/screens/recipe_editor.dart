@@ -56,7 +56,7 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
       title: title,
       portion: _portion,
     );
-    ref.read(recipeProvider.notifier).addOrReplaceRecipe(editedRecipe);
+    ref.read(recipeProvider.notifier).addRecipe(editedRecipe);
 
     ScaffoldMessenger.of(
       context,

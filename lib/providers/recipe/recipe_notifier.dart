@@ -1,32 +1,30 @@
-import 'package:hive/hive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/providers/recipe/recipe_repository.dart';
+import 'package:my_recipe_app/providers/recipe/recipe_interactor.dart';
 import '../../models/recipe.dart';
 
 class RecipeNotifier extends StateNotifier<Set<Recipe>> {
-  final RecipeRepository repo;
+  final RecipeInteractor interactor;
 
-  RecipeNotifier(this.repo) : super(<Recipe>{}) {
+  RecipeNotifier(this.interactor) : super(<Recipe>{}) {
     _loadRecipes();
   }
 
   Future<void> _loadRecipes() async {
-    state = await repo.fetchAllRecipes();
+    state = await interactor.fetchAllRecipes();
   }
 
   Future<void> addRecipes(Set<Recipe> recipesFromJson) async {
-    final unloadedRecipes = recipesFromJson.where((e) => !state.contains(e));
-    await repo.addRecipes(unloadedRecipes);
+    await interactor.addRecipes(recipesFromJson);
     await _loadRecipes();
   }
 
-  Future<void> addOrReplaceRecipe(Recipe recipe) async {
-    await repo.addOrReplaceRecipe(recipe);
+  Future<void> addRecipe(Recipe recipe) async {
+    await interactor.addRecipe(recipe);
     await _loadRecipes();
   }
 
   Future<void> removeRecipe(Recipe recipe) async {
-    await repo.removeRecipe(recipe);
+    await interactor.removeRecipe(recipe);
     await _loadRecipes();
   }
 
@@ -39,10 +37,6 @@ class RecipeNotifier extends StateNotifier<Set<Recipe>> {
   }
 }
 
-final recipeRepositoryProvider = Provider((ref) {
-  final box = Hive.box<Recipe>('recipeBox');
-  return RecipeRepository(box);
-});
-
 final recipeProvider = StateNotifierProvider<RecipeNotifier, Set<Recipe>>(
-        (ref) => RecipeNotifier(ref.read(recipeRepositoryProvider)));
+  (ref) => RecipeNotifier(ref.read(recipeInteractorProvider)),
+);

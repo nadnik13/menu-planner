@@ -13,7 +13,7 @@ class StartupScreen extends StatelessWidget {
     final box = Hive.box<Recipe>('recipeBox');
 
     if (box.isEmpty) {
-      await ref.read(recipeInteractorProvider).loadRecipes(ref);
+      await ref.read(recipeInteractorProvider).loadRecipesFromJson();
     }
   }
 
@@ -33,7 +33,7 @@ class StartupScreen extends StatelessWidget {
                 body: Center(child: Text('Ошибка: ${snapshot.error}')),
               );
             } else {
-              return const WeekPlanScreen(); // основной экран
+              return const DaysPlanScreen(); // основной экран
             }
           },
         );

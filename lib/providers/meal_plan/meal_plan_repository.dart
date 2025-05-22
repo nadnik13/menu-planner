@@ -14,20 +14,11 @@ class MealPlanRepository {
 
   Future<List<MealPlan>> fetchAllMealPlans() async => _box.values.toList();
 
-  Future<void> _removePlanByKey(String key) async {
+  Future<void> removePlanByKey(String key) async {
     if (_box.containsKey(key)) {
       await _box.delete(key);
     }
   }
 
-  Future<MealPlan?> _getPlan(String key) async => _box.get(key);
-
-
-  Future<void> removePlanByDate(DateTime date) async {
-    await _removePlanByKey(date.dateKey);
-  }
-
-  Future<MealPlan?> getPlanByDate(DateTime date) async {
-    return await _getPlan(date.dateKey);
-  }
+  Future<MealPlan?> getPlanByKey(String key) async => _box.get(key);
 }
