@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:my_recipe_app/providers/meal/meal_remove_interactor.dart';
 import 'package:my_recipe_app/screens/recipes_screen.dart';
-import 'package:my_recipe_app/screens/days_plan_screen.dart';
 import '../core/logger.dart';
 import '../models/meal.dart';
 import '../providers/meal/meal_provider.dart';
@@ -29,20 +29,14 @@ class _MealScreenState extends ConsumerState<MealScreen> {
     _printMealBox();
   }
 
-  void _removeRecipe(Meal meal) =>
-      ref.read(mealProvider.notifier).removeMeal(meal);
+  void _removeMeal(Meal meal) {
+    ref.read(mealRemoveInteractorProvider).removeMeal(meal);
+  }
 
   void _navigateToRecipes() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const RecipeScreen()),
-    );
-  }
-
-  void _navigateToWeekPlan() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const DaysPlanScreen()),
     );
   }
 
@@ -59,11 +53,6 @@ class _MealScreenState extends ConsumerState<MealScreen> {
             icon: const Icon(Icons.book),
             tooltip: "Кулинарная книга",
           ),
-          IconButton(
-            onPressed: _navigateToWeekPlan,
-            icon: Icon(Icons.list_alt),
-            tooltip: "Недельный план",
-          ),
         ],
       ),
       body: Column(
@@ -72,18 +61,8 @@ class _MealScreenState extends ConsumerState<MealScreen> {
             child: //Text("_RecipeList")
                 _MealList(
               meals: meals,
-              onRemove: _removeRecipe,
+              onRemove: _removeMeal,
             ),
-          ),
-          IconButton(
-            onPressed: () async {
-              await Hive.box<Meal>('mealBox').clear();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Все блюда удалены')),
-              );
-              _printMealBox();
-            },
-            icon: Icon(Icons.delete_forever),
           ),
         ],
       ),

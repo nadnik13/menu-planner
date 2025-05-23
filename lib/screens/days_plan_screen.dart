@@ -10,7 +10,7 @@ class DaysPlanScreen extends ConsumerWidget {
   void _navigateToPlanEditor(DateTime? date, BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => PlanScreen(date: date)),
+      MaterialPageRoute(builder: (_) => PlanEditor(date: date)),
     );
   }
 

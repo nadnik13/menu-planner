@@ -7,6 +7,7 @@ import 'core/extensions/app_initializer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeApp();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -2,23 +2,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import 'package:my_recipe_app/providers/selected_date_notifier.dart';
+import '../core/logger.dart';
 import '../widgets/meal_list.dart';
 
-class PlanScreen extends ConsumerStatefulWidget {
+class PlanEditor extends ConsumerStatefulWidget {
   final DateTime? date;
 
-  const PlanScreen({super.key, this.date});
+  const PlanEditor({super.key, this.date});
 
   @override
-  ConsumerState<PlanScreen> createState() => PlanScreenState();
+  ConsumerState<PlanEditor> createState() => PlanScreenState();
 }
 
-class PlanScreenState extends ConsumerState<PlanScreen> {
+class PlanScreenState extends ConsumerState<PlanEditor> {
   int portion = 1;
 
   @override
+  void initState() {
+    super.initState();
+    logger.d("PlanScreenState initState ${widget.date}");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final date = widget.date;
+        if (date != null) {
+          ref.read(selectedDateProvider.notifier).update(date);
+        }
+      });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final DateTime selectedDate = widget.date??ref.watch(selectedDateProvider);
+    logger.d("PlanScreenState build selectedDate: ${widget.date}");
+    final DateTime selectedDate = ref.watch(selectedDateProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('План')),
       body: Padding(
@@ -55,7 +69,7 @@ class _DatePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = selectedDate.dateKey;
+    final formattedDate = selectedDate.formatDMY();
     return Row(
       children: [
         Expanded(
@@ -66,19 +80,19 @@ class _DatePickerRow extends StatelessWidget {
         ),
         if (isAvailableChangeDate)
           IconButton(
-          onPressed: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: selectedDate,
-              firstDate: selectedDate.subtract(const Duration(days: 60)),
-              lastDate: selectedDate.add(const Duration(days: 305)),
-            );
-            if (picked != null) {
-              onDateChanged(picked);
-            }
-          },
-          icon: Icon(Icons.edit),
-        ),
+            onPressed: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: selectedDate.subtract(const Duration(days: 60)),
+                lastDate: selectedDate.add(const Duration(days: 305)),
+              );
+              if (picked != null) {
+                onDateChanged(picked);
+              }
+            },
+            icon: Icon(Icons.edit),
+          ),
       ],
     );
   }

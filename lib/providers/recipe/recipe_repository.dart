@@ -6,7 +6,7 @@ class RecipeRepository {
 
   RecipeRepository(this._recipeBox);
 
-  Future<void> addRecipes(Iterable<Recipe> recipes) async {
+  Future<void> addRecipes(Set<Recipe> recipes) async {
     for (final recipe in recipes) {
       _recipeBox.put(recipe.id, recipe);
     }

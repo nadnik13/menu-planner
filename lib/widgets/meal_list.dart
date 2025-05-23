@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_recipe_app/core/logger.dart';
 import 'package:my_recipe_app/models/meal_plan.dart';
+import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
+import 'package:my_recipe_app/providers/meal_plan/meal_plan_save_interactor.dart';
+import 'package:my_recipe_app/providers/meal_plan/meal_plan_interactor.dart';
 import 'package:my_recipe_app/widgets/save_button.dart';
 
-import '../providers/meal/meal_provider.dart';
-import '../providers/meal_plan/meal_plan_notifier.dart';
+import '../models/meal.dart';
 
 class MealList extends ConsumerStatefulWidget {
   final DateTime selectedDate;
@@ -28,6 +30,25 @@ class _PlannedMealItem {
     this.usedPortion,
     this.availablePortion,
   );
+
+  static List<_PlannedMealItem> generateFromMeal(
+    Set<Meal> meals,
+    MealPlan mealPlan,
+  ) {
+    final List<_PlannedMealItem> list = [];
+    for (final meal in meals) {
+      final plannedMealPortionsByDate = mealPlan.mealPortions[meal.id];
+      list.add(
+        _PlannedMealItem(
+          meal.id,
+          meal.title,
+          plannedMealPortionsByDate ?? 0,
+          meal.availablePortion,
+        ),
+      );
+    }
+    return list;
+  }
 }
 
 class _MealListState extends ConsumerState<MealList> {
@@ -38,58 +59,51 @@ class _MealListState extends ConsumerState<MealList> {
   @override
   void initState() {
     super.initState();
-    _loadMeals();
+      _loadMeals();
   }
 
   void _loadMeals() {
-    final availableMeals = ref
-        .read(mealProvider)
-        .where((e) => e.availablePortion > 0);
-
+    final availableMeals = ref.read(mealInteractorProvider).getAvailableMeals();
+    logger.d("_loadMeals availableMeals: ${availableMeals.length}");
+    logger.d("_loadMeals availableMealsTitles: ${availableMeals.map((e) => e.title)}");
+    final selectedDate = widget.selectedDate;
     final planByDate = ref
-        .read(mealPlanProvider)
-        .firstWhere(
-          (e) => e.date == widget.selectedDate,
-          orElse: () => MealPlan(date: widget.selectedDate, mealPortions: {}),
-        );
-
+        .read(mealPlanInteractorProvider)
+        .getPlanByDate(selectedDate);
+    logger.d("selectedDate: ${widget.selectedDate} ${selectedDate}");
+    logger.d("planByDate: ${planByDate.date} ${planByDate.mealPortions}");
     selectedMeals.clear();
     availableMealsToAdd.clear();
     changedMealPortions.clear();
-
-    for (final meal in availableMeals) {
-      final plannedMealPortionsByDate = planByDate.mealPortions[meal.id];
-      final mealItem = _PlannedMealItem(
-        meal.id,
-        meal.title,
-        plannedMealPortionsByDate ?? 0,
-        meal.availablePortion,
-      );
-
-      if (plannedMealPortionsByDate != null) {
+    //:TODO можно ли убрать выгрузку из интерактора в функцию генерации?
+    final items = _PlannedMealItem.generateFromMeal(availableMeals, planByDate);
+    for (final mealItem in items) {
+      if (mealItem.usedPortion > 0) {
         selectedMeals.add(mealItem);
       } else {
         availableMealsToAdd.add(mealItem);
       }
-      changedMealPortions[meal.id] = meal.usedCntPortion;
+      changedMealPortions[mealItem.id] = mealItem.usedPortion;
     }
+    logger.d("_loadMeals selectedMeals: ${selectedMeals.map((e) => e.title)}");
+    logger.d("_loadMeals availableMealsToAdd: ${availableMealsToAdd.map((e) => e.title)}");
+    logger.d("_loadMeals changedMealPortions: ${changedMealPortions}");
   }
 
   @override
   void didUpdateWidget(MealList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    logger.d("didUpdateWidget: ${oldWidget.selectedDate}");
     if (widget.selectedDate != oldWidget.selectedDate) {
-      _loadMeals();
+        _loadMeals();
     }
   }
 
   void _save() {
-    ref.read(mealProvider.notifier).updateMeals(mealsMap: changedMealPortions);
     ref
-        .read(mealPlanProvider.notifier)
-        .saveMealPlan(
+        .read(mealPlanSaveInteractorProvider)
+        .saveMealPLan(
           date: widget.selectedDate,
+          changedMealPortions: changedMealPortions,
           mealCntMap: {for (var e in selectedMeals) e.id: e.usedPortion},
         );
     Navigator.pop(context);

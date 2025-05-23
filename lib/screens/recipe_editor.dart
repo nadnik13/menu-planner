@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/providers/recipe/recipe_notifier.dart';
+import 'package:my_recipe_app/providers/recipe/recipe_interactor.dart';
 import 'package:my_recipe_app/widgets/save_button.dart';
 
 import '../models/recipe.dart';
@@ -17,7 +17,6 @@ class RecipeEditor extends ConsumerStatefulWidget {
 
 class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   late TextEditingController _titleController;
-  late TextEditingController _descController;
   late int _portion;
   bool isActive = false;
 
@@ -45,19 +44,9 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   }
 
   void _save() {
-    //:TODO Возможно стоит вынести логику добавления рецепта и в pop посылать результат
-    Navigator.of(context).pop();
     final title = _titleController.text.trim();
-
-    final recipeId = ref.read(recipeProvider.notifier).findByTitle(title)?.id;
-
-    final editedRecipe = Recipe.add(
-      id: recipeId,
-      title: title,
-      portion: _portion,
-    );
-    ref.read(recipeProvider.notifier).addRecipe(editedRecipe);
-
+    ref.read(recipeInteractorProvider).addRecipe(title: title, portion: _portion);
+    Navigator.of(context).pop();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Изменения сохранены')));
@@ -66,7 +55,6 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   @override
   void dispose() {
     _titleController.dispose();
-    _descController.dispose();
     super.dispose();
   }
 

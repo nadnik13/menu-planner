@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
+import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
+import 'package:my_recipe_app/providers/meal_plan/meal_plan_interactor.dart';
 import 'package:my_recipe_app/screens/days_plan_screen.dart';
 
-import '../models/recipe.dart';
 import '../providers/recipe/recipe_interactor.dart';
 
 class StartupScreen extends StatelessWidget {
   const StartupScreen({super.key});
 
-  Future<void> loadRecipes(WidgetRef ref) async {
-    final box = Hive.box<Recipe>('recipeBox');
-
-    if (box.isEmpty) {
-      await ref.read(recipeInteractorProvider).loadRecipesFromJson();
-    }
+  Future<void> loadData(WidgetRef ref) async {
+    await ref.read(recipeInteractorProvider).loadRecipes();
+    await ref.read(mealInteractorProvider).loadMeals();
+    await ref.read(mealPlanInteractorProvider).loadMealPLan();
   }
 
   @override
@@ -22,7 +20,7 @@ class StartupScreen extends StatelessWidget {
     return Consumer(
       builder: (context, ref, _) {
         return FutureBuilder(
-          future: loadRecipes(ref),
+          future: loadData(ref),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(

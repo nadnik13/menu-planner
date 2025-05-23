@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import 'package:my_recipe_app/models/meal_plan.dart';
-import 'package:intl/intl.dart';
+import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
 import 'package:my_recipe_app/screens/plan_editor.dart';
 
-import '../providers/meal/meal_provider.dart';
+import '../core/logger.dart';
 import '../providers/meal_plan/meal_plan_notifier.dart';
 
 class DayList extends ConsumerStatefulWidget {
@@ -65,23 +65,20 @@ class _DayCard extends ConsumerWidget {
   void _navigateToPlanEditor(DateTime date, BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => PlanScreen(date: date)),
+      MaterialPageRoute(builder: (_) => PlanEditor(date: date)),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //TODO понимаю что это должно быть вынесено
-    final mealMap = ref.watch(mealProvider.notifier).getMap();
-    final mealList =
-        mealPlan.mealPortions.entries
-            .map(
-              (e) => _MealItem(
-                title: mealMap[e.key]?.title ?? "",
-                portion: e.value,
-              ),
-            )
-            .toList();
+    //TODO можно перенести в generateFromMealPlan()?
+    final mealMap = ref.watch(mealInteractorProvider).getMealTitleMap();
+    logger.d("_DayCard build $mealMap");
+    final mealList = _MealItem.generateFromMealPlan(
+      mealPlan.mealPortions,
+      mealMap,
+    );
+    logger.d("_DayCard mealList ${mealList}");
 
     return Card(
       margin: EdgeInsets.all(10),
@@ -95,7 +92,7 @@ class _DayCard extends ConsumerWidget {
             Row(
               children: [
                 Text(
-                  DateFormat('EEEE, d MMMM', 'ru').format(mealPlan.date),
+                  mealPlan.date.formatWithDayWeek(),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -146,4 +143,15 @@ class _MealItem {
   int portion;
 
   _MealItem({required this.title, required this.portion});
+
+  static List<_MealItem> generateFromMealPlan(
+    Map<String, int> mealPortionMap,
+    Map<String, String> mealTitleMap,
+  ) =>
+      mealPortionMap.entries
+          .map(
+            (e) =>
+                _MealItem(title: mealTitleMap[e.key] ?? "", portion: e.value),
+          )
+          .toList();
 }

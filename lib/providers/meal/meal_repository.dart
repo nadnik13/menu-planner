@@ -14,7 +14,7 @@ class MealRepository {
 
   Future<Set<Meal>> fetchAllMeals() async => _box.values.toSet();
 
-  Future<void> removeMealById(String id) async {
+  Future<void> removeMealByKey(String id) async {
     await _box.delete(id);
   }
 }

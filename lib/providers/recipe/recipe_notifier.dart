@@ -1,36 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/providers/recipe/recipe_interactor.dart';
 import '../../models/recipe.dart';
 
 class RecipeNotifier extends StateNotifier<Set<Recipe>> {
-  final RecipeInteractor interactor;
+  RecipeNotifier() : super(<Recipe>{});
 
-  RecipeNotifier(this.interactor) : super(<Recipe>{}) {
-    _loadRecipes();
+  void loadRecipes(Set<Recipe> recipes) {
+    state = recipes;
   }
 
-  Future<void> _loadRecipes() async {
-    state = await interactor.fetchAllRecipes();
-  }
+  Set<Recipe> get fetchAllRecipes => state;
 
-  Future<void> addRecipes(Set<Recipe> recipesFromJson) async {
-    await interactor.addRecipes(recipesFromJson);
-    await _loadRecipes();
+  Future<void> addRecipes(Set<Recipe> recipes) async {
+    state = {...state, ...recipes};
   }
 
   Future<void> addRecipe(Recipe recipe) async {
-    await interactor.addRecipe(recipe);
-    await _loadRecipes();
+    state = {...state, recipe};
   }
 
+
   Future<void> removeRecipe(Recipe recipe) async {
-    await interactor.removeRecipe(recipe);
-    await _loadRecipes();
+    state = state.where((e) => e.id != recipe.id).toSet();
+  }
+
+  Future<void> addOrReplaceRecipe(Recipe recipe) async {
+    final recipes = state.where((e) => e.id != recipe.id).toSet();
+    state = {...recipes, recipe};
   }
 
   Recipe? findByTitle(String title) {
     final recipe = state.firstWhere(
-      (e) => e.title == title,
+          (e) => e.title == title,
       orElse: () => Recipe.empty,
     );
     return recipe.id.isEmpty ? null : recipe;
@@ -38,5 +38,5 @@ class RecipeNotifier extends StateNotifier<Set<Recipe>> {
 }
 
 final recipeProvider = StateNotifierProvider<RecipeNotifier, Set<Recipe>>(
-  (ref) => RecipeNotifier(ref.read(recipeInteractorProvider)),
+      (ref) => RecipeNotifier(),
 );

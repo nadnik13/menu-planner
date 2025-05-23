@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
+import 'package:my_recipe_app/providers/recipe/recipe_interactor.dart';
 import 'package:my_recipe_app/screens/recipe_editor.dart';
 import '../core/logger.dart';
 import '../models/recipe.dart';
-import '../providers/meal/meal_provider.dart';
 import '../providers/recipe/recipe_notifier.dart';
 
 class RecipeScreen extends ConsumerStatefulWidget {
@@ -29,8 +30,9 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     _printRecipeBox();
   }
 
-  void _removeRecipe(Recipe recipe) =>
-      ref.read(recipeProvider.notifier).removeRecipe(recipe);
+  void _removeRecipe(Recipe recipe) {
+    ref.watch(recipeInteractorProvider).removeRecipe(recipe);
+  }
 
   void _editRecipe(Recipe? recipe) {
     showDialog(
@@ -40,34 +42,25 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
   }
 
   void _addMeal(Recipe recipe) {
-    ref.read(mealProvider.notifier).addMealByRecipe(recipe);
+    ref.read(mealInteractorProvider).addMealByRecipe(recipe);
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Блюдо добавлено')));
+    ).showSnackBar(SnackBar(content: Text('Блюдо ${recipe.title} добавлено')));
     logger.d('Добавлено блюдо ${recipe.title}');
   }
 
   @override
   Widget build(BuildContext context) {
-    final recipes = ref.watch(recipeProvider);
-
+    logger.d("_RecipeScreenState.build");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Все рецепты'),
-        actions: [
-          IconButton(
-            onPressed: () => _editRecipe(null),
-            icon: const Icon(Icons.add),
-            tooltip: "Добавить рецепт",
-          ),
-        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: //Text("_RecipeList")
                 _RecipeList(
-              recipes: recipes,
               onRemove: _removeRecipe,
               onAdd: _addMeal,
               onEdit: _editRecipe,
@@ -85,25 +78,28 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
           ),
         ],
       ),
-    );
+      floatingActionButton: FloatingActionButton(
+          onPressed: () => _editRecipe(null),
+        tooltip: "Добавить рецепт",
+      child: Icon(Icons.add),
+    ));
   }
 }
 
-class _RecipeList extends StatelessWidget {
+class _RecipeList extends ConsumerWidget {
   final void Function(Recipe) onRemove;
   final void Function(Recipe) onEdit;
   final void Function(Recipe) onAdd;
-  final Set<Recipe> recipes;
 
   const _RecipeList({
-    required this.recipes,
     required this.onRemove,
     required this.onAdd,
     required this.onEdit,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recipes = ref.watch(recipeProvider);
     if (recipes.isEmpty) {
       return const Center(child: Text('Нет добавленных рецептов'));
     }

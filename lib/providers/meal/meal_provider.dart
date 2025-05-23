@@ -1,50 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/models/recipe.dart';
-import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
-
 import '../../models/meal.dart';
 
 class MealNotifier extends StateNotifier<Set<Meal>> {
-  final MealInteractor interactor;
+  MealNotifier() : super(<Meal>{}) {}
 
-  MealNotifier(this.interactor) : super(<Meal>{}) {
-    _loadMeals();
+  void addMeals(Set<Meal> meals) {
+    state = {...state, ...meals};
   }
 
-  Future<void> _loadMeals() async {
-    state = await interactor.loadMeals();
+  Map<String, String> getTitleMap() => {for (var e in state) e.id: e.title};
+
+  Meal? getMealByKey(String key) => state.where((e) => e.id == key).firstOrNull;
+
+  Set<Meal> getAvailableMeals() => state.where((e) => e.availablePortion > 0).toSet();
+  Set<Meal> findByRecipeKey(String recipeKey)
+   => state.where((e) => e.recipeId == recipeKey).toSet();
+
+
+  void addOrReplaceMeal(Meal meal) {
+    state = state.where((e) => e.id != e.title).toSet();
+    state = {...state, meal};
   }
 
-  Map<String, Meal> getMap() => {for (var e in state) e.id: e};
-
-  Future<void> addMeal(Meal meal) async {
-    await interactor.addMeal(meal);
-    await _loadMeals();
-  }
-
-  Future<void> updateMeal({required Meal meal, required int usedCntPortion}) async {
-    await interactor.updateMeal(meal: meal, usedCntPortion: usedCntPortion);
-    await _loadMeals();
-  }
-
-  void updateMeals({required Map<String, int> mealsMap}) {
-    interactor.updateMeals(mealsMap: mealsMap);
-    _loadMeals();
-  }
-
-  void addMealByRecipe(Recipe recipe) {
-    interactor.addMealByRecipe(recipe);
-    _loadMeals();
-  }
-
-  Future<void> removeMeal(Meal meal) async {
-    await interactor.removeMeal(meal);
-    await _loadMeals();
+  void removeMealByKey(String key) {
+    state = state.where((e) => e.id != key).toSet();
   }
 }
 
 final mealProvider = StateNotifierProvider<MealNotifier, Set<Meal>>((ref) {
-  return MealNotifier(
-    ref.read(mealInteractorProvider),
-  );
+  return MealNotifier();
 });

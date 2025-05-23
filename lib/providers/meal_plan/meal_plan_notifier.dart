@@ -1,43 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/meal_plan.dart';
-import 'meal_plan_interactor.dart';
 
 class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
-  final MealPlanInteractor interactor;
 
-  MealPlanNotifier(this.interactor) : super(<MealPlan>[]) {
-    _loadMealPLan();
+  MealPlanNotifier() : super(<MealPlan>[]);
+
+  List<MealPlan> get fetchAllMealPlans => state;
+
+  void loadMealPLan(List<MealPlan> plans) {
+    state = plans;
   }
 
-  Future<void> _loadMealPLan() async {
-    state = await interactor.loadMealPLan();
+  void addOrReplacePlan(MealPlan plan) {
+    state = state.where((e) => e.date != plan.date).toList();
+    state = [...state, plan];
   }
 
-  Future<void> addPlan(MealPlan plan) async {
-    await interactor.addPlan(plan);
-    await _loadMealPLan();
+  void removePlanByKey(DateTime date) {
+    state = state.where((e) => e.date != date).toList();
   }
 
-  Future<void> removePlanByDate(DateTime date) async {
-    await interactor.removePlanByDate(date);
-    await _loadMealPLan();
-  }
-
-  Future<MealPlan?> getPlanByDate(DateTime date) async =>
-      interactor.getPlanByDate(date);
-
-  Future<void> saveMealPlan({
-    required DateTime date,
-    required Map<String, int> mealCntMap,
-  }) async {
-    await interactor.saveMealPlan(date: date, mealCntMap: mealCntMap);
-    await _loadMealPLan();
-  }
+  MealPlan? getPlanByDate(DateTime date) =>
+      state.where((e) => e.date == date).firstOrNull;
 }
 
 final mealPlanProvider =
     StateNotifierProvider<MealPlanNotifier, List<MealPlan>>(
-      (ref) => MealPlanNotifier(ref.read(mealPlanInteractorProvider)),
+      (ref) => MealPlanNotifier(),
     );
 
 final daysPlanProvider = Provider<Map<DateTime, MealPlan>>((ref) {
