@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/meal.dart';
+import 'package:collection/collection.dart';
 
 class MealNotifier extends StateNotifier<Set<Meal>> {
   MealNotifier() : super(<Meal>{}) {}
@@ -13,12 +14,13 @@ class MealNotifier extends StateNotifier<Set<Meal>> {
   Meal? getMealByKey(String key) => state.where((e) => e.id == key).firstOrNull;
 
   Set<Meal> getAvailableMeals() => state.where((e) => e.availablePortion > 0).toSet();
+  int getCntAvailablePortion() => state.where((e) => e.availablePortion > 0).map((e) => e.availablePortion).sum;
   Set<Meal> findByRecipeKey(String recipeKey)
    => state.where((e) => e.recipeId == recipeKey).toSet();
 
 
   void addOrReplaceMeal(Meal meal) {
-    state = state.where((e) => e.id != e.title).toSet();
+    state = state.where((e) => e.id != meal.id).toSet();
     state = {...state, meal};
   }
 

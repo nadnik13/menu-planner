@@ -7,6 +7,7 @@ class MealRepository {
   MealRepository(this._box);
 
   Future<void> addOrReplaceMeal(Meal meal) async {
+
     await _box.put(meal.id, meal);
   }
 

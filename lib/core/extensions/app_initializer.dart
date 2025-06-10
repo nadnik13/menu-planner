@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 
 import '../../models/meal.dart';
 import '../../models/meal_plan.dart';
+import '../../models/meal_status_types.dart';
 import '../../models/recipe.dart';
 
 Future<void> initializeApp() async {
@@ -15,6 +16,7 @@ Future<void> initializeApp() async {
   Hive.registerAdapter(RecipeAdapter());
   Hive.registerAdapter(MealAdapter());
   Hive.registerAdapter(MealPlanAdapter());
+  Hive.registerAdapter(MealStatusTypeAdapter());
 
   await Hive.openBox<Recipe>('recipeBox');
   await Hive.openBox<Meal>('mealBox');

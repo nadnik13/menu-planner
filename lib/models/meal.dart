@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:my_recipe_app/models/meal_status_types.dart';
 import 'package:my_recipe_app/models/recipe.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,29 +24,34 @@ class Meal {
   @HiveField(4)
   final int usedCntPortion;
 
+  @HiveField(5)
+  final MealStatusType status;
+
   Meal(
     this.id,
     this.title,
     this.recipeId,
     this.addedCntPortion,
     this.usedCntPortion,
+      this.status,
   );
 
   factory Meal.add(Recipe recipe) {
     final uuid = Uuid();
     final id = uuid.v4();
-    return Meal(id, recipe.title, recipe.id, recipe.portion, 0);
+    return Meal(id, recipe.title, recipe.id, recipe.portion, 0, MealStatusType.added);
   }
 
   int get availablePortion => addedCntPortion - usedCntPortion;
 
-  Meal copyWith({int? addedCntPortion, int? usedCntPortion}) {
+  Meal copyWith({int? addedCntPortion, int? usedCntPortion, MealStatusType? status}) {
     return Meal(
       id,
       title,
       recipeId,
       addedCntPortion ?? this.addedCntPortion,
       usedCntPortion ?? this.usedCntPortion,
+      status ?? this.status,
     );
   }
 

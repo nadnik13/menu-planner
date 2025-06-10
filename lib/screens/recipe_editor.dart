@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_recipe_app/core/logger.dart';
 import 'package:my_recipe_app/providers/recipe/recipe_interactor.dart';
-import 'package:my_recipe_app/widgets/save_button.dart';
+import 'package:my_recipe_app/widgets/styled_button.dart';
 
 import '../models/recipe.dart';
 
@@ -19,20 +20,21 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   late TextEditingController _titleController;
   late int _portion;
   bool isActive = false;
+  late bool isNewFood;
 
   @override
   void initState() {
     super.initState();
+    logger.d('_RecipeEditorState.initState');
     _titleController = TextEditingController(text: widget.recipe?.title ?? "");
+    isNewFood = widget.recipe?.title != null ? false : true;
     _portion = widget.recipe?.portion ?? 1;
     isActive = _isValid;
 
     _titleController.addListener(_updateActiveState);
   }
 
-  bool get _isValid =>
-      _titleController.text.trim().isNotEmpty &&
-      _portion > 0;
+  bool get _isValid => _titleController.text.trim().isNotEmpty && _portion > 0;
 
   void _updateActiveState() {
     final valid = _isValid;
@@ -45,11 +47,17 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
 
   void _save() {
     final title = _titleController.text.trim();
-    ref.read(recipeInteractorProvider).addRecipe(title: title, portion: _portion);
+    ref
+        .read(recipeInteractorProvider)
+        .addRecipe(title: title, portion: _portion);
     Navigator.of(context).pop();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Изменения сохранены')));
+  }
+
+  void _cancel() {
+    Navigator.of(context).pop();
   }
 
   @override
@@ -61,7 +69,7 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Редактировать рецепт"),
+      title: const Text("Редактор", textAlign: TextAlign.center),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -72,7 +80,7 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text('Кол-во порций'),
                 IconButton(
@@ -91,15 +99,29 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
           ],
         ),
       ),
+      actionsAlignment: MainAxisAlignment.center,
       actions: [
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Отмена'),
-            ),
-            SaveButton(isActive: isActive, onSave: _save),
+            Expanded(
+                child:
+                StyledButton(
+              onPress: _cancel,
+              isActive: true,
+              text: 'Отмена',
+              type: ButtonType.light,
+            )),
+             SizedBox(width: 4),
+             Expanded(
+                 child: StyledButton(
+               isActive: isActive,
+               onPress: _save,
+               text: 'Сохранить',
+               type: ButtonType.dark,
+             )
+             ),
           ],
         ),
       ],

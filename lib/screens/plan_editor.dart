@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import 'package:my_recipe_app/providers/selected_date_notifier.dart';
 import '../core/logger.dart';
-import '../widgets/meal_list.dart';
+import '../widgets/common_header.dart';
+import '../widgets/meal_editor.dart';
 
 class PlanEditor extends ConsumerStatefulWidget {
   final DateTime? date;
@@ -21,12 +22,12 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
   void initState() {
     super.initState();
     logger.d("PlanScreenState initState ${widget.date}");
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final date = widget.date;
-        if (date != null) {
-          ref.read(selectedDateProvider.notifier).update(date);
-        }
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final date = widget.date;
+      if (date != null) {
+        ref.read(selectedDateProvider.notifier).update(date);
+      }
+    });
   }
 
   @override
@@ -34,11 +35,12 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
     logger.d("PlanScreenState build selectedDate: ${widget.date}");
     final DateTime selectedDate = ref.watch(selectedDateProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('План')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32),
         child: Column(
           children: [
+            const CommonHeader(title: 'Редактировать план'),
+            SizedBox(height: 20),
             _DatePickerRow(
               selectedDate: selectedDate,
               onDateChanged: (value) {
@@ -47,7 +49,9 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
               isAvailableChangeDate: widget.date == null,
             ),
             const SizedBox(height: 16),
-            MealList(selectedDate: selectedDate),
+            Expanded(
+                child: MealEditor(selectedDate: selectedDate)
+            ),
             const SizedBox(height: 16),
           ],
         ),

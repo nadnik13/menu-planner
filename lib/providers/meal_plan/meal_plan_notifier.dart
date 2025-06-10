@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/meal_plan.dart';
 
 class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
-
   MealPlanNotifier() : super(<MealPlan>[]);
 
   List<MealPlan> get fetchAllMealPlans => state;
@@ -22,6 +21,9 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
 
   MealPlan? getPlanByDate(DateTime date) =>
       state.where((e) => e.date == date).firstOrNull;
+
+  int cntPlansOnFuture() =>
+      state.where((e) => e.date.isAfter(DateTime.now())).length;
 }
 
 final mealPlanProvider =

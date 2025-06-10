@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import 'package:my_recipe_app/models/meal_plan.dart';
 import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
+import 'package:my_recipe_app/providers/meal_plan/meal_plan_view_interactor.dart';
 import 'package:my_recipe_app/screens/plan_editor.dart';
-
 import '../core/logger.dart';
 import '../providers/meal_plan/meal_plan_notifier.dart';
+import '../utils/emoji_utils.dart';
 
 class DayList extends ConsumerStatefulWidget {
   const DayList({super.key});
@@ -42,17 +44,58 @@ class _DayListState extends ConsumerState<DayList> {
   Widget build(BuildContext context) {
     final today = DateTime.now().dateOnly;
     final mealPlans = ref.watch(daysPlanProvider);
-    return ListView.builder(
-      controller: _scrollController,
-      scrollDirection: Axis.vertical,
-      itemCount: 2 * range + 1,
-      itemBuilder: (context, index) {
-        final offset = index - range;
-        final date = today.add(Duration(days: offset));
-        final mealPlan =
-            mealPlans[date] ?? MealPlan(date: date, mealPortions: {});
-        return Container(key: _itemKeys[index], child: _DayCard(mealPlan));
+    final isHideEmptyDays = ref.watch(mealPlanIsHideEmptyDaysStateProvider);
+
+    return ShaderMask(
+      shaderCallback: (Rect bounds) {
+        return LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black,
+            Colors.black,
+            Colors.transparent,
+          ],
+          stops: const [0.0, 0.05, 0.95, 1.0], // регулируй зону "видимости"
+        ).createShader(bounds);
       },
+      blendMode: BlendMode.dstIn,
+      child: ListView.builder(
+        physics:
+            Theme.of(context).platform == TargetPlatform.iOS
+                ? BouncingScrollPhysics()
+                : ClampingScrollPhysics(),
+        controller: _scrollController,
+        scrollDirection: Axis.vertical,
+        itemCount: 2 * range + 1,
+        itemBuilder: (context, index) {
+          final offset = index - range;
+          final date = today.add(Duration(days: offset));
+          final mealPlanOrNull = mealPlans[date];
+          if (isHideEmptyDays && (mealPlanOrNull == null)) {
+            return SizedBox.shrink();
+          }
+          final mealPlan =
+              mealPlanOrNull ?? MealPlan(date: date, mealPortions: {});
+          return Container(key: _itemKeys[index],
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFE5E5E5)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x08000000),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: _DayCard(mealPlan));
+        },
+      ),
     );
   }
 }
@@ -80,33 +123,29 @@ class _DayCard extends ConsumerWidget {
     );
     logger.d("_DayCard mealList ${mealList}");
 
-    return Card(
-      margin: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: Colors.teal[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Text(
-                  mealPlan.date.formatWithDayWeek(),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  onPressed:
-                      () => _navigateToPlanEditor(mealPlan.date, context),
-                  icon: Icon(Icons.edit),
-                ),
-              ],
+            Text(
+              mealPlan.date.getDayWithDate(),
+              style: GoogleFonts.inter(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(height: 12),
-            _MealList(items: mealList),
+            IconButton(
+              onPressed: () => _navigateToPlanEditor(mealPlan.date, context),
+              icon: Icon(Icons.edit, size: 20, color: Colors.grey.shade700),
+            ),
           ],
         ),
-      ),
+        Divider(
+          color: Colors.grey.shade300,
+        ),
+        _MealList(items: mealList),
+      ],
     );
   }
 }
@@ -120,16 +159,22 @@ class _MealList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children:
-          items.map((e) {
-            return Column(
+          items.map((meal) {
+            return Row(
               children: [
-                SizedBox(width: 8),
-                Row(
-                  children: [
-                    Icon(Icons.breakfast_dining, color: Colors.blue),
-                    SizedBox(width: 8),
-                    Expanded(child: Text("${e.title} (порции: ${e.portion})")),
-                  ],
+                Text(
+                  getEmojiForMeal(meal.title),
+                  style: const TextStyle(fontSize: 20),
+                ),
+                const SizedBox(width: 8),
+                Text(meal.title, style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 8),
+                Text(
+                  "(порций: ${meal.portion})",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade700,
+                  ),
                 ),
               ],
             );

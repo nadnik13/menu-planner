@@ -16,6 +16,8 @@ class MealPlanInteractor {
     notifier.loadMealPLan(plans);
   }
 
+  int getCntPlans() => notifier.cntPlansOnFuture();
+
   Future<void> addPlan(DateTime date, Map<String, int> mealPortions) async {
     final plan = MealPlan(date: date.dateOnly, mealPortions: mealPortions);
     await repo.addOrReplacePlan(plan);
