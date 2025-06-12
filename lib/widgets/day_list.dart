@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/models/meal_plan.dart';
-import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
-import 'package:my_recipe_app/providers/meal_plan/meal_plan_view_interactor.dart';
-import 'package:my_recipe_app/screens/plan_editor.dart';
+import 'package:my_recipe_app/models/daily_plan/daily_plan.dart';
+import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
+import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
+import 'package:my_recipe_app/screens/daily_plan/daily_plan_editor.dart';
 import '../core/logger.dart';
-import '../providers/meal_plan/meal_plan_notifier.dart';
+import '../providers/daily_plan/daily_plan_notifier.dart';
 import '../utils/emoji_utils.dart';
 
 class DayList extends ConsumerStatefulWidget {
@@ -44,7 +44,7 @@ class _DayListState extends ConsumerState<DayList> {
   Widget build(BuildContext context) {
     final today = DateTime.now().dateOnly;
     final mealPlans = ref.watch(daysPlanProvider);
-    final isHideEmptyDays = ref.watch(mealPlanIsHideEmptyDaysStateProvider);
+    final isHideEmptyDays = ref.watch(dailyPlanIsHideEmptyDaysStateProvider);
 
     return ShaderMask(
       shaderCallback: (Rect bounds) {
@@ -77,7 +77,7 @@ class _DayListState extends ConsumerState<DayList> {
             return SizedBox.shrink();
           }
           final mealPlan =
-              mealPlanOrNull ?? MealPlan(date: date, mealPortions: {});
+              mealPlanOrNull ?? DailyPlan(date: date, portions: {});
           return Container(key: _itemKeys[index],
               margin: const EdgeInsets.symmetric(vertical: 4),
               padding: const EdgeInsets.all(16),
@@ -101,7 +101,7 @@ class _DayListState extends ConsumerState<DayList> {
 }
 
 class _DayCard extends ConsumerWidget {
-  final MealPlan mealPlan;
+  final DailyPlan mealPlan;
 
   const _DayCard(this.mealPlan);
 
@@ -115,10 +115,10 @@ class _DayCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //TODO можно перенести в generateFromMealPlan()?
-    final mealMap = ref.watch(mealInteractorProvider).getMealTitleMap();
+    final mealMap = ref.watch(dishStockInteractorProvider).getTitleMap();
     logger.d("_DayCard build $mealMap");
     final mealList = _MealItem.generateFromMealPlan(
-      mealPlan.mealPortions,
+      mealPlan.portions,
       mealMap,
     );
     logger.d("_DayCard mealList ${mealList}");

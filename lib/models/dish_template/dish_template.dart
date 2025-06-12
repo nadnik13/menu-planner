@@ -1,11 +1,11 @@
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-import 'hive_type_ids.dart';
+import '../hive_type_ids.dart';
 
-part 'recipe.g.dart';
+part 'dish_template.g.dart';
 
-@HiveType(typeId: HiveTypeId.recipe)
-class Recipe {
+@HiveType(typeId: HiveTypeId.dishTemplate)
+class DishTemplate {
   @HiveField(0)
   final String id;
 
@@ -15,29 +15,29 @@ class Recipe {
   @HiveField(3)
   final int portion;
 
-  Recipe(this.id, this.title, this.portion);
+  DishTemplate(this.id, this.title, this.portion);
   static final List<String> types = ['Завтрак', 'Обед', 'Ужин', 'Перекус'];
 
-  factory Recipe.fromJson(Map<String, dynamic> json) {
+  factory DishTemplate.fromJson(Map<String, dynamic> json) {
     final id = json['id'];
-    return Recipe(
+    return DishTemplate(
       id,
       json['title'] as String,
       json['portion'] as int,
     );
   }
 
-  factory Recipe.add({
+  factory DishTemplate.add({
     String? id,
     required String title,
     required int portion,
-  }) => Recipe(id ?? Uuid().v4(), title, portion);
+  }) => DishTemplate(id ?? Uuid().v4(), title, portion);
 
-  static Recipe get empty => Recipe("", "", 0);
+  static DishTemplate get empty => DishTemplate("", "", 0);
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Recipe && other.id == id;
+      identical(this, other) || other is DishTemplate && other.id == id;
 
   @override
   int get hashCode => id.hashCode;

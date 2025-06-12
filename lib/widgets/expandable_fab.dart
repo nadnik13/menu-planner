@@ -122,13 +122,13 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 class ExpandableFab extends StatelessWidget {
   final VoidCallback? onAddDay;
   final VoidCallback? onAddDish;
-  final VoidCallback? onAddFood;
+  final VoidCallback? onAddTemplate;
 
   const ExpandableFab({
     super.key,
     this.onAddDay,
     this.onAddDish,
-    this.onAddFood,
+    this.onAddTemplate,
   });
 
   @override
@@ -159,7 +159,7 @@ class ExpandableFab extends StatelessWidget {
         SpeedDialChild(
           child: const Icon(Icons.fastfood),
           label: 'Новую еду',
-          onTap: onAddFood,
+          onTap: onAddTemplate,
         ),
       ],
     );

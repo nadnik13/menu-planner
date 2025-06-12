@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/core/logger.dart';
-import 'package:my_recipe_app/models/meal_plan.dart';
-import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
-import 'package:my_recipe_app/providers/meal_plan/meal_plan_save_interactor.dart';
-import 'package:my_recipe_app/providers/meal_plan/meal_plan_interactor.dart';
+import 'package:my_recipe_app/models/daily_plan/daily_plan.dart';
+import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
+import 'package:my_recipe_app/providers/daily_plan/daily_plan_save_interactor.dart';
+import 'package:my_recipe_app/providers/daily_plan/daily_plan_interactor.dart';
 import 'package:my_recipe_app/widgets/styled_button.dart';
-import '../models/meal.dart';
+import '../models/dish_stock/dish_stock.dart';
 import '../utils/emoji_utils.dart';
 
-class MealEditor extends ConsumerStatefulWidget {
+class PlanEditingWidget extends ConsumerStatefulWidget {
   final DateTime selectedDate;
 
-  const MealEditor({super.key, required this.selectedDate});
+  const PlanEditingWidget({super.key, required this.selectedDate});
 
   @override
-  ConsumerState<MealEditor> createState() => _MealEditorState();
+  ConsumerState<PlanEditingWidget> createState() => _PlanEditingWidgetState();
 }
 
-class _PlannedMealItem {
+class _PlannedDishItem {
   final String id;
   final String title;
   int usedPortion;
   final int availablePortion;
 
-  _PlannedMealItem(
+  _PlannedDishItem(
     this.id,
     this.title,
     this.usedPortion,
     this.availablePortion,
   );
 
-  static List<_PlannedMealItem> generateFromMeal(
-    Set<Meal> meals,
-    MealPlan mealPlan,
+  static List<_PlannedDishItem> generateFromMeal(
+    Set<DishStock> meals,
+    DailyPlan mealPlan,
   ) {
-    final List<_PlannedMealItem> list = [];
+    final List<_PlannedDishItem> list = [];
     for (final meal in meals) {
-      final plannedMealPortionsByDate = mealPlan.mealPortions[meal.id];
+      final plannedDishPortionsByDate = mealPlan.portions[meal.id];
       list.add(
-        _PlannedMealItem(
+        _PlannedDishItem(
           meal.id,
           meal.title,
-          plannedMealPortionsByDate ?? 0,
+          plannedDishPortionsByDate ?? 0,
           meal.availablePortion,
         ),
       );
@@ -51,58 +50,53 @@ class _PlannedMealItem {
   }
 }
 
-class _MealEditorState extends ConsumerState<MealEditor> {
-  final List<_PlannedMealItem> selectedMeals = [];
-  final List<_PlannedMealItem> availableMealsToAdd = [];
-  final changedMealPortions = <String, int>{};
+class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
+  final List<_PlannedDishItem> selectedDishes = [];
+  final List<_PlannedDishItem> availableDishesToAdd = [];
+  final changedDishPortions = <String, int>{};
 
   @override
   void initState() {
     super.initState();
-    _loadMeals();
+    _loadDishes();
   }
 
-  void _loadMeals() {
-    final availableMeals = ref.read(mealInteractorProvider).getAvailableMeals();
+  void _loadDishes() {
+    final availableDishes = ref.read(dishStockInteractorProvider).getAvailableValues();
     final selectedDate = widget.selectedDate;
     final planByDate = ref
-        .read(mealPlanInteractorProvider)
+        .read(dailyPlanInteractorProvider)
         .getPlanByDate(selectedDate);
-    selectedMeals.clear();
-    availableMealsToAdd.clear();
-    changedMealPortions.clear();
+    selectedDishes.clear();
+    availableDishesToAdd.clear();
+    changedDishPortions.clear();
     //:TODO можно ли убрать выгрузку из интерактора в функцию генерации?
-    final items = _PlannedMealItem.generateFromMeal(availableMeals, planByDate);
+    final items = _PlannedDishItem.generateFromMeal(availableDishes, planByDate);
     for (final mealItem in items) {
       if (mealItem.usedPortion > 0) {
-        selectedMeals.add(mealItem);
+        selectedDishes.add(mealItem);
       } else {
-        availableMealsToAdd.add(mealItem);
+        availableDishesToAdd.add(mealItem);
       }
-      changedMealPortions[mealItem.id] = mealItem.usedPortion;
+      changedDishPortions[mealItem.id] = mealItem.usedPortion;
     }
-    logger.d("_loadMeals selectedMeals: ${selectedMeals.map((e) => e.title)}");
-    logger.d(
-      "_loadMeals availableMealsToAdd: ${availableMealsToAdd.map((e) => e.title)}",
-    );
-    logger.d("_loadMeals changedMealPortions: ${changedMealPortions}");
   }
 
   @override
-  void didUpdateWidget(MealEditor oldWidget) {
+  void didUpdateWidget(PlanEditingWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
-      _loadMeals();
+      _loadDishes();
     }
   }
 
   void _save() {
     ref
-        .read(mealPlanSaveInteractorProvider)
-        .saveMealPLan(
+        .read(dailyPlanSaveInteractorProvider)
+        .save(
           date: widget.selectedDate,
-          changedMealPortions: changedMealPortions,
-          mealCntMap: {for (var e in selectedMeals) e.id: e.usedPortion},
+          changedDishStockPortions: changedDishPortions,
+          dishStockCntMap: {for (var e in selectedDishes) e.id: e.usedPortion},
         );
     Navigator.pop(context);
 
@@ -117,10 +111,10 @@ class _MealEditorState extends ConsumerState<MealEditor> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle('Выбранные блюда'),
-        _buildMealList(selectedMeals, isBusyList: true),
+        _buildMealList(selectedDishes, isBusyList: true),
         SizedBox(height: 16),
         _buildSectionTitle('Для добавления'),
-        _buildMealList(availableMealsToAdd, isBusyList: false),
+        _buildMealList(availableDishesToAdd, isBusyList: false),
         Row(
           children: [
             Expanded(
@@ -144,7 +138,7 @@ class _MealEditorState extends ConsumerState<MealEditor> {
   );
 
   Widget _buildMealList(
-    List<_PlannedMealItem> meals, {
+    List<_PlannedDishItem> meals, {
     required bool isBusyList,
   }) {
     return Expanded(
@@ -183,10 +177,10 @@ class _MealEditorState extends ConsumerState<MealEditor> {
                                   entity.usedPortion--;
                                   if (entity.usedPortion == 0 && isBusyList) {
                                     meals.removeAt(i);
-                                    availableMealsToAdd.add(entity);
+                                    availableDishesToAdd.add(entity);
                                   }
-                                  changedMealPortions[entity.id] =
-                                      (changedMealPortions[entity.id] ?? 0) - 1;
+                                  changedDishPortions[entity.id] =
+                                      (changedDishPortions[entity.id] ?? 0) - 1;
                                 })
                                 : null,
                     icon: Icon(Icons.remove),
@@ -200,10 +194,10 @@ class _MealEditorState extends ConsumerState<MealEditor> {
                                   entity.usedPortion++;
                                   if (entity.usedPortion == 1 && !isBusyList) {
                                     meals.removeAt(i);
-                                    selectedMeals.add(entity);
+                                    selectedDishes.add(entity);
                                   }
-                                  changedMealPortions[entity.id] =
-                                      (changedMealPortions[entity.id] ?? 0) + 1;
+                                  changedDishPortions[entity.id] =
+                                      (changedDishPortions[entity.id] ?? 0) + 1;
                                 })
                                 : null,
                     icon: Icon(Icons.add),

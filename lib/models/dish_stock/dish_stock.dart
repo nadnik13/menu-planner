@@ -1,14 +1,14 @@
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/models/meal_status_types.dart';
-import 'package:my_recipe_app/models/recipe.dart';
+import 'package:my_recipe_app/models/dish_stock/dish_stock_status_types.dart';
+import 'package:my_recipe_app/models/dish_template/dish_template.dart';
 import 'package:uuid/uuid.dart';
 
-import 'hive_type_ids.dart';
+import '../hive_type_ids.dart';
 
-part 'meal.g.dart';
+part 'dish_stock.g.dart';
 
-@HiveType(typeId: HiveTypeId.meal)
-class Meal {
+@HiveType(typeId: HiveTypeId.dishStock)
+class DishStock {
   @HiveField(0)
   final String id;
 
@@ -25,9 +25,9 @@ class Meal {
   final int usedCntPortion;
 
   @HiveField(5)
-  final MealStatusType status;
+  final DishStockStatusType status;
 
-  Meal(
+  DishStock(
     this.id,
     this.title,
     this.recipeId,
@@ -36,16 +36,16 @@ class Meal {
       this.status,
   );
 
-  factory Meal.add(Recipe recipe) {
+  factory DishStock.add(DishTemplate recipe) {
     final uuid = Uuid();
     final id = uuid.v4();
-    return Meal(id, recipe.title, recipe.id, recipe.portion, 0, MealStatusType.added);
+    return DishStock(id, recipe.title, recipe.id, recipe.portion, 0, DishStockStatusType.added);
   }
 
   int get availablePortion => addedCntPortion - usedCntPortion;
 
-  Meal copyWith({int? addedCntPortion, int? usedCntPortion, MealStatusType? status}) {
-    return Meal(
+  DishStock copyWith({int? addedCntPortion, int? usedCntPortion, DishStockStatusType? status}) {
+    return DishStock(
       id,
       title,
       recipeId,
@@ -57,7 +57,7 @@ class Meal {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Meal && other.id == id;
+      identical(this, other) || other is DishStock && other.id == id;
 
   @override
   int get hashCode => id.hashCode;

@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/logger.dart';
-import '../models/meal_status_types.dart';
-import '../providers/meal/meal_interactor.dart';
+import '../models/dish_stock/dish_stock_status_types.dart';
+import '../providers/dish_stock/dish_stock_interactor.dart';
 
 class StatusDropButton extends ConsumerStatefulWidget{
   final String mealId;
-  final MealStatusType status;
+  final DishStockStatusType status;
   const StatusDropButton({
     super.key,
     required this.mealId,
@@ -18,7 +17,7 @@ class StatusDropButton extends ConsumerStatefulWidget{
 }
 
 class _StatusDropButtonState extends ConsumerState<StatusDropButton>{
-  late MealStatusType selectedStatus;
+  late DishStockStatusType selectedStatus;
 
   @override
   void initState() {
@@ -40,26 +39,26 @@ class _StatusDropButtonState extends ConsumerState<StatusDropButton>{
   @override
   Widget build(BuildContext context) {
     logger.d("_MyMealListState build ${widget.status.label}");
-    //final meal = ref.watch(mealProvider.notifier).getMealByKey(widget.mealId);
-    //logger.d("_MyMealListState build ${meal?.title} ${meal?.status}");
-    return DropdownButton<MealStatusType>(
+    //final dish_stock = ref.watch(mealProvider.notifier).getMealByKey(widget.mealId);
+    //logger.d("_MyMealListState build ${dish_stock?.title} ${dish_stock?.status}");
+    return DropdownButton<DishStockStatusType>(
       value: selectedStatus,
       isExpanded: false,
       style: const TextStyle(fontSize: 14, color: Colors.black),
       underline: const SizedBox(),
       borderRadius: BorderRadius.circular(12),
       dropdownColor: Colors.white,
-      onChanged: (MealStatusType? value) {
+      onChanged: (DishStockStatusType? value) {
         if (value != null) {
           logger.d("_MyMealListState onChanged $value");
           setState(() {
             selectedStatus = value;
-            ref.read(mealInteractorProvider).updateMealStatusByKey(key: widget.mealId, status: selectedStatus);
+            ref.read(dishStockInteractorProvider).updateStatusByKey(key: widget.mealId, status: selectedStatus);
           });
         }
       },
-      items: MealStatusType.values.map((status) {
-        return DropdownMenuItem<MealStatusType>(
+      items: DishStockStatusType.values.map((status) {
+        return DropdownMenuItem<DishStockStatusType>(
           value: status,
           child: Text(status.label),
         );

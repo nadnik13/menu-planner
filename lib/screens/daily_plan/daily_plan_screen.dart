@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:my_recipe_app/providers/expandable_fab_interactor.dart';
-import 'package:my_recipe_app/providers/meal_plan/meal_plan_view_interactor.dart';
+import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
 import 'package:my_recipe_app/widgets/day_list.dart';
-import '../widgets/meal_list.dart';
-import '../widgets/meal_plan_appbar.dart';
+import '../../widgets/dish_list.dart';
+import '../../widgets/daily_plan_appbar.dart';
 
 class DaysPlanScreen extends ConsumerStatefulWidget {
   const DaysPlanScreen({super.key});
@@ -24,7 +24,7 @@ class _DaysPlanScreenState extends ConsumerState<DaysPlanScreen>
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         ref
-            .read(mealPlanViewInteractorProvider)
+            .read(dailyPlanViewInteractorProvider)
             .changeTabIndex(_tabController.index);
       }
     });
@@ -44,7 +44,7 @@ class _DaysPlanScreenState extends ConsumerState<DaysPlanScreen>
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          MealPlanAppBar(),
+          DailyPlanAppBar(),
           TabBar(
             controller: _tabController,
             tabs: const [Tab(text: 'План'), Tab(text: 'Запасы')],

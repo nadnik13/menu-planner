@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/core/logger.dart';
-import 'package:my_recipe_app/providers/recipe/recipe_interactor.dart';
+import 'package:my_recipe_app/providers/dish_template/dish_template_interactor.dart';
 import 'package:my_recipe_app/widgets/styled_button.dart';
 
-import '../models/recipe.dart';
+import '../../models/dish_template/dish_template.dart';
 
 class RecipeEditor extends ConsumerStatefulWidget {
-  final Recipe? recipe;
+  final DishTemplate? recipe;
 
   const RecipeEditor({super.key, required this.recipe});
 
@@ -25,7 +24,6 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   @override
   void initState() {
     super.initState();
-    logger.d('_RecipeEditorState.initState');
     _titleController = TextEditingController(text: widget.recipe?.title ?? "");
     isNewFood = widget.recipe?.title != null ? false : true;
     _portion = widget.recipe?.portion ?? 1;
@@ -48,8 +46,8 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   void _save() {
     final title = _titleController.text.trim();
     ref
-        .read(recipeInteractorProvider)
-        .addRecipe(title: title, portion: _portion);
+        .read(dishTemplateInteractorProvider)
+        .add(title: title, portion: _portion);
     Navigator.of(context).pop();
     ScaffoldMessenger.of(
       context,

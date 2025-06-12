@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_recipe_app/providers/meal/meal_interactor.dart';
-import 'package:my_recipe_app/providers/meal_plan/meal_plan_interactor.dart';
+import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
+import 'package:my_recipe_app/providers/daily_plan/daily_plan_interactor.dart';
 import 'package:my_recipe_app/utils/pluralize_utils.dart';
 
-import '../providers/meal_plan/meal_plan_view_interactor.dart';
+import '../providers/daily_plan/daily_plan_view_interactor.dart';
 import 'more_button.dart';
 
-class MealPlanAppBar extends ConsumerWidget {
-  const MealPlanAppBar({super.key});
+class DailyPlanAppBar extends ConsumerWidget {
+  const DailyPlanAppBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cntPortion = ref.watch(mealInteractorProvider).getCntAvailablePortion();
-    final cntPlans = ref.watch(mealPlanInteractorProvider).getCntPlans();
+    final cntPortion = ref.watch(dishStockInteractorProvider).getCntAvailablePortion();
+    final cntPlans = ref.watch(dailyPlanInteractorProvider).getCntPlansOnFuture();
     final tabIndex = ref.watch(tabIndexProvider);
     //TODO: понять как это сделать более компактно и где
     String moreButtonText = '';
     if (tabIndex == 0) {
       moreButtonText =
-          ref.watch(mealPlanIsHideEmptyDaysStateProvider)
+          ref.watch(dailyPlanIsHideEmptyDaysStateProvider)
               ? 'Показать дни без плана'
               : 'Скрыть дни без плана';
     } else {
       moreButtonText =
-          ref.watch(mealPlanIsHideUnavailableMealStateProvider)
+          ref.watch(dailyPlanIsHideUnavailableStocksStateProvider)
               ? 'Показать все запасы'
               : 'Скрыть недоступные запасы';
     }
@@ -94,7 +94,7 @@ class MealPlanAppBar extends ConsumerWidget {
                       onMenuSelected: (value) {
                         if (value == 'toggle_hide') {
                             ref
-                                .watch(mealPlanViewInteractorProvider)
+                                .watch(dailyPlanViewInteractorProvider)
                                 .changeIsHideValue(tabIndex);
                         }
                       },
