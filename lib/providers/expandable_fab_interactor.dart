@@ -26,7 +26,7 @@ class ExpandableFabInteractor {
       context,
       MaterialPageRoute(builder: (_) => const DishTemplateScreen()),
     );
-    showDialog(context: context, builder: (_) => RecipeEditor(recipe: null));
+    showDialog(context: context, builder: (_) => DishTemplateEditor(template: null));
   }
 
   static getExpandableFab(BuildContext context) => ExpandableFab(

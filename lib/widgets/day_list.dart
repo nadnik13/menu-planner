@@ -8,7 +8,7 @@ import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
 import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
 import 'package:my_recipe_app/screens/daily_plan/daily_plan_editor.dart';
 import '../core/logger.dart';
-import '../providers/daily_plan/daily_plan_notifier.dart';
+import '../providers/daily_plan/daily_plan_provider.dart';
 import '../utils/emoji_utils.dart';
 
 class DayList extends ConsumerStatefulWidget {

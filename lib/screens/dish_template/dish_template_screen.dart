@@ -40,14 +40,14 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
     _printBox();
   }
 
-  void _removeTemplate(DishTemplate recipe) {
-    ref.watch(dishTemplateInteractorProvider).remove(recipe);
+  void _removeTemplate(DishTemplate template) {
+    ref.watch(dishTemplateInteractorProvider).remove(template.id);
   }
 
   void _editTemplate(DishTemplate? recipe) {
     showDialog(
       context: context,
-      builder: (context) => RecipeEditor(recipe: recipe),
+      builder: (context) => DishTemplateEditor(template: recipe),
     );
   }
 

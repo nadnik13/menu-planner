@@ -6,14 +6,14 @@ import 'package:my_recipe_app/widgets/day_list.dart';
 import '../../widgets/dish_list.dart';
 import '../../widgets/daily_plan_appbar.dart';
 
-class DaysPlanScreen extends ConsumerStatefulWidget {
-  const DaysPlanScreen({super.key});
+class DailyPlanScreen extends ConsumerStatefulWidget {
+  const DailyPlanScreen({super.key});
 
   @override
-  ConsumerState<DaysPlanScreen> createState() => _DaysPlanScreenState();
+  ConsumerState<DailyPlanScreen> createState() => _DailyPlanScreenState();
 }
 
-class _DaysPlanScreenState extends ConsumerState<DaysPlanScreen>
+class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 

@@ -5,17 +5,17 @@ import 'package:my_recipe_app/widgets/styled_button.dart';
 
 import '../../models/dish_template/dish_template.dart';
 
-class RecipeEditor extends ConsumerStatefulWidget {
-  final DishTemplate? recipe;
+class DishTemplateEditor extends ConsumerStatefulWidget {
+  final DishTemplate? template;
 
-  const RecipeEditor({super.key, required this.recipe});
+  const DishTemplateEditor({super.key, required this.template});
 
   //:TODO можно ли оставить рецепт в параметрах
   @override
-  ConsumerState<RecipeEditor> createState() => _RecipeEditorState();
+  ConsumerState<DishTemplateEditor> createState() => _RecipeEditorState();
 }
 
-class _RecipeEditorState extends ConsumerState<RecipeEditor> {
+class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
   late TextEditingController _titleController;
   late int _portion;
   bool isActive = false;
@@ -24,9 +24,9 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.recipe?.title ?? "");
-    isNewFood = widget.recipe?.title != null ? false : true;
-    _portion = widget.recipe?.portion ?? 1;
+    _titleController = TextEditingController(text: widget.template?.title ?? "");
+    isNewFood = widget.template?.title != null ? false : true;
+    _portion = widget.template?.portion ?? 1;
     isActive = _isValid;
 
     _titleController.addListener(_updateActiveState);
@@ -45,9 +45,11 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
 
   void _save() {
     final title = _titleController.text.trim();
+
     ref
         .read(dishTemplateInteractorProvider)
-        .add(title: title, portion: _portion);
+        .addOrReplace(id: widget.template?.id, title: title, portion: _portion);
+
     Navigator.of(context).pop();
     ScaffoldMessenger.of(
       context,
@@ -104,22 +106,22 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-                child:
-                StyledButton(
-              onPress: _cancel,
-              isActive: true,
-              text: 'Отмена',
-              type: ButtonType.light,
-            )),
-             SizedBox(width: 4),
-             Expanded(
-                 child: StyledButton(
-               isActive: isActive,
-               onPress: _save,
-               text: 'Сохранить',
-               type: ButtonType.dark,
-             )
-             ),
+              child: StyledButton(
+                onPress: _cancel,
+                isActive: true,
+                text: 'Отмена',
+                type: ButtonType.light,
+              ),
+            ),
+            SizedBox(width: 4),
+            Expanded(
+              child: StyledButton(
+                isActive: isActive,
+                onPress: _save,
+                text: 'Сохранить',
+                type: ButtonType.dark,
+              ),
+            ),
           ],
         ),
       ],

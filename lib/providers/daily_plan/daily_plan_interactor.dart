@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_notifier.dart';
+import 'package:my_recipe_app/providers/daily_plan/daily_plan_provider.dart';
 import '../../models/daily_plan/daily_plan.dart';
 import 'daily_plan_repository.dart';
 

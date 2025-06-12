@@ -32,3 +32,13 @@ class DishStockNotifier extends StateNotifier<Set<DishStock>> {
 final dishStockProvider = StateNotifierProvider<DishStockNotifier, Set<DishStock>>((ref) {
   return DishStockNotifier();
 });
+
+/// ✅ РЕАКТИВНЫЙ провайдер для статистики порций
+/// Автоматически пересчитывается при изменении dishStockProvider
+final availablePortionsCountProvider = Provider<int>((ref) {
+  final stocks = ref.watch(dishStockProvider);
+  return stocks
+      .where((e) => e.availablePortion > 0)
+      .map((e) => e.availablePortion)
+      .sum;
+});

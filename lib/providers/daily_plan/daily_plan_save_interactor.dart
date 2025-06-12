@@ -14,7 +14,12 @@ class DailyPlanSaveInteractor {
     required DateTime date,
   }) async {
     await mealInteractor.updateValues(stockMap: changedDishStockPortions);
-    await planInteractor.save(date: date, dishStockCntMap: dishStockCntMap);
+    if (dishStockCntMap.isEmpty){
+      await planInteractor.removeByDate(date);
+    }
+    else {
+      await planInteractor.save(date: date, dishStockCntMap: dishStockCntMap);
+    }
   }
 }
 
