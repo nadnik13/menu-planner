@@ -5,29 +5,29 @@ import 'package:hive/hive.dart';
 
 import 'hive_type_ids.dart';
 
-enum MealStatusType {
+enum DishStockStatusType {
   added('Добавлено', Colors.white),
   bought('Купленно', Colors.white),
   ready('Готово к употреблению', Color(0x3314BF1B));
   final String label;
   final Color color;
 
-  const MealStatusType(this.label, this.color);
+  const DishStockStatusType(this.label, this.color);
 }
 
 
-class MealStatusTypeAdapter extends TypeAdapter<MealStatusType> {
+class DishStockStatusTypeAdapter extends TypeAdapter<DishStockStatusType> {
   @override
-  final int typeId = HiveTypeId.mealStatus; // Уникальный ID
+  final int typeId = HiveTypeId.dishStockStatus; // Уникальный ID
 
   @override
-  MealStatusType read(BinaryReader reader) {
+  DishStockStatusType read(BinaryReader reader) {
     final index = reader.readInt();
-    return MealStatusType.values[index];
+    return DishStockStatusType.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, MealStatusType obj) {
+  void write(BinaryWriter writer, DishStockStatusType obj) {
     writer.writeInt(obj.index);
   }
 }

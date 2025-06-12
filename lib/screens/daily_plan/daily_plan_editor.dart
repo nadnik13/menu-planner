@@ -1,27 +1,26 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/providers/selected_date_notifier.dart';
-import '../core/logger.dart';
-import '../widgets/common_header.dart';
-import '../widgets/meal_editor.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../models/daily_plan.dart';
+import '../../providers/daily_plan/daily_plan_notifier.dart';
+import '../../providers/selected_date_notifier.dart';
+import '../../core/logger.dart';
+import '../../widgets/common_header.dart';
+import '../../widgets/dish_editor.dart';
 
-class PlanEditor extends ConsumerStatefulWidget {
+class DailyPlanEditor extends ConsumerStatefulWidget {
   final DateTime? date;
 
-  const PlanEditor({super.key, this.date});
+  const DailyPlanEditor({Key? key, this.date}) : super(key: key);
 
   @override
-  ConsumerState<PlanEditor> createState() => PlanScreenState();
+  ConsumerState<DailyPlanEditor> createState() => _DailyPlanEditorState();
 }
 
-class PlanScreenState extends ConsumerState<PlanEditor> {
-  int portion = 1;
-
+class _DailyPlanEditorState extends ConsumerState<DailyPlanEditor> {
   @override
   void initState() {
     super.initState();
-    logger.d("PlanScreenState initState ${widget.date}");
+    logger.d("DailyPlanEditor initState ${widget.date}");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final date = widget.date;
       if (date != null) {
@@ -32,7 +31,7 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d("PlanScreenState build selectedDate: ${widget.date}");
+    logger.d("DailyPlanEditor build selectedDate: ${widget.date}");
     final DateTime selectedDate = ref.watch(selectedDateProvider);
     return Scaffold(
       body: Padding(
@@ -50,7 +49,7 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
             ),
             const SizedBox(height: 16),
             Expanded(
-                child: MealEditor(selectedDate: selectedDate)
+              child: DishEditor(selectedDate: selectedDate)
             ),
             const SizedBox(height: 16),
           ],
@@ -73,7 +72,7 @@ class _DatePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = selectedDate.formatDMY();
+    final formattedDate = selectedDate.toString().split(' ')[0];
     return Row(
       children: [
         Expanded(

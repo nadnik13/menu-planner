@@ -1,6 +1,6 @@
 class HiveTypeId {
-  static const recipe = 0;
-  static const mealPlan = 1;
-  static const meal = 2;
-  static const mealStatus = 3;
+  static const int dishTemplate = 0;
+  static const int dishStock = 1;
+  static const int dailyPlan = 2;
+  static const int dishStockStatus = 3;
 }
