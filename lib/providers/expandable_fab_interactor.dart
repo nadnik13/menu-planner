@@ -1,37 +1,48 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_recipe_app/core/navigation/app_routes.dart';
 import 'package:my_recipe_app/widgets/expandable_fab.dart';
 
-import '../screens/daily_plan/daily_plan_editor.dart';
 import '../screens/dish_template/dish_template_editor.dart';
-import '../screens/dish_template/dish_template_screen.dart';
 
 class ExpandableFabInteractor {
   static void _navigateToPlanEditor(DateTime? date, BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => PlanEditor(date: date)),
-    );
+    Navigator.pushNamed(context, AppRoutes.dailyPlanEditor, arguments: date);
   }
 
   static void _navigateToDishTemplateScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const DishTemplateScreen()),
+    Navigator.pushNamed(
+        context,
+        AppRoutes.dishTemplates
     );
   }
 
   static void _navigateToTemplateEditorScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const DishTemplateScreen()),
+    if (ModalRoute
+        .of(context)
+        ?.settings
+        .name != AppRoutes.dishTemplates) {
+      Navigator.pushNamed(context, AppRoutes.dishTemplates);
+    }
+    showDialog(
+      context: context,
+      builder: (_) => DishTemplateEditor(template: null),
     );
-    showDialog(context: context, builder: (_) => DishTemplateEditor(template: null));
   }
 
-  static getExpandableFab(BuildContext context) => ExpandableFab(
-    onAddDay: () => _navigateToPlanEditor(null, context),
-    onAddDish: () => _navigateToDishTemplateScreen(context),
-    onAddTemplate: () => _navigateToTemplateEditorScreen(context),
-  );
+  static getExpandableFab({required int type, required BuildContext context}) {
+    switch (type) {
+      case 1:
+        return ExpandableFab(
+          icons: [const Icon(Icons.calendar_today), const Icon(Icons.cookie),],
+          labels: ['План на день', ' Еда'],
+          callbacks: [
+                () => _navigateToPlanEditor(null, context),
+                () => _navigateToDishTemplateScreen(context)
+          ]);
+      case 2:
+        return ExpandableFab(icons: [const Icon(Icons.fastfood)], labels: ['Добавить еду',], callbacks: [() => _navigateToTemplateEditorScreen(context),]);
+      default: return ExpandableFab(icons: [], labels: [], callbacks: []);
+    }
+  }
 }

@@ -16,7 +16,7 @@ class DishStock {
   final String title;
 
   @HiveField(2)
-  final String? recipeId;
+  final String? templateId;
 
   @HiveField(3)
   final int addedCntPortion;
@@ -30,7 +30,7 @@ class DishStock {
   DishStock(
     this.id,
     this.title,
-    this.recipeId,
+    this.templateId,
     this.addedCntPortion,
     this.usedCntPortion,
       this.status,
@@ -48,7 +48,7 @@ class DishStock {
     return DishStock(
       id,
       title,
-      recipeId,
+      templateId,
       addedCntPortion ?? this.addedCntPortion,
       usedCntPortion ?? this.usedCntPortion,
       status ?? this.status,

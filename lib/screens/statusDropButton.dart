@@ -28,14 +28,15 @@ class _StatusDropButtonState extends ConsumerState<StatusDropButton>{
 
   @override
   void didUpdateWidget(covariant StatusDropButton oldWidget) {
+
     super.didUpdateWidget(oldWidget);
+    logger.d("didUpdateWidget ${oldWidget.key}, ${oldWidget.mealId} ${oldWidget.status} ${widget.status} ");
 
     // Обновляем статус, если он изменился снаружи
     if (widget.status != oldWidget.status) {
       selectedStatus = widget.status;
     }
   }
-
   @override
   Widget build(BuildContext context) {
     logger.d("_MyMealListState build ${widget.status.label}");

@@ -120,19 +120,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class ExpandableFab extends StatelessWidget {
-  final VoidCallback? onAddDay;
-  final VoidCallback? onAddDish;
-  final VoidCallback? onAddTemplate;
+  final List<Icon> icons;
+  final List<String> labels;
+  final List<VoidCallback> callbacks;
+
+  // final VoidCallback? onAddDay;
+  // final VoidCallback? onAddDish;
+  // final VoidCallback? onAddTemplate;
 
   const ExpandableFab({
     super.key,
-    this.onAddDay,
-    this.onAddDish,
-    this.onAddTemplate,
+    required this.icons,
+    required this.labels,
+    required this.callbacks,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (icons.length != labels.length && icons.length != callbacks.length) {
+      throw Exception('ExpandableFab arguments have wrong length');
+    }
+    final n = icons.length;
+    final items = List.generate(
+      n,
+      (i) => SpeedDialChild(
+        child: icons[i],
+        label: labels[i],
+        onTap: callbacks[i],
+      ),
+    );
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
@@ -145,23 +161,23 @@ class ExpandableFab extends StatelessWidget {
       elevation: 8,
       shape: const CircleBorder(),
 
-      children: [
-        SpeedDialChild(
-          child: const Icon(Icons.calendar_today),
-          label: 'План на день',
-          onTap: onAddDay,
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.cookie),
-          label: 'Блюдо в запасы',
-          onTap: onAddDish,
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.fastfood),
-          label: 'Новую еду',
-          onTap: onAddTemplate,
-        ),
-      ],
+      children: items
+        // SpeedDialChild(
+        //   child: const Icon(Icons.calendar_today),
+        //   label: 'План на день',
+        //   onTap: onAddDay,
+        // ),
+        // SpeedDialChild(
+        //   child: const Icon(Icons.cookie),
+        //   label: 'Блюдо в запасы',
+        //   onTap: onAddDish,
+        // ),
+        // SpeedDialChild(
+        //   child: const Icon(Icons.fastfood),
+        //   label: 'Новую еду',
+        //   onTap: onAddTemplate,
+        // ),
+      ,
     );
   }
 }

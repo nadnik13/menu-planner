@@ -60,7 +60,7 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen>
           ),
         ],
       ),
-      floatingActionButton: ExpandableFabInteractor.getExpandableFab(context),
+      floatingActionButton: ExpandableFabInteractor.getExpandableFab(type:1, context: context),
     );
   }
 }

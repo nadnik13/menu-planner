@@ -111,7 +111,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
         ),
       ),
 
-      floatingActionButton: ExpandableFabInteractor.getExpandableFab(context),
+      floatingActionButton: ExpandableFabInteractor.getExpandableFab(type:2, context: context),
     );
   }
 }

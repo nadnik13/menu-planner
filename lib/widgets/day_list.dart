@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
+import 'package:my_recipe_app/core/navigation/app_routes.dart';
 import 'package:my_recipe_app/models/daily_plan/daily_plan.dart';
 import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
 import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
-import 'package:my_recipe_app/screens/daily_plan/daily_plan_editor.dart';
 import '../core/logger.dart';
 import '../providers/daily_plan/daily_plan_provider.dart';
 import '../utils/emoji_utils.dart';
@@ -78,22 +78,24 @@ class _DayListState extends ConsumerState<DayList> {
           }
           final mealPlan =
               mealPlanOrNull ?? DailyPlan(date: date, portions: {});
-          return Container(key: _itemKeys[index],
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE5E5E5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x08000000),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: _DayCard(mealPlan));
+          return Container(
+            key: _itemKeys[index],
+            margin: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE5E5E5)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x08000000),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: _DayCard(mealPlan),
+          );
         },
       ),
     );
@@ -106,10 +108,7 @@ class _DayCard extends ConsumerWidget {
   const _DayCard(this.mealPlan);
 
   void _navigateToPlanEditor(DateTime date, BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => PlanEditor(date: date)),
-    );
+    Navigator.pushNamed(context, AppRoutes.dailyPlanEditor, arguments: date);
   }
 
   @override
@@ -117,10 +116,7 @@ class _DayCard extends ConsumerWidget {
     //TODO можно перенести в generateFromMealPlan()?
     final mealMap = ref.watch(dishStockInteractorProvider).getTitleMap();
     logger.d("_DayCard build $mealMap");
-    final mealList = _MealItem.generateFromMealPlan(
-      mealPlan.portions,
-      mealMap,
-    );
+    final mealList = _MealItem.generateFromMealPlan(mealPlan.portions, mealMap);
     logger.d("_DayCard mealList ${mealList}");
 
     return Column(
@@ -141,9 +137,7 @@ class _DayCard extends ConsumerWidget {
             ),
           ],
         ),
-        Divider(
-          color: Colors.grey.shade300,
-        ),
+        Divider(color: Colors.grey.shade300),
         _MealList(items: mealList),
       ],
     );
@@ -171,10 +165,7 @@ class _MealList extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   "(порций: ${meal.portion})",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade700,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
                 ),
               ],
             );

@@ -7,6 +7,7 @@ enum DishStockStatusType {
   added('Добавлено', Colors.white),
   bought('Купленно', Colors.white),
   ready('Готово к употреблению', Color(0x3314BF1B));
+
   final String label;
   final Color color;
 

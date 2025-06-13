@@ -31,7 +31,7 @@ class DailyPlanAppBar extends ConsumerWidget {
     }
     String statisticText = '';
     if (tabIndex == 0) {
-      statisticText = 'Добавлен план на ${pluralizeDay(cntPlans)} вперед';
+      statisticText = 'План на ${pluralizeDay(cntPlans)} вперед';
     } else {
       statisticText = 'Доступно ${pluralizePortion(cntPortion)} для плана';
     }
