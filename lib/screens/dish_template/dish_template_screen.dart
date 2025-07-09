@@ -9,6 +9,7 @@ import '../../models/dish_template/dish_template.dart';
 import '../../providers/expandable_fab_interactor.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/template_list.dart';
+import '../../utils/screen_utils.dart';
 
 class DishTemplateScreen extends ConsumerStatefulWidget {
   const DishTemplateScreen({super.key});
@@ -61,44 +62,63 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Адаптивные отступы для экрана
+    final screenPadding = ScreenUtils.adaptivePadding(
+      context,
+      small: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),   // iPhone 12 mini - меньше
+      medium: const EdgeInsets.symmetric(vertical: 16, horizontal: 16), // iPhone 12/13/14
+      large: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),  // Pro Max
+    );
+    
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(color: Colors.white),
         child: SafeArea(
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: screenPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CommonHeader(title: 'Еда'),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: TextField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Поиск...',
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                      floatingLabelStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                const SizedBox(height: 8), // Фиксированный отступ между заголовком и поиском
+                TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Поиск...',
+                    hintStyle: TextStyle(
+                      color: Colors.white, 
+                      fontSize: ScreenUtils.adaptiveFontSize(
+                        context,
+                        small: 16.0,   // iPhone 12 mini
+                        medium: 20.0,  // iPhone 12/13/14
+                        large: 22.0,   // Pro Max
                       ),
-                      prefixIcon: const Icon(Icons.search, color: Colors.white),
-                      filled: true,
-                      fillColor: const Color(0xFF2B9B8F),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
+                    ),
+                    floatingLabelStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenUtils.adaptiveFontSize(
+                        context,
+                        small: 16.0,   // iPhone 12 mini
+                        medium: 20.0,  // iPhone 12/13/14
+                        large: 22.0,   // Pro Max
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                    ),
+                    prefixIcon: const Icon(Icons.search, color: Colors.white),
+                    filled: true,
+                    fillColor: const Color(0xFF2B9B8F),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
+                const SizedBox(height: 8), // Фиксированный отступ между поиском и списком
                 Expanded(
-                  child:
-                      TemplateList(
+                  child: TemplateList(
                     onRemove: _removeTemplate,
                     onAdd: _addDishStock,
                     onEdit: _editTemplate,
@@ -110,7 +130,6 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
           ),
         ),
       ),
-
       floatingActionButton: ExpandableFabInteractor.getExpandableFab(type:2, context: context),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/logger.dart';
@@ -6,6 +7,7 @@ import 'dart:convert';
 
 class DishTemplateJsonLoadInteractor {
   final AssetBundle bundle;
+
   DishTemplateJsonLoadInteractor(this.bundle);
 
   Future<Set<DishTemplate>> loadFromJson() async {
@@ -21,8 +23,28 @@ class DishTemplateJsonLoadInteractor {
       return {};
     }
   }
+
+  Future<Set<DishTemplate>> loadFromFireStore() async {
+    final firestore = FirebaseFirestore.instance;
+    final snapshot = await firestore.collection('default_dish_templates').get();
+
+    final loaded = <DishTemplate>{};
+    for (var doc in snapshot.docs) {
+      try {
+        final template = DishTemplate.fromJson(doc.data());
+        loaded.add(template);
+      } catch (e) {
+        logger.e('❌ Ошибка при обработке документа ${doc.id}: $e');
+      }
+    }
+
+    logger.d('🎉 Успешно загружено ${loaded.length} рецептов из firestore');
+    return loaded;
+  }
 }
 
-final dishTemplateJsonLoaderInteraptor = Provider<DishTemplateJsonLoadInteractor>((ref){
-  final bundle = rootBundle;
-  return DishTemplateJsonLoadInteractor(bundle);});
+final dishTemplateJsonLoaderInteraptor =
+    Provider<DishTemplateJsonLoadInteractor>((ref) {
+      final bundle = rootBundle;
+      return DishTemplateJsonLoadInteractor(bundle);
+    });

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
 import 'package:my_recipe_app/widgets/dish_card.dart';
 import '../providers/dish_stock/dish_stock_provider.dart';
+import '../utils/screen_utils.dart';
 import 'package:collection/collection.dart';
 
 class MealList extends ConsumerStatefulWidget {
@@ -15,6 +16,14 @@ class MealList extends ConsumerStatefulWidget {
 class _MealListState extends ConsumerState<MealList> {
   @override
   Widget build(BuildContext context) {
+    // Адаптивные отступы для карточек блюд
+    final cardPadding = ScreenUtils.adaptivePadding(
+      context,
+      small: const EdgeInsets.all(12),   // iPhone 12 mini - компактнее
+      medium: const EdgeInsets.all(16),  // iPhone 12/13/14 - стандартные  
+      large: const EdgeInsets.all(20),   // Pro Max - больше
+    );
+    
     final isHideUnAvailableMeals = ref.watch(
       dailyPlanIsHideUnavailableStocksStateProvider,
     );
@@ -23,14 +32,15 @@ class _MealListState extends ConsumerState<MealList> {
         isHideUnAvailableMeals
             ? dish
                 .where((e) => isHideUnAvailableMeals && e.availablePortion > 0)
-
             : dish;
     final sortedDishList = filteredDish.toList().sorted((a,b) => b.status.index.compareTo(a.status.index));
+    
     if (dish.isEmpty) {
       return const Center(child: Text('Нет добавленных блюд'));
     } else if (sortedDishList.isEmpty) {
       return const Center(child: Text('Нет доступных блюд'));
     }
+    
     return ShaderMask(
       shaderCallback: (Rect bounds) {
         return LinearGradient(
@@ -54,7 +64,7 @@ class _MealListState extends ConsumerState<MealList> {
           return Container(
             key: ValueKey(meal.id),
             margin: const EdgeInsets.symmetric(vertical: 4),
-            padding: const EdgeInsets.all(16),
+            padding: cardPadding, // Адаптивные отступы
             decoration: BoxDecoration(
               color: meal.status.color,
               borderRadius: BorderRadius.circular(16),

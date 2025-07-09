@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/screen_utils.dart';
 
 class CommonHeader extends StatelessWidget {
   final String title;
@@ -23,7 +24,15 @@ class CommonHeader extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: ScreenUtils.adaptiveFontSize(
+              context,
+              small: 20.0,   // iPhone 12 mini
+              medium: 24.0,  // iPhone 12/13/14
+              large: 26.0,   // Pro Max
+            ),
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const Spacer(),
         if (trailing != null) trailing!,

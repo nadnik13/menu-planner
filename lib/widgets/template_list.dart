@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/dish_template/dish_template.dart';
 import '../providers/dish_template/dish_template_provider.dart';
 import '../utils/emoji_utils.dart';
+import '../utils/screen_utils.dart';
 
 class TemplateList extends ConsumerWidget {
   final void Function(DishTemplate) onRemove;
@@ -21,6 +22,21 @@ class TemplateList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Адаптивные отступы для карточек - только вертикальные, горизонтальные контролируются экраном
+    final cardMargin = ScreenUtils.adaptivePadding(
+      context,
+      small: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),   // iPhone 12 mini - без горизонтальных отступов
+      medium: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),  // iPhone 12/13/14 - без горизонтальных отступов
+      large: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),   // Pro Max - без горизонтальных отступов
+    );
+    
+    final cardPadding = ScreenUtils.adaptivePadding(
+      context,
+      small: const EdgeInsets.all(12),   // iPhone 12 mini - компактнее
+      medium: const EdgeInsets.all(16),  // iPhone 12/13/14 - стандартные  
+      large: const EdgeInsets.all(20),   // Pro Max - просторнее
+    );
+    
     final templates = ref.watch(dishTemplateProvider);
     if (templates.isEmpty) {
       return const Center(child: Text('Нет добавленных блюд'));
@@ -40,8 +56,8 @@ class TemplateList extends ConsumerWidget {
         final template = filteredTemplates[index];
 
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          padding: const EdgeInsets.all(16),
+          margin: cardMargin, // Адаптивные внешние отступы
+          padding: cardPadding, // Адаптивные внутренние отступы
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -62,7 +78,14 @@ class TemplateList extends ConsumerWidget {
                 children: [
                   Text(
                     getEmojiForMeal(template.title),
-                    style: const TextStyle(fontSize: 30),
+                    style: TextStyle(
+                      fontSize: ScreenUtils.adaptiveFontSize(
+                        context,
+                        small: 24.0,   // iPhone 12 mini - меньше
+                        medium: 30.0,  // iPhone 12/13/14 - стандартный
+                        large: 32.0,   // Pro Max - больше
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -74,8 +97,13 @@ class TemplateList extends ConsumerWidget {
                             Expanded(
                               child: Text(
                                 template.title,
-                                style: const TextStyle(
-                                  fontSize: 20,
+                                style: TextStyle(
+                                  fontSize: ScreenUtils.adaptiveFontSize(
+                                    context,
+                                    small: 18.0,   // iPhone 12 mini
+                                    medium: 20.0,  // iPhone 12/13/14
+                                    large: 22.0,   // Pro Max
+                                  ),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -94,7 +122,12 @@ class TemplateList extends ConsumerWidget {
                         Text(
                           'По умолчанию: ${template.portion} порции',
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: ScreenUtils.adaptiveFontSize(
+                              context,
+                              small: 15.0,   // iPhone 12 mini
+                              medium: 17.0,  // iPhone 12/13/14
+                              large: 18.0,   // Pro Max
+                            ),
                             color: Colors.grey[700],
                           ),
                         ),
@@ -109,7 +142,12 @@ class TemplateList extends ConsumerWidget {
                 child: Text(
                   'Добавить в запасы >',
                   style: TextStyle(
-                    fontSize: 17,
+                    fontSize: ScreenUtils.adaptiveFontSize(
+                      context,
+                      small: 15.0,   // iPhone 12 mini
+                      medium: 17.0,  // iPhone 12/13/14
+                      large: 18.0,   // Pro Max
+                    ),
                     color: Colors.blue[700],
                     fontWeight: FontWeight.w500,
                   ),

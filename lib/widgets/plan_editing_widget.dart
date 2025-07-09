@@ -115,9 +115,11 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle('Выбранные блюда'),
+        SizedBox(height: 8),
         _buildMealList(selectedDishes, isBusyList: true),
         SizedBox(height: 16),
         _buildSectionTitle('Для добавления'),
+        SizedBox(height: 8),
         _buildMealList(availableDishesToAdd, isBusyList: false),
         Row(
           children: [

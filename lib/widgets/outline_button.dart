@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
+import '../utils/screen_utils.dart';
 
-class OutlineTextButton extends StatelessWidget{
-  final bool isActive;
-  final VoidCallback onPress;
+class OutlineButton extends StatelessWidget {
   final String text;
+  final VoidCallback onPress;
 
-  const OutlineTextButton({super.key, required this.isActive, required this.onPress, required this.text});
+  const OutlineButton({
+    super.key,
+    required this.text,
+    required this.onPress,
+  });
 
   @override
-  Widget build(BuildContext context)
-    =>     Center(child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
-          side: BorderSide.none,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPress,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.black12),
         ),
-        onPressed: onPress,
-        child: Text(text, style: TextStyle(color: Colors.black87, fontSize: 16),)
-    ));
-
+        child: Text(
+          text, 
+          style: TextStyle(
+            color: Colors.black87, 
+            fontSize: ScreenUtils.adaptiveFontSize(
+              context,
+              small: 14.0,   // iPhone 12 mini
+              medium: 16.0,  // iPhone 12/13/14
+              large: 17.0,   // Pro Max
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

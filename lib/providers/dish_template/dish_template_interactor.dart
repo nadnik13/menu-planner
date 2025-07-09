@@ -4,6 +4,7 @@ import 'package:my_recipe_app/core/logger.dart';
 import 'package:my_recipe_app/providers/dish_template/dish_template_json_load_interactor.dart';
 import 'package:my_recipe_app/providers/dish_template/dish_template_provider.dart';
 import 'package:my_recipe_app/providers/dish_template/dish_template_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/dish_template/dish_template.dart';
 
 class DishTemplateInteractor {
@@ -60,12 +61,31 @@ class DishTemplateInteractor {
     await repo.addValues(unloadedValues);
     notifier.addValues(unloadedValues);
   }
+  Future<void> load() async =>
+    checkFirstLaunchAndLoad();
 
-  Future<void> load() async {
+
+  Future<void> defaultLoad() async {
     final templates = await repo.fetchAllValues();
 
     if (templates.isEmpty) {
       templates.addAll(await jsonInteractor.loadFromJson());
+    }
+    await addValues(templates);
+  }
+
+  Future<void> checkFirstLaunchAndLoad() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('first_launch_done');
+    final isFirstLaunch = prefs.getBool('first_launch_done') ?? false;
+    logger.d('isFirstLaunch: $isFirstLaunch');
+
+    final templates = await repo.fetchAllValues();
+
+    if (!isFirstLaunch){
+      final data = await jsonInteractor.loadFromFireStore();
+      templates.addAll(data);
+      await prefs.setBool('first_launch_done', true);
     }
     await addValues(templates);
   }

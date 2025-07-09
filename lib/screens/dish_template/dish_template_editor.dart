@@ -24,7 +24,9 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.template?.title ?? "");
+    _titleController = TextEditingController(
+      text: widget.template?.title ?? "",
+    );
     isNewFood = widget.template?.title != null ? false : true;
     _portion = widget.template?.portion ?? 1;
     isActive = _isValid;
@@ -80,22 +82,22 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text('Кол-во порций'),
-                IconButton(
-                  onPressed:
-                      _portion > 1 ? () => setState(() => _portion--) : null,
-                  icon: Icon(Icons.remove),
-                ),
-                Text('$_portion'),
-                IconButton(
-                  onPressed:
-                      _portion < 99 ? () => setState(() => _portion++) : null,
-                  icon: Icon(Icons.add),
-                ),
-              ],
-            ),
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(child: Text('Кол-во порций')),
+                  IconButton(
+                    onPressed:
+                        _portion > 1 ? () => setState(() => _portion--) : null,
+                    icon: Icon(Icons.remove),
+                  ),
+                  Text('$_portion'),
+                  IconButton(
+                    onPressed:
+                        _portion < 99 ? () => setState(() => _portion++) : null,
+                    icon: Icon(Icons.add),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +9,7 @@ import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.da
 import '../core/logger.dart';
 import '../providers/daily_plan/daily_plan_provider.dart';
 import '../utils/emoji_utils.dart';
+import '../utils/screen_utils.dart';
 
 class DayList extends ConsumerStatefulWidget {
   const DayList({super.key});
@@ -151,21 +151,53 @@ class _MealList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleFontSize = ScreenUtils.adaptiveFontSize(
+      context,
+      small: 18.0,   // iPhone 12 mini
+      medium: 22.0,  // iPhone 12/13/14
+      large: 24.0,   // Pro Max
+    );
+    final subtitleFontSize = ScreenUtils.adaptiveFontSize(
+      context,
+      small: 16.0,   // iPhone 12 mini
+      medium: 20.0,  // iPhone 12/13/14
+      large: 22.0,   // Pro Max
+    );
+
     return Column(
       children:
           items.map((meal) {
             return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   getEmojiForMeal(meal.title),
-                  style: const TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: titleFontSize),
                 ),
                 const SizedBox(width: 8),
-                Text(meal.title, style: const TextStyle(fontSize: 18)),
-                const SizedBox(width: 8),
-                Text(
-                  "(порций: ${meal.portion})",
-                  style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+                Expanded(  // ← Ключевое изменение!
+                  child: RichText(  // ← Используем RichText для гибкости
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: meal.title,
+                          style: TextStyle(
+                            fontSize: subtitleFontSize,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextSpan(
+                          text: " (порций: ${meal.portion})",
+                          style: TextStyle(
+                            fontSize: subtitleFontSize,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // БЕЗ maxLines - текст сам решает!
+                  ),
                 ),
               ],
             );

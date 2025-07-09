@@ -10,7 +10,7 @@ import 'core/extensions/app_initializer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeApp();
+  await AppInitializer.initialize();
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.dailyPlan,
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -44,10 +45,16 @@ class MyApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.tealAccent, // или любой другой основной цвет
-          shape:
-              const CircleBorder(), // 👈 Возвращает стандартную круглую форму
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0F676E)),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF5AAE6D),
+          foregroundColor: Colors.white,
+          shape: CircleBorder(),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
       ),
       home: const StartupScreen(),

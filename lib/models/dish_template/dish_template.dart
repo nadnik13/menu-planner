@@ -19,12 +19,21 @@ class DishTemplate {
   static final List<String> types = ['Завтрак', 'Обед', 'Ужин', 'Перекус'];
 
   factory DishTemplate.fromJson(Map<String, dynamic> json) {
-    final id = json['id'];
-    return DishTemplate(
-      id,
-      json['title'] as String,
-      json['portion'] as int,
-    );
+    final id = json['id'] as String;
+    final title = json['title'] as String;
+    
+    // Безопасно парсим portion - может быть строкой или числом
+    final portionValue = json['portion'];
+    int portion;
+    if (portionValue is String) {
+      portion = int.parse(portionValue);
+    } else if (portionValue is int) {
+      portion = portionValue;
+    } else {
+      portion = 1; // значение по умолчанию
+    }
+    
+    return DishTemplate(id, title, portion);
   }
 
   factory DishTemplate.add({
