@@ -69,6 +69,7 @@ class _DayListState extends ConsumerState<DayList> {
         controller: _scrollController,
         scrollDirection: Axis.vertical,
         itemCount: 2 * range + 1,
+        padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           final offset = index - range;
           final date = today.add(Duration(days: offset));
