@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/providers/meal_provider.dart';
+import 'package:my_recipe_app/screens/meal_plan_screen.dart';
 import 'package:my_recipe_app/screens/recipe_editor.dart';
+import 'package:my_recipe_app/screens/week_plan_screen.dart';
+import 'package:uuid/uuid.dart';
 import '../core/logger.dart';
 import '../models/recipe.dart';
 import '../providers/recipe/recipe_provider.dart';
