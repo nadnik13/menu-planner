@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_recipe_app/providers/recipe/recipe_notifier.dart';
 import 'package:my_recipe_app/widgets/save_button.dart';
@@ -13,22 +12,19 @@ class RecipeEditor extends ConsumerStatefulWidget {
 
   //:TODO можно ли оставить рецепт в параметрах
   @override
-  ConsumerState<RecipeEditor> createState() => _RecipeEditorState(recipe);
+  ConsumerState<RecipeEditor> createState() => _RecipeEditorState();
 }
 
 class _RecipeEditorState extends ConsumerState<RecipeEditor> {
-  final Recipe? recipe;
   late TextEditingController _titleController;
   late TextEditingController _descController;
   late int _portion;
   bool isActive = false;
-  String? _recipeType;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.recipe?.title ?? "");
-    _recipeType = widget.recipe?.type;
     _portion = widget.recipe?.portion ?? 1;
     isActive = _isValid;
 
@@ -37,7 +33,6 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
 
   bool get _isValid =>
       _titleController.text.trim().isNotEmpty &&
-      _recipeType != null &&
       _portion > 0;
 
   void _updateActiveState() {
@@ -59,7 +54,6 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
     final editedRecipe = Recipe.add(
       id: recipeId,
       title: title,
-      type: _recipeType,
       portion: _portion,
     );
     ref.read(recipeProvider.notifier).addOrReplaceRecipe(editedRecipe);
@@ -76,8 +70,6 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
     super.dispose();
   }
 
-  _RecipeEditorState(this.recipe);
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -89,27 +81,6 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
             TextField(
               controller: _titleController,
               decoration: InputDecoration(hintText: 'Название'),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _recipeType,
-              decoration: const InputDecoration(
-                labelText: "Приём пищи",
-                border: OutlineInputBorder(),
-              ),
-              items:
-                  Recipe.types.map((meal) {
-                    return DropdownMenuItem<String>(
-                      value: meal,
-                      child: Text(meal),
-                    );
-                  }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _recipeType = value;
-                  _updateActiveState();
-                });
-              },
             ),
             const SizedBox(height: 16),
             Row(

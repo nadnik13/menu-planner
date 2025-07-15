@@ -21,7 +21,7 @@ void main() async{
 
   test('Добавление и чтение рецепта', () async{
     final title = 'Салат Цезарь';
-    final recipe = Recipe.add(title: title, type: '', portion: 1);
+    final recipe = Recipe.add(title: title, portion: 1);
     await box.add(recipe);
 
     final allRecipes = box.values.toList();

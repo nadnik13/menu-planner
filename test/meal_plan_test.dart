@@ -19,7 +19,7 @@ void main() async {
   }
 
   test('Добавление плана', () async {
-    final meal = Meal.add(Recipe.add(title: 'Борщь', type: '', portion: 5));
+    final meal = Meal.add(Recipe.add(title: 'Борщь', portion: 5));
     final plan = MealPlan(date: DateTime.now(), mealPortions: {meal.id: 2});
 
     expect(box.length, 0);
@@ -32,7 +32,7 @@ void main() async {
   });
 
   test('Удаление плана', () async {
-    final meal = Meal.add(Recipe.add(title: 'Борщь', type: '', portion: 5));
+    final meal = Meal.add(Recipe.add(title: 'Борщь', portion: 5));
     final plan = MealPlan(date: DateTime.now(), mealPortions: {meal.id: 1});
     final key = await box.add(plan);
     expect(box.length, 1);

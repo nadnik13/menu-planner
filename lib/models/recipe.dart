@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-
 import 'hive_type_ids.dart';
 
 part 'recipe.g.dart';
@@ -13,13 +12,10 @@ class Recipe {
   @HiveField(1)
   final String title;
 
-  @HiveField(2)
-  final String? type;
-
   @HiveField(3)
   final int portion;
 
-  Recipe(this.id, this.title, this.type, this.portion);
+  Recipe(this.id, this.title, this.portion);
   static final List<String> types = ['Завтрак', 'Обед', 'Ужин', 'Перекус'];
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
@@ -27,7 +23,6 @@ class Recipe {
     return Recipe(
       id,
       json['title'] as String,
-      json['type'] as String?,
       json['portion'] as int,
     );
   }
@@ -35,11 +30,10 @@ class Recipe {
   factory Recipe.add({
     String? id,
     required String title,
-    String? type,
     required int portion,
-  }) => Recipe(id ?? Uuid().v4(), title, type, portion);
+  }) => Recipe(id ?? Uuid().v4(), title, portion);
 
-  static Recipe get empty => Recipe("", "", "", 0);
+  static Recipe get empty => Recipe("", "", 0);
 
   @override
   bool operator ==(Object other) =>
