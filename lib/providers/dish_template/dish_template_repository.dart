@@ -20,7 +20,7 @@ class DishTemplateRepository {
     return _dishTemplateBox.values.toSet();
   }
 
-  Future<void> remove(DishTemplate template) async {
-    await _dishTemplateBox.delete(template.id);
+  Future<void> remove(String id) async {
+    await _dishTemplateBox.delete(id);
   }
 }

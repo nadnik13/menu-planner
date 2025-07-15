@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
 import 'package:my_recipe_app/widgets/dish_card.dart';
 import '../providers/dish_stock/dish_stock_provider.dart';
+import 'package:collection/collection.dart';
 
 class MealList extends ConsumerStatefulWidget {
   const MealList({super.key});
@@ -17,16 +18,17 @@ class _MealListState extends ConsumerState<MealList> {
     final isHideUnAvailableMeals = ref.watch(
       dailyPlanIsHideUnavailableStocksStateProvider,
     );
-    final meals = ref.watch(dishStockProvider);
-    final mealsList =
+    final dish = ref.watch(dishStockProvider);
+    final filteredDish =
         isHideUnAvailableMeals
-            ? meals
+            ? dish
                 .where((e) => isHideUnAvailableMeals && e.availablePortion > 0)
-                .toList()
-            : meals.toList();
-    if (meals.isEmpty) {
+
+            : dish;
+    final sortedDishList = filteredDish.toList().sorted((a,b) => b.status.index.compareTo(a.status.index));
+    if (dish.isEmpty) {
       return const Center(child: Text('Нет добавленных блюд'));
-    } else if (mealsList.isEmpty) {
+    } else if (sortedDishList.isEmpty) {
       return const Center(child: Text('Нет доступных блюд'));
     }
     return ShaderMask(
@@ -45,11 +47,12 @@ class _MealListState extends ConsumerState<MealList> {
       },
       blendMode: BlendMode.dstIn,
       child: ListView.builder(
-        itemCount: mealsList.length,
+        itemCount: sortedDishList.length,
         itemBuilder: (context, index) {
-          final meal = mealsList[index];
+          final meal = sortedDishList[index];
 
           return Container(
+            key: ValueKey(meal.id),
             margin: const EdgeInsets.symmetric(vertical: 4),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(

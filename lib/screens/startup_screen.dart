@@ -31,7 +31,7 @@ class StartupScreen extends StatelessWidget {
                 body: Center(child: Text('Ошибка: ${snapshot.error}')),
               );
             } else {
-              return const DaysPlanScreen(); // основной экран
+              return const DailyPlanScreen(); // основной экран
             }
           },
         );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/dish_template/dish_template.dart';
-import '../providers/dish_template/dish_template_notifier.dart';
+import '../providers/dish_template/dish_template_provider.dart';
 import '../utils/emoji_utils.dart';
 
 class TemplateList extends ConsumerWidget {

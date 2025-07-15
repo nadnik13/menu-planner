@@ -35,3 +35,10 @@ final daysPlanProvider = Provider<Map<DateTime, DailyPlan>>((ref) {
   final plans = ref.watch(dailyPlanProvider);
   return {for (var e in plans) e.date: e};
 });
+
+/// ✅ РЕАКТИВНЫЙ провайдер для статистики планов на будущее
+/// Автоматически пересчитывается при изменении dailyPlanProvider
+final futurePlansCountProvider = Provider<int>((ref) {
+  final plans = ref.watch(dailyPlanProvider);
+  return plans.where((e) => e.date.isAfter(DateTime.now())).length;
+});

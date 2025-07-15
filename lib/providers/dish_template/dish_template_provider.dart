@@ -19,8 +19,8 @@ class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
   }
 
 
-  Future<void> remove(DishTemplate template) async {
-    state = state.where((e) => e.id != template.id).toSet();
+  Future<void> remove(String id) async {
+    state = state.where((e) => e.id != id).toSet();
   }
 
   Future<void> addOrReplace(DishTemplate template) async {

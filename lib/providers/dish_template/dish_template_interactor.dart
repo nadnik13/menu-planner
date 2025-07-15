@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/core/logger.dart';
 import 'package:my_recipe_app/providers/dish_template/dish_template_json_load_interactor.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_notifier.dart';
+import 'package:my_recipe_app/providers/dish_template/dish_template_provider.dart';
 import 'package:my_recipe_app/providers/dish_template/dish_template_repository.dart';
 import '../../models/dish_template/dish_template.dart';
 
@@ -18,6 +18,16 @@ class DishTemplateInteractor {
     notifier.addOrReplace(template);
   }
 
+  Future<void> replace({
+    required String id,
+    required String title,
+    required int portion,
+  }) async {
+    remove(id);
+    final edited = DishTemplate.add(title: title, portion: portion);
+    _add(edited);
+  }
+
   Future<void> add({required String title, required int portion}) async {
     final templateId = notifier.findByTitle(title)?.id;
 
@@ -29,10 +39,21 @@ class DishTemplateInteractor {
     _add(edited);
   }
 
+  Future<void> addOrReplace({
+    String? id,
+    required String title,
+    required int portion,
+  }) async {
+    if (id != null) {
+      replace(id: id, title: title, portion: portion);
+    } else {
+      add(title: title, portion: portion);
+    }
+  }
+
   Future<void> addValues(Set<DishTemplate> newValues) async {
     final values = notifier.fetchAllValues;
-    final unloadedValues =
-        newValues.where((e) => !values.contains(e)).toSet();
+    final unloadedValues = newValues.where((e) => !values.contains(e)).toSet();
     logger.d(
       "addValues: ${values.length}/${newValues.length}/${unloadedValues.length} (old/new/unload)",
     );
@@ -49,13 +70,12 @@ class DishTemplateInteractor {
     await addValues(templates);
   }
 
-  Future<void> remove(DishTemplate template) async {
-    logger.d("removeTemplate ${template.title}");
-    await repo.remove(template);
+  Future<void> remove(String id) async {
+    await repo.remove(id);
     final values = await repo.fetchAllValues();
 
     logger.d("templates ${values.length}");
-    await notifier.remove(template);
+    await notifier.remove(id);
     logger.d("templates ${notifier.fetchAllValues.length}");
   }
 }

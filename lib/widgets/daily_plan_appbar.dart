@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_interactor.dart';
+import 'package:my_recipe_app/providers/dish_stock/dish_stock_provider.dart';
 import 'package:my_recipe_app/utils/pluralize_utils.dart';
 
+import '../providers/daily_plan/daily_plan_provider.dart';
 import '../providers/daily_plan/daily_plan_view_interactor.dart';
 import 'more_button.dart';
 
@@ -13,8 +13,8 @@ class DailyPlanAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cntPortion = ref.watch(dishStockInteractorProvider).getCntAvailablePortion();
-    final cntPlans = ref.watch(dailyPlanInteractorProvider).getCntPlansOnFuture();
+    final cntPortion = ref.watch(availablePortionsCountProvider);
+    final cntPlans = ref.watch(futurePlansCountProvider);
     final tabIndex = ref.watch(tabIndexProvider);
     //TODO: понять как это сделать более компактно и где
     String moreButtonText = '';
@@ -31,7 +31,7 @@ class DailyPlanAppBar extends ConsumerWidget {
     }
     String statisticText = '';
     if (tabIndex == 0) {
-      statisticText = 'Добавлен план на ${pluralizeDay(cntPlans)} ';
+      statisticText = 'План на ${pluralizeDay(cntPlans)} вперед';
     } else {
       statisticText = 'Доступно ${pluralizePortion(cntPortion)} для плана';
     }

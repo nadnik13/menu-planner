@@ -61,7 +61,7 @@ class DishStockInteractor {
     final stock = notifier.getByKey(key);
     if (stock == null ||  status == null) return;
     final updatedStock = stock.copyWith(status: status);
-    logger.d('updateStatus ${updatedStock.title} ${updatedStock.status}');
+    logger.d('updateStatus ${updatedStock.id} ${updatedStock.title} ${updatedStock.status}');
     await repo.addOrReplace(updatedStock);
     notifier.addOrReplace(updatedStock);
   }

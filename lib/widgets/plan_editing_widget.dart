@@ -62,7 +62,8 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
   }
 
   void _loadDishes() {
-    final availableDishes = ref.read(dishStockInteractorProvider).getAvailableValues();
+    final availableDishes =
+        ref.read(dishStockInteractorProvider).getAvailableValues();
     final selectedDate = widget.selectedDate;
     final planByDate = ref
         .read(dailyPlanInteractorProvider)
@@ -71,7 +72,10 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
     availableDishesToAdd.clear();
     changedDishPortions.clear();
     //:TODO можно ли убрать выгрузку из интерактора в функцию генерации?
-    final items = _PlannedDishItem.generateFromMeal(availableDishes, planByDate);
+    final items = _PlannedDishItem.generateFromMeal(
+      availableDishes,
+      planByDate,
+    );
     for (final mealItem in items) {
       if (mealItem.usedPortion > 0) {
         selectedDishes.add(mealItem);
@@ -132,10 +136,8 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
     );
   }
 
-  Widget _buildSectionTitle(String title) => Text(
-    title,
-    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  );
+  Widget _buildSectionTitle(String title) =>
+      Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
 
   Widget _buildMealList(
     List<_PlannedDishItem> meals, {
@@ -156,11 +158,15 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(width: 8),
-                    Text(
-                      entity.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: Text(
+                        entity.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
                     ),
                   ],
