@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:my_recipe_app/screens/week_plan_screen.dart';
 
 import '../models/recipe.dart';
 import '../providers/recipe/recipe_json_loader.dart';
 import '../providers/recipe/recipe_provider.dart';
-import 'meal_screen.dart';
 
 class StartupScreen extends StatelessWidget {
   const StartupScreen({super.key});
@@ -42,7 +42,7 @@ class StartupScreen extends StatelessWidget {
                 body: Center(child: Text('Ошибка: ${snapshot.error}')),
               );
             } else {
-              return const MealScreen(); // основной экран
+              return const WeekPlanScreen(); // основной экран
             }
           },
         );

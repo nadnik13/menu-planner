@@ -1,53 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import '../providers/meal_plan_provider.dart';
+import 'package:my_recipe_app/widgets/day_list.dart';
+import 'plan_screen.dart';
+import 'meal_screen.dart';
 
 class WeekPlanScreen extends ConsumerWidget {
   const WeekPlanScreen({super.key});
 
+  void _navigateToPlanEditor(DateTime? date, BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => PlanScreen(date: date)),
+    );
+  }
+
+  void _navigateToMealScreen(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MealScreen())
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weekPlans = ref.watch(weekPlanProvider);
-
     return Scaffold(
-      appBar: AppBar(title: Text('Меню на неделю')),
-      body:
-          weekPlans.isEmpty
-              ? Center(child: Text('Нет запланированных блюд'))
-              : ListView.builder(
-                itemCount: weekPlans.length,
-                itemBuilder: (context, index) {
-                  final planItem = weekPlans[index];
-                  final recipeDate = planItem.date.dateKey;
-                  final recipePortion = planItem.portion;
-                  return ListTile(
-                    title: Text(planItem.meal.title),
-                    subtitle: Text('Дата: $recipeDate\nПорций: $recipePortion'),
-                    trailing: IconButton(
-                      onPressed: () {
-                        final planNotifier = ref.read(
-                          mealPlanProvider.notifier,
-                        );
-                        planNotifier.removePlanByDate(planItem.date);
+      appBar: AppBar(
+          title: Text('Меню на неделю'),
+          actions: [
+            IconButton(onPressed: () => _navigateToMealScreen(context),
+                icon: Icon(Icons.dining))
+          ]),
+      body: DayList(),
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('План на $recipeDate удален.'),
-                            action: SnackBarAction(
-                              label: 'Отменить',
-                              onPressed: () {
-                                planNotifier.addOrReplacePlan(planItem);
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.delete),
-                    ),
-                  );
-                },
-              ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _navigateToPlanEditor(null, context),
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
