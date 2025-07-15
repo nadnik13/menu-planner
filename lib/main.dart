@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:my_recipe_app/core/navigation/app_routes.dart';
+import 'package:my_recipe_app/screens/daily_plan/daily_plan_editor.dart';
+import 'package:my_recipe_app/screens/daily_plan/daily_plan_screen.dart';
+import 'package:my_recipe_app/screens/dish_template/dish_template_screen.dart';
 import 'package:my_recipe_app/screens/startup_screen.dart';
 
-import 'models/meal_plan.dart';
-import 'models/recipe.dart';
+import 'core/extensions/app_initializer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(RecipeAdapter());
-  Hive.registerAdapter(MealPlanAdapter());
+  await AppInitializer.initialize();
 
-  await Hive.openBox<Recipe>('recipeBox');
-  await Hive.openBox<MealPlan>('mealPlanBox');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -25,7 +23,40 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
+      debugShowCheckedModeBanner: false,
+      initialRoute: AppRoutes.dailyPlan,
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case AppRoutes.dailyPlan:
+            return MaterialPageRoute(
+              builder: (_) => const DailyPlanScreen(),
+              settings: settings,
+            );
+          case AppRoutes.dailyPlanEditor:
+            final date = settings.arguments as DateTime?;
+            return MaterialPageRoute(
+              builder: (_) => PlanEditor(date: date),
+              settings: settings,
+            );
+          case AppRoutes.dishTemplates:
+            return MaterialPageRoute(builder: (_) => DishTemplateScreen(),
+            settings: settings);
+        }
+        return null;
+      },
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0F676E)),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF5AAE6D),
+          foregroundColor: Colors.white,
+          shape: CircleBorder(),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
       home: const StartupScreen(),
     );
   }
