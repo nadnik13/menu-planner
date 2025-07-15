@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/recipe.dart';
+import '../models/meal.dart';
 
 class SelectedDateNotifier extends Notifier<DateTime> {
   @override
@@ -15,4 +15,5 @@ final selectedDateProvider = NotifierProvider<SelectedDateNotifier, DateTime>(
     return SelectedDateNotifier();
   },
 );
-final selectedRecipeProvider = StateProvider<Recipe?>((ref) => null);
+//:TODO не показывать значения где нет доступных порций
+final selectedMealProvider = StateProvider<Meal?>((ref) => null);

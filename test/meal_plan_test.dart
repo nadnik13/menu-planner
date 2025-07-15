@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_recipe_app/models/meal.dart';
 import 'package:my_recipe_app/models/meal_plan.dart';
 import 'package:hive/hive.dart';
 import 'dart:io';
@@ -9,7 +10,6 @@ import 'package:uuid/uuid.dart';
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   final uuid = Uuid();
-
   final tempDir = Directory.systemTemp.createTempSync();
   Hive.init(tempDir.path);
   Hive.registerAdapter(RecipeAdapter());
@@ -23,7 +23,7 @@ void main() async {
   test('Добавление плана', () async {
     final plan = MealPlan(
       date: DateTime.now(),
-      recipe: Recipe.add('Борщ', '', 5),
+      meal: Meal.add(Recipe.add('Борщ', '', 5)),
       portion: 2,
     );
 
@@ -40,7 +40,7 @@ void main() async {
     final id = uuid.v4();
     final plan = MealPlan(
       date: DateTime.now(),
-      recipe: Recipe(id, 'Борщ', 'суп', 5),
+      meal: Meal.add(Recipe(id, 'Борщ', 'суп', 5)),
       portion: 1,
     );
     final key = await box.add(plan);

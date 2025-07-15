@@ -11,6 +11,8 @@ class RecipeEditor extends ConsumerStatefulWidget {
 
   const RecipeEditor({super.key, required this.recipe});
 
+  //:TODO можно ли оставить рецепт в параметрах
+  @override
   ConsumerState<RecipeEditor> createState() => _RecipeEditorState(recipe);
 }
 
@@ -39,11 +41,10 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
   }
 
   bool get _isValid =>
-     _titleController.text.trim().isNotEmpty &&
-        _descController.text.trim().isNotEmpty
-        && selectedMeal != null
-  && _portion > 0;
-
+      _titleController.text.trim().isNotEmpty &&
+      _descController.text.trim().isNotEmpty &&
+      selectedMeal != null &&
+      _portion > 0;
 
   void _updateActiveState() {
     final valid = _isValid;
@@ -61,7 +62,7 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
     final editedRecipe = Recipe.add(
       _titleController.text.trim(),
       _descController.text.trim(),
-      _portion
+      _portion,
     );
     ref.read(recipeProvider.notifier).addOrReplaceRecipe(editedRecipe);
 
@@ -113,6 +114,7 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
               onChanged: (value) {
                 setState(() {
                   selectedMeal = value;
+                  _updateActiveState();
                 });
               },
             ),
@@ -121,27 +123,34 @@ class _RecipeEditorState extends ConsumerState<RecipeEditor> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Кол-во порций'),
-                IconButton(onPressed: _portion > 1 ? () => setState( () => _portion--) : null,
-                    icon: Icon(Icons.remove)),
+                IconButton(
+                  onPressed:
+                      _portion > 1 ? () => setState(() => _portion--) : null,
+                  icon: Icon(Icons.remove),
+                ),
                 Text('$_portion'),
-                IconButton(onPressed: _portion < 99 ? () => setState( () => _portion++) : null,
-                    icon: Icon(Icons.add)),
-              ]
-            )
+                IconButton(
+                  onPressed:
+                      _portion < 99 ? () => setState(() => _portion++) : null,
+                  icon: Icon(Icons.add),
+                ),
+              ],
+            ),
           ],
-        )),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Отмена'),
-              ),
-              SaveButton(isActive: isActive, onSave: _save),
-            ],
-          ),
-        ],
+        ),
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Отмена'),
+            ),
+            SaveButton(isActive: isActive, onSave: _save),
+          ],
+        ),
+      ],
     );
   }
 }
