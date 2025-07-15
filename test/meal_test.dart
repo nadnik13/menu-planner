@@ -1,25 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_recipe_app/models/meal.dart';
+import 'package:my_recipe_app/models/dish_stock/dish_stock.dart';
 import 'package:hive/hive.dart';
 import 'dart:io';
 
-import 'package:my_recipe_app/models/recipe.dart';
+import 'package:my_recipe_app/models/dish_template/dish_template.dart';
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final tempDir = Directory.systemTemp.createTempSync();
   Hive.init(tempDir.path);
-  Hive.registerAdapter(RecipeAdapter());
-  Hive.registerAdapter(MealAdapter());
-  final box = await Hive.openBox<Meal>('testMealBox');
+  Hive.registerAdapter(DishTemplateAdapter());
+  Hive.registerAdapter(DishStockAdapter());
+  final box = await Hive.openBox<DishStock>('testMealBox');
 
   tearDown() async {
     await box.clear();
   }
 
   test('Добавление блюда', () async {
-    final meal = Meal.add(Recipe.add(title: 'Борщь', portion: 5));
+    final meal = DishStock.add(DishTemplate.add(title: 'Борщь', portion: 5));
 
     expect(box.length, 0);
     await box.add(meal);
@@ -31,7 +31,7 @@ void main() async {
   });
 
   test('Удаление блюда', () async {
-    final plan = Meal.add(Recipe.add(title: 'Борщь', portion: 5));
+    final plan = DishStock.add(DishTemplate.add(title: 'Борщь', portion: 5));
     final key = await box.add(plan);
     expect(box.length, 1);
 

@@ -44,6 +44,9 @@ dependencies:
   logger: ^2.0.2
 
   uuid: ^4.4.2
+  google_fonts:  ^6.1.0
+
+  flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +71,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/recipes.json
+    - assets/templates.json
     - assets/images/plate.png
 
   # For details regarding adding assets from package dependencies, see
