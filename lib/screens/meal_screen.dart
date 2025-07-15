@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/providers/meal_provider.dart';
-import 'package:my_recipe_app/screens/meal_plan_screen.dart';
 import 'package:my_recipe_app/screens/recipes_screen.dart';
 import 'package:my_recipe_app/screens/week_plan_screen.dart';
 import '../core/logger.dart';
@@ -32,15 +31,6 @@ class _MealScreenState extends ConsumerState<MealScreen> {
 
   void _removeRecipe(Meal meal) =>
       ref.read(mealProvider.notifier).removeMeal(meal);
-
-  void _addMealPlan(Meal meal) => _navigateToPlan(meal: meal);
-
-  void _navigateToPlan({Meal? meal}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => PlanScreen(meal: meal)),
-    );
-  }
 
   void _navigateToRecipes() {
     Navigator.push(
@@ -83,7 +73,6 @@ class _MealScreenState extends ConsumerState<MealScreen> {
                 _MealList(
               meals: meals,
               onRemove: _removeRecipe,
-              onPlan: _addMealPlan,
             ),
           ),
           IconButton(
@@ -98,25 +87,27 @@ class _MealScreenState extends ConsumerState<MealScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToRecipes,
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
 
 class _MealList extends StatelessWidget {
   final void Function(Meal) onRemove;
-  final void Function(Meal) onPlan;
   final Set<Meal> meals;
 
   const _MealList({
     required this.meals,
-    required this.onRemove,
-    required this.onPlan,
+    required this.onRemove
   });
 
   @override
   Widget build(BuildContext context) {
     if (meals.isEmpty) {
-      return const Center(child: Text('Нет добавленных рецептов'));
+      return const Center(child: Text('Нет добавленных блюд'));
     }
     final mealsList = meals.toList();
     return ListView.builder(
@@ -132,10 +123,6 @@ class _MealList extends StatelessWidget {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                onPressed: () => onPlan(meal),
-                icon: const Icon(Icons.edit_calendar_outlined),
-              ),
               IconButton(
                 onPressed: () => onRemove(meal),
                 icon: const Icon(Icons.delete),
