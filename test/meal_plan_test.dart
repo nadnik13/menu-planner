@@ -23,7 +23,7 @@ void main() async {
   test('Добавление плана', () async {
     final plan = MealPlan(
       date: DateTime.now(),
-      recipe: Recipe.add('Борщь', '', 5),
+      recipe: Recipe.add('Борщ', '', 5),
       portion: 2,
     );
 
@@ -40,7 +40,7 @@ void main() async {
     final id = uuid.v4();
     final plan = MealPlan(
       date: DateTime.now(),
-      recipe: Recipe(id, 'Борщь', 'суп', 5),
+      recipe: Recipe(id, 'Борщ', 'суп', 5),
       portion: 1,
     );
     final key = await box.add(plan);
