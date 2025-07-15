@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import '../models/meal.dart';
+import 'package:my_recipe_app/core/logger.dart';
 import '../models/meal_plan.dart';
 
 class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
@@ -30,10 +30,9 @@ class MealPlanNotifier extends StateNotifier<List<MealPlan>> {
 
   void saveMealPlan({
     required DateTime date,
-    required Meal meal,
-    required int portion,
+    required Map<String, int> mealCntMap,
   }) {
-    final plan = MealPlan(date: date, meal: meal, portion: portion);
+    final plan = MealPlan(date: date.dateOnly, mealPortions: mealCntMap);
     addOrReplacePlan(plan);
   }
 }
@@ -44,13 +43,8 @@ final mealPlanProvider =
       return MealPlanNotifier(box);
     });
 
-final weekPlanProvider = Provider<List<MealPlan>>((ref) {
+final weekPlanProvider = Provider<Map<DateTime, MealPlan>>((ref) {
   final plans = ref.watch(mealPlanProvider);
-  final today = DateTime.now();
-  final nextWeek = today.add(Duration(days: 7));
-  return plans.where((plan) {
-      return plan.date.isAfter(today.subtract(const Duration(days: 1))) &&
-          plan.date.isBefore(nextWeek);
-    }).toList()
-    ..sort((a, b) => a.date.compareTo(b.date));
+  logger.d("weekPlanProvider plans : ${plans.length}");
+  return { for (var e in plans) e.date : e };
 });
