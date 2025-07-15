@@ -21,8 +21,12 @@ void main() async {
   }
 
   test('Добавление плана', () async {
-    final id = uuid.v4();
-    final plan = MealPlan(date: DateTime.now(), recipe: Recipe(id, 'Борщь', ''));
+    final plan = MealPlan(
+      date: DateTime.now(),
+      recipe: Recipe.add('Борщ', '', 5),
+      portion: 2,
+    );
+
     expect(box.length, 0);
     await box.add(plan);
 
@@ -34,7 +38,11 @@ void main() async {
 
   test('Удаление плана', () async {
     final id = uuid.v4();
-    final plan = MealPlan(date: DateTime.now(), recipe: Recipe(id, 'Борщь', 'суп'));
+    final plan = MealPlan(
+      date: DateTime.now(),
+      recipe: Recipe(id, 'Борщ', 'суп', 5),
+      portion: 1,
+    );
     final key = await box.add(plan);
     expect(box.length, 1);
     final date = DateTime.now();

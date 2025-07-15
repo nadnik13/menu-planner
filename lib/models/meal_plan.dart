@@ -11,8 +11,10 @@ class MealPlan {
   final Recipe recipe;
   @HiveField(1)
   final DateTime date;
+  @HiveField(2)
+  final int portion;
 
-  MealPlan({required this.date, required this.recipe});
+  MealPlan({required this.date, required this.recipe, required this.portion});
 
   @override
   bool operator ==(Object other) {

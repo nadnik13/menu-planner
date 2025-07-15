@@ -20,9 +20,8 @@ void main() async{
   }
 
   test('Добавление и чтение рецепта', () async{
-    final id = Uuid().v4();
     final title = 'Салат Цезарь';
-    final recipe = Recipe(id, title, '');
+    final recipe = Recipe.add(title, '', 1);
     await box.add(recipe);
 
     final allRecipes = box.values.toList();

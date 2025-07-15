@@ -2,21 +2,25 @@
   {
     "id": "bd6d5235-a6e4-4058-be39-cb9c73772011",
     "title": "Борщ",
-    "description": "обед"
+    "description": "обед",
+    "portion": 10
   },
   {
     "id": "bd6d5235-a6e4-4058-be39-cb9c73772012",
     "title": "Паста с томатами",
-    "description": "ужин"
+    "description": "ужин",
+    "portion": 2
   },
   {
     "id": "bd6d5235-a6e4-4058-be39-cb9c73772013",
     "title": "Курица с картошкой",
-    "description": "ужин"
+    "description": "ужин",
+    "portion": 1
   },
   {
     "id": "bd6d5235-a6e4-4058-be39-cb9c73772014",
     "title": "Рис",
-    "description": "ужин"
+    "description": "ужин",
+    "portion": 1
   }
 ]

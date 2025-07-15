@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/screens/plan_screen.dart';
+import 'package:my_recipe_app/screens/meal_plan_screen.dart';
+import 'package:my_recipe_app/screens/recipe_editor.dart';
 import 'package:my_recipe_app/screens/week_plan_screen.dart';
 import 'package:uuid/uuid.dart';
 import '../core/logger.dart';
@@ -16,9 +17,6 @@ class RecipeScreen extends ConsumerStatefulWidget {
 }
 
 class _RecipeScreenState extends ConsumerState<RecipeScreen> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descController = TextEditingController();
-
   void _printRecipeBox() {
     final box = Hive.box<Recipe>('recipeBox');
     logger.d('📦 Всего рецептов: ${box.length}');
@@ -33,28 +31,15 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     _printRecipeBox();
   }
 
-  void _addRecipe() {
-    _printRecipeBox();
-    final title = _titleController.text.trim();
-    final description = _descController.text.trim();
-    if (title.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Введите название")));
-    }
-    if (title.isNotEmpty) {
-      final uuid = Uuid();
-      final id = uuid.v4();
-      ;
-      final recipe = Recipe(id, title, description);
-      ref.read(recipeProvider.notifier).addOrReplaceRecipe(recipe);
-      _titleController.clear();
-      _descController.clear();
-    }
-  }
-
   void _removeRecipe(Recipe recipe) =>
       ref.read(recipeProvider.notifier).removeRecipe(recipe);
+
+  void _editRecipe(Recipe? recipe) {
+    showDialog(
+      context: context,
+      builder: (context) => RecipeEditor(recipe: recipe),
+    );
+  }
 
   void _navigateToPlan() {
     Navigator.push(
@@ -76,27 +61,35 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Мои рецепты'),
+        title: const Text('Кулинарная книга'),
         actions: [
+          IconButton(
+            onPressed: () => _editRecipe(null),
+            icon: const Icon(Icons.add),
+            tooltip: "Добавить рецепт",
+          ),
+          IconButton(
+            onPressed: _navigateToWeekPlan,
+            icon: Icon(Icons.list_alt),
+            tooltip: "Недельный рецепт",
+          ),
           IconButton(
             onPressed: _navigateToPlan,
             icon: const Icon(Icons.calendar_month),
+            tooltip: "Добавить план",
           ),
         ],
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: _RecipeInput(
-              titleController: _titleController,
-              descController: _descController,
-              onAdd: _addRecipe,
-              onOpenWeekPlan: _navigateToWeekPlan,
-            ),
-          ),
+
           Expanded(
-            child: _RecipeList(recipes: recipes, onRemove: _removeRecipe),
+            child: //Text("_RecipeList")
+                _RecipeList(
+              recipes: recipes,
+              onRemove: _removeRecipe,
+              onEdit: _editRecipe,
+            ),
           ),
           IconButton(
             onPressed: () async {
@@ -114,55 +107,16 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
   }
 }
 
-class _RecipeInput extends StatelessWidget {
-  final TextEditingController titleController;
-  final TextEditingController descController;
-  final VoidCallback onAdd;
-  final VoidCallback onOpenWeekPlan;
-
-  const _RecipeInput({
-    required this.titleController,
-    required this.descController,
-    required this.onAdd,
-    required this.onOpenWeekPlan,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: titleController,
-                decoration: const InputDecoration(hintText: 'Введите название'),
-              ),
-            ),
-            IconButton(onPressed: onAdd, icon: const Icon(Icons.add)),
-            IconButton(onPressed: onOpenWeekPlan, icon: Icon(Icons.list_alt)),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: descController,
-                decoration: const InputDecoration(hintText: "Введите описание"),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class _RecipeList extends StatelessWidget {
   final void Function(Recipe) onRemove;
+  final void Function(Recipe) onEdit;
   final Set<Recipe> recipes;
 
-  const _RecipeList({required this.recipes, required this.onRemove});
+  const _RecipeList({
+    required this.recipes,
+    required this.onRemove,
+    required this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -174,11 +128,21 @@ class _RecipeList extends StatelessWidget {
       itemCount: recipes.length,
       itemBuilder: (context, index) {
         final recipe = recipesList[index];
+
         return ListTile(
           title: Text(recipe.title),
-          trailing: IconButton(
-            onPressed: () => onRemove(recipe),
-            icon: const Icon(Icons.delete),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () => onEdit(recipe),
+                icon: const Icon(Icons.edit),
+              ),
+              IconButton(
+                onPressed: () => onRemove(recipe),
+                icon: const Icon(Icons.delete),
+              ),
+            ],
           ),
         );
       },
