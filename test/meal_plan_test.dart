@@ -34,6 +34,7 @@ void main() async {
   test('Удаление плана', () async {
     final meal = DishStock.add(DishTemplate.add(title: 'Борщ', portion: 5));
     final plan = DailyPlan(date: DateTime.now(), portions: {meal.id: 1});
+
     final key = await box.add(plan);
     expect(box.length, 1);
     box.delete(key);
