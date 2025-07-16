@@ -68,6 +68,7 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
     final planByDate = ref
         .read(dailyPlanInteractorProvider)
         .getPlanByDate(selectedDate);
+
     selectedDishes.clear();
     availableDishesToAdd.clear();
     changedDishPortions.clear();
@@ -82,7 +83,6 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
       } else {
         availableDishesToAdd.add(mealItem);
       }
-      changedDishPortions[mealItem.id] = mealItem.usedPortion;
     }
   }
 

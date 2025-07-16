@@ -58,6 +58,7 @@ class _MealListState extends ConsumerState<MealList> {
       blendMode: BlendMode.dstIn,
       child: ListView.builder(
         itemCount: sortedDishList.length,
+        padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           final meal = sortedDishList[index];
 

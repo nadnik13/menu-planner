@@ -18,6 +18,7 @@ class DishStockInteractor {
     final values = await repo.fetchAll();
     notifier.addValues(values);
   }
+
   void _printBox() {
     final box = Hive.box<DishStock>('dishStockBox');
     logger.d('📦 Всего блюд: ${box.length}');
@@ -59,9 +60,11 @@ class DishStockInteractor {
     required DishStockStatusType? status,
   }) async {
     final stock = notifier.getByKey(key);
-    if (stock == null ||  status == null) return;
+    if (stock == null || status == null) return;
     final updatedStock = stock.copyWith(status: status);
-    logger.d('updateStatus ${updatedStock.id} ${updatedStock.title} ${updatedStock.status}');
+    logger.d(
+      'updateStatus ${updatedStock.id} ${updatedStock.title} ${updatedStock.status}',
+    );
     await repo.addOrReplace(updatedStock);
     notifier.addOrReplace(updatedStock);
   }
@@ -70,7 +73,10 @@ class DishStockInteractor {
     for (final entry in stockMap.entries) {
       final stock = notifier.getByKey(entry.key);
       if (stock != null) {
-        await updatePortion(stock: stock, usedCntPortion: entry.value);
+        await updatePortion(
+          stock: stock,
+          usedCntPortion: entry.value + stock.usedCntPortion,
+        );
       }
     }
   }
@@ -80,7 +86,8 @@ class DishStockInteractor {
     DishStock updated =
         stockByTemplate != null
             ? stockByTemplate.copyWith(
-              addedCntPortion: stockByTemplate.addedCntPortion + template.portion,
+              addedCntPortion:
+                  stockByTemplate.addedCntPortion + template.portion,
             )
             : DishStock.add(template);
     addOrReplace(updated);

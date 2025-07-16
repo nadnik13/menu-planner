@@ -34,7 +34,11 @@ class DailyPlanInteractor {
     for (final plan in plans) {
       if (plan.portions.containsKey(mealId)) {
         plan.portions.remove(mealId);
-        await _repository.addOrReplace(plan);
+        if (plan.portions.isEmpty) {
+          await _repository.removeByKey(plan.date.dateKey);
+        } else {
+          await _repository.addOrReplace(plan);
+        }
         _notifier.addOrReplace(plan);
       }
     }
