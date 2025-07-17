@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:my_recipe_app/providers/expandable_fab_interactor.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
-import 'package:my_recipe_app/widgets/day_list.dart';
+import 'package:food_planner/providers/expandable_fab_interactor.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_view_interactor.dart';
+import 'package:food_planner/widgets/day_list.dart';
 import '../../widgets/dish_list.dart';
 import '../../widgets/daily_plan_appbar.dart';
 import '../../utils/screen_utils.dart';

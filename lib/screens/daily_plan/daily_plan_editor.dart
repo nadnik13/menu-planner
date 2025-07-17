@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/providers/selected_date_notifier.dart';
+import 'package:food_planner/core/extensions/date_extensions.dart';
+import 'package:food_planner/providers/selected_date_notifier.dart';
 import '../../core/logger.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/plan_editing_widget.dart';

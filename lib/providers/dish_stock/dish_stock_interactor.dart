@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/core/logger.dart';
-import 'package:my_recipe_app/models/dish_stock/dish_stock_status_types.dart';
-import 'package:my_recipe_app/models/dish_template/dish_template.dart';
-import 'package:my_recipe_app/providers/dish_stock/dish_stock_repository.dart';
+import 'package:food_planner/core/logger.dart';
+import 'package:food_planner/models/dish_stock/dish_stock_status_types.dart';
+import 'package:food_planner/models/dish_template/dish_template.dart';
+import 'package:food_planner/providers/dish_stock/dish_stock_repository.dart';
 import '../../models/dish_stock/dish_stock.dart';
 import 'dish_stock_provider.dart';
 import 'package:collection/collection.dart';
