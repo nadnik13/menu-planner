@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_interactor.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_interactor.dart';
 import '../../models/dish_stock/dish_stock.dart';
 import 'dish_stock_interactor.dart';
 

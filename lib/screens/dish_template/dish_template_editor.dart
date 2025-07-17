@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_interactor.dart';
-import 'package:my_recipe_app/widgets/styled_button.dart';
+import 'package:food_planner/providers/dish_template/dish_template_interactor.dart';
+import 'package:food_planner/widgets/styled_button.dart';
 
 import '../../models/dish_template/dish_template.dart';
 

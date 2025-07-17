@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/core/logger.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_json_load_interactor.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_provider.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_repository.dart';
+import 'package:food_planner/core/logger.dart';
+import 'package:food_planner/providers/dish_template/dish_template_json_load_interactor.dart';
+import 'package:food_planner/providers/dish_template/dish_template_provider.dart';
+import 'package:food_planner/providers/dish_template/dish_template_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/dish_template/dish_template.dart';
 
