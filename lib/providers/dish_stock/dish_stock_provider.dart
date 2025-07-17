@@ -22,9 +22,7 @@ class DishStockNotifier extends StateNotifier<Set<DishStock>> {
   DishStock? getByKey(String key) =>
       state.where((e) => e.id == key).firstOrNull;
 
-  /// Фильтрация доступных запасов (с остатком > 0)
-  Set<DishStock> getAvailableValues() =>
-      state.where((e) => e.availablePortion > 0).toSet();
+  Set<DishStock> get getValues => state;
 
   /// Подсчет общего количества доступных порций
   int getCntAvailablePortion() =>

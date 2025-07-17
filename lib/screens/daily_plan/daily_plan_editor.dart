@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
 import 'package:food_planner/providers/selected_date_notifier.dart';
-import '../../core/logger.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/plan_editing_widget.dart';
 import '../../utils/screen_utils.dart';
@@ -22,7 +21,6 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
   @override
   void initState() {
     super.initState();
-    logger.d("PlanScreenState initState ${widget.date}");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final date = widget.date;
       if (date != null) {
@@ -33,7 +31,6 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d("PlanScreenState build selectedDate: ${widget.date}");
     final DateTime selectedDate = ref.watch(selectedDateProvider);
     
     // Адаптивные отступы

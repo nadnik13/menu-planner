@@ -28,13 +28,12 @@ class DishStockInteractor {
 
   int getCntAvailablePortion() {
     final value = notifier.getCntAvailablePortion();
-    logger.d("getAvailableStocks: ${notifier.getAvailableValues().length}");
     return value;
   }
 
   Map<String, String> getTitleMap() => notifier.getTitleMap();
 
-  Set<DishStock> getAvailableValues() => notifier.getAvailableValues();
+  Set<DishStock> getValues() => notifier.getValues;
 
   Future<void> addOrReplace(DishStock stock) async {
     notifier.addOrReplace(stock);
