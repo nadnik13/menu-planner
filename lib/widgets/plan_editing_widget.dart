@@ -42,7 +42,7 @@ class _PlannedDishItem {
           meal.id,
           meal.title,
           plannedDishPortionsByDate ?? 0,
-          meal.availablePortion,
+          meal.availablePortion + (plannedDishPortionsByDate ?? 0),
         ),
       );
     }
@@ -62,8 +62,8 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
   }
 
   void _loadDishes() {
-    final availableDishes =
-        ref.read(dishStockInteractorProvider).getAvailableValues();
+    final dishes =
+        ref.read(dishStockInteractorProvider).getValues();
     final selectedDate = widget.selectedDate;
     final planByDate = ref
         .read(dailyPlanInteractorProvider)
@@ -74,14 +74,16 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
     changedDishPortions.clear();
     //:TODO можно ли убрать выгрузку из интерактора в функцию генерации?
     final items = _PlannedDishItem.generateFromMeal(
-      availableDishes,
+      dishes,
       planByDate,
     );
     for (final mealItem in items) {
       if (mealItem.usedPortion > 0) {
         selectedDishes.add(mealItem);
       } else {
-        availableDishesToAdd.add(mealItem);
+        if (mealItem.availablePortion > 0) {
+          availableDishesToAdd.add(mealItem);
+        }
       }
     }
   }
