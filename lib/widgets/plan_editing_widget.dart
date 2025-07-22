@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/models/daily_plan/daily_plan.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_save_interactor.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_interactor.dart';
 import 'package:food_planner/widgets/styled_button.dart';
 import '../models/dish_stock/dish_stock.dart';
+import '../providers/daily_plan/daily_plan_providers.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import '../utils/emoji_utils.dart';
 
 class PlanEditingWidget extends ConsumerStatefulWidget {
@@ -63,10 +62,10 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
 
   void _loadDishes() {
     final dishes =
-        ref.read(dishStockInteractorProvider).getValues();
+        ref.read(DishStockProviders.interactor).getValues();
     final selectedDate = widget.selectedDate;
     final planByDate = ref
-        .read(dailyPlanInteractorProvider)
+        .read(DailyPlanProviders.interactor)
         .getPlanByDate(selectedDate);
 
     selectedDishes.clear();
@@ -98,7 +97,7 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
 
   void _save() {
     ref
-        .read(dailyPlanSaveInteractorProvider)
+        .read(DailyPlanProviders.saveInteractor)
         .save(
           date: widget.selectedDate,
           changedDishStockPortions: changedDishPortions,

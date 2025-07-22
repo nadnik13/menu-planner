@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/dish_template/dish_template.dart';
-import 'dish_template_interactor.dart';
 import 'dish_template_repository.dart';
 
 class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
@@ -23,7 +22,6 @@ class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
     state = {...state, template};
   }
 
-
   Future<void> remove(String id) async {
     await repo.remove(id);
     state = state.where((e) => e.id != id).toSet();
@@ -37,15 +35,9 @@ class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
 
   DishTemplate? findByTitle(String title) {
     final template = state.firstWhere(
-          (e) => e.title == title,
+      (e) => e.title == title,
       orElse: () => DishTemplate.empty,
     );
     return template.id.isEmpty ? null : template;
   }
 }
-
-final dishTemplateProvider =
-    StateNotifierProvider<DishTemplateNotifier, Set<DishTemplate>>((ref) {
-      final repo = ref.watch(dishTemplateRepositoryProvider);
-      return DishTemplateNotifier(repo);
-    });

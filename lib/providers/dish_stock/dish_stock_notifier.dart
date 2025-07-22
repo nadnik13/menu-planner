@@ -2,10 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/dish_stock/dish_stock.dart';
 import 'package:collection/collection.dart';
 
-import 'dish_stock_interactor.dart';
 import 'dish_stock_repository.dart';
-
-/// **DishStockNotifier** - управляет состоянием запасов блюд
 
 class DishStockNotifier extends StateNotifier<Set<DishStock>> {
   DishStockNotifier(this.repo) : super(<DishStock>{});
@@ -16,7 +13,6 @@ class DishStockNotifier extends StateNotifier<Set<DishStock>> {
     state = {...state, ...values};
   }
 
-  /// Используется в UI для отображения названий в планах
   Map<String, String> getTitleMap() => {for (var e in state) e.id: e.title};
 
   DishStock? getByKey(String key) =>
@@ -24,7 +20,6 @@ class DishStockNotifier extends StateNotifier<Set<DishStock>> {
 
   Set<DishStock> get getValues => state;
 
-  /// Подсчет общего количества доступных порций
   int getCntAvailablePortion() =>
       state
           .where((e) => e.availablePortion > 0)
@@ -45,24 +40,3 @@ class DishStockNotifier extends StateNotifier<Set<DishStock>> {
     state = state.where((e) => e.id != key).toSet();
   }
 }
-
-/// **Основной провайдер состояния запасов блюд**
-///
-/// StateNotifierProvider обеспечивает:
-/// - Автоматическое уведомление подписчиков об изменениях
-/// - Immutable обновления состояния
-/// - Интеграцию с DevTools для отладки
-final dishStockProvider =
-    StateNotifierProvider<DishStockNotifier, Set<DishStock>>((ref) {
-      final repo = ref.read(dishStockRepositoryProvider);
-      return DishStockNotifier(repo);
-    });
-
-/// **Провайдер статистики доступных порций**
-final availablePortionsCountProvider = Provider<int>((ref) {
-  final stocks = ref.watch(dishStockProvider);
-  return stocks
-      .where((e) => e.availablePortion > 0)
-      .map((e) => e.availablePortion)
-      .sum;
-});

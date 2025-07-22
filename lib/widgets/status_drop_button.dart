@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/logger.dart';
 import '../models/dish_stock/dish_stock_status_types.dart';
-import '../providers/dish_stock/dish_stock_interactor.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 
 class StatusDropButton extends ConsumerStatefulWidget{
   final String mealId;
@@ -54,7 +54,7 @@ class _StatusDropButtonState extends ConsumerState<StatusDropButton>{
           logger.d("_MyMealListState onChanged $value");
           setState(() {
             selectedStatus = value;
-            ref.read(dishStockInteractorProvider).updateStatusByKey(key: widget.mealId, status: selectedStatus);
+            ref.read(DishStockProviders.interactor).updateStatusByKey(key: widget.mealId, status: selectedStatus);
           });
         }
       },

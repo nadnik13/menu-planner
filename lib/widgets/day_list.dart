@@ -4,10 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
 import 'package:food_planner/core/navigation/app_routes.dart';
 import 'package:food_planner/models/daily_plan/daily_plan.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_view_interactor.dart';
 import '../core/logger.dart';
-import '../providers/daily_plan/daily_plan_provider.dart';
+import '../providers/daily_plan/daily_plan_providers.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';
 
@@ -43,8 +42,8 @@ class _DayListState extends ConsumerState<DayList> {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now().dateOnly;
-    final mealPlans = ref.watch(daysPlanProvider);
-    final isHideEmptyDays = ref.watch(dailyPlanIsHideEmptyDaysStateProvider);
+    final mealPlans = ref.watch(DailyPlanProviders.daysProvider);
+    final isHideEmptyDays = ref.watch(DailyPlanProviders.isHideEmptyDaysStateProvider);
 
     return ShaderMask(
       shaderCallback: (Rect bounds) {
@@ -115,7 +114,7 @@ class _DayCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //TODO можно перенести в generateFromMealPlan()?
-    final mealMap = ref.watch(dishStockInteractorProvider).getTitleMap();
+    final mealMap = ref.watch(DishStockProviders.interactor).getTitleMap();
     logger.d("_DayCard build $mealMap");
     final mealList = _MealItem.generateFromMealPlan(mealPlan.portions, mealMap);
     logger.d("_DayCard mealList ${mealList}");

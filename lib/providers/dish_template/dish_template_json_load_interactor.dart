@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/logger.dart';
 import '../../models/dish_template/dish_template.dart';
 import 'dart:convert';
@@ -42,9 +41,3 @@ class DishTemplateJsonLoadInteractor {
     return loaded;
   }
 }
-
-final dishTemplateJsonLoaderInteraptor =
-    Provider<DishTemplateJsonLoadInteractor>((ref) {
-      final bundle = rootBundle;
-      return DishTemplateJsonLoadInteractor(bundle);
-    });

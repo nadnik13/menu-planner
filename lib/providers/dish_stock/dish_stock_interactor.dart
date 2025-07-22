@@ -1,11 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:food_planner/core/logger.dart';
 import 'package:food_planner/models/dish_stock/dish_stock_status_types.dart';
 import 'package:food_planner/models/dish_template/dish_template.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_repository.dart';
 import '../../models/dish_stock/dish_stock.dart';
-import 'dish_stock_provider.dart';
+import 'dish_stock_notifier.dart';
 import 'package:collection/collection.dart';
 
 class DishStockInteractor {
@@ -45,7 +43,9 @@ class DishStockInteractor {
     required int usedCntPortion,
   }) async {
     final updatedStock = stock.copyWith(usedCntPortion: usedCntPortion);
-    logger.d("updatedStock: ${stock.title} ${stock.usedCntPortion} ${updatedStock.usedCntPortion}");
+    logger.d(
+      "updatedStock: ${stock.title} ${stock.usedCntPortion} ${updatedStock.usedCntPortion}",
+    );
     notifier.addOrReplace(updatedStock);
   }
 
@@ -87,14 +87,3 @@ class DishStockInteractor {
     notifier.removeByKey(key);
   }
 }
-
-final dishStockRepositoryProvider = Provider((ref) {
-  final box = Hive.box<DishStock>('DishStockBox');
-  return DishStockRepository(box);
-});
-
-final dishStockInteractorProvider = Provider((ref) {
-  return DishStockInteractor(
-    ref.read(dishStockProvider.notifier),
-  );
-});

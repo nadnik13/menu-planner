@@ -12,10 +12,3 @@ class SelectedDateNotifier extends Notifier<DateTime> {
     state = newDate;
   }
 }
-
-final selectedDateProvider = NotifierProvider<SelectedDateNotifier, DateTime>(
-  () =>
-      throw UnimplementedError(
-        'Провайдер должен быть переопределен в дочернем скоупе',
-      ),
-);

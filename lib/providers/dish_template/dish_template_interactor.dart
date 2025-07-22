@@ -1,9 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:food_planner/core/logger.dart';
 import 'package:food_planner/providers/dish_template/dish_template_json_load_interactor.dart';
-import 'package:food_planner/providers/dish_template/dish_template_provider.dart';
-import 'package:food_planner/providers/dish_template/dish_template_repository.dart';
+import 'package:food_planner/providers/dish_template/dish_template_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/dish_template/dish_template.dart';
 
@@ -54,8 +51,7 @@ class DishTemplateInteractor {
     notifier.addValues(newValues);
   }
 
-  Future<void> load() async =>
-    checkFirstLaunchAndLoad();
+  Future<void> load() async => checkFirstLaunchAndLoad();
 
   Future<void> checkFirstLaunchAndLoad() async {
     final prefs = await SharedPreferences.getInstance();
@@ -65,7 +61,7 @@ class DishTemplateInteractor {
 
     final templates = notifier.fetchAllValues;
 
-    if (!isFirstLaunch){
+    if (!isFirstLaunch) {
       final data = await jsonInteractor.loadFromFireStore();
       templates.addAll(data);
       await prefs.setBool('first_launch_done', true);
@@ -77,14 +73,3 @@ class DishTemplateInteractor {
     await notifier.remove(id);
   }
 }
-
-final dishTemplateRepositoryProvider = Provider((ref) {
-  final box = Hive.box<DishTemplate>('dishTemplateBox');
-  return DishTemplateRepository(box);
-});
-
-final dishTemplateInteractorProvider = Provider<DishTemplateInteractor>((ref) {
-  final notifier = ref.watch(dishTemplateProvider.notifier);
-  final jsonInteractor = ref.watch(dishTemplateJsonLoaderInteraptor);
-  return DishTemplateInteractor(notifier, jsonInteractor);
-});

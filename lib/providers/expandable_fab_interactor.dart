@@ -5,18 +5,19 @@ import 'package:food_planner/widgets/expandable_fab.dart';
 import '../screens/dish_template/dish_template_editor.dart';
 
 class ExpandableFabInteractor {
-  static void _navigateToPlanEditor(DateTime? date, BuildContext context) {
+
+  void _navigateToPlanEditor(DateTime? date, BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.dailyPlanEditor, arguments: date);
   }
 
-  static void _navigateToDishTemplateScreen(BuildContext context) {
+  void _navigateToDishTemplateScreen(BuildContext context) {
     Navigator.pushNamed(
         context,
         AppRoutes.dishTemplates
     );
   }
 
-  static void _navigateToTemplateEditorScreen(BuildContext context) {
+  void _navigateToTemplateEditorScreen(BuildContext context) {
     if (ModalRoute
         .of(context)
         ?.settings
@@ -29,7 +30,7 @@ class ExpandableFabInteractor {
     );
   }
 
-  static getExpandableFab({required int type, required BuildContext context}) {
+  getExpandableFab({required int type, required BuildContext context}) {
     switch (type) {
       case 1:
         return ExpandableFab(

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:food_planner/providers/expandable_fab_interactor.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_view_interactor.dart';
+import 'package:food_planner/providers/core_providers.dart';
 import 'package:food_planner/widgets/day_list.dart';
+import '../../providers/daily_plan/daily_plan_providers.dart';
 import '../../widgets/dish_list.dart';
 import '../../widgets/daily_plan_appbar.dart';
 import '../../utils/screen_utils.dart';
@@ -25,7 +25,7 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen>
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         ref
-            .read(dailyPlanViewInteractorProvider)
+            .read(DailyPlanProviders.viewInteractor)
             .changeTabIndex(_tabController.index);
       }
     });
@@ -86,7 +86,7 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen>
           ],
         ),
       ),
-      floatingActionButton: ExpandableFabInteractor.getExpandableFab(
+      floatingActionButton: ref.read(CoreProviders.expandableFabInteractor).getExpandableFab(
         type: 1, 
         context: context,
       ),

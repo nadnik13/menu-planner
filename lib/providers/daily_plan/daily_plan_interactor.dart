@@ -1,9 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_provider.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_notifier.dart';
 import '../../models/daily_plan/daily_plan.dart';
-import 'daily_plan_repository.dart';
 
 class DailyPlanInteractor {
   final DailyPlanNotifier _notifier;
@@ -41,12 +38,3 @@ class DailyPlanInteractor {
   }
 }
 
-final dailyPlanRepositoryProvider = Provider((ref) {
-  final box = Hive.box<DailyPlan>('DailyPlanBox');
-  return DailyPlanRepository(box);
-});
-
-final dailyPlanInteractorProvider = Provider<DailyPlanInteractor>((ref) {
-  final notifier = ref.watch(dailyPlanProvider.notifier);
-  return DailyPlanInteractor(notifier);
-});

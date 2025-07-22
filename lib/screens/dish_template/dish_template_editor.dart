@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_planner/providers/dish_template/dish_template_interactor.dart';
 import 'package:food_planner/widgets/styled_button.dart';
 
 import '../../models/dish_template/dish_template.dart';
+import '../../providers/dish_template/dish_template_providers.dart';
 
 class DishTemplateEditor extends ConsumerStatefulWidget {
   final DishTemplate? template;
@@ -49,7 +49,7 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
     final title = _titleController.text.trim();
 
     ref
-        .read(dishTemplateInteractorProvider)
+        .read(DishTemplateProviders.interactor)
         .addOrReplace(id: widget.template?.id, title: title, portion: _portion);
 
     Navigator.of(context).pop();

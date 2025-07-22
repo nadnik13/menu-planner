@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/dish_stock/dish_stock.dart';
-import '../providers/dish_stock/dish_stock_remove_interactor.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import 'status_drop_button.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';
@@ -65,7 +65,7 @@ class DishCard extends ConsumerWidget {
               ),
             ),
             IconButton(
-              onPressed: () => ref.read(dishStockRemoveInteractorProvider).remove(meal),
+              onPressed: () => ref.read(DishStockProviders.removeInteractor).remove(meal),
               icon: const Icon(Icons.delete, size: 20),
             ),
           ],

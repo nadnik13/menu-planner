@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_view_interactor.dart';
 import 'package:food_planner/widgets/dish_card.dart';
-import '../providers/dish_stock/dish_stock_provider.dart';
+import '../providers/daily_plan/daily_plan_providers.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import '../utils/screen_utils.dart';
 import 'package:collection/collection.dart';
 
@@ -25,9 +25,9 @@ class _MealListState extends ConsumerState<MealList> {
     );
     
     final isHideUnAvailableMeals = ref.watch(
-      dailyPlanIsHideUnavailableStocksStateProvider,
+      DailyPlanProviders.isHideUnavailableStocksStateProvider,
     );
-    final dish = ref.watch(dishStockProvider);
+    final dish = ref.watch(DishStockProviders.provider);
     final filteredDish =
         isHideUnAvailableMeals
             ? dish

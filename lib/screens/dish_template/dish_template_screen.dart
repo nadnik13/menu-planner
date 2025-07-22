@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:food_planner/providers/dish_template/dish_template_interactor.dart';
 import 'package:food_planner/screens/dish_template/dish_template_editor.dart';
 import '../../core/logger.dart';
 import '../../models/dish_template/dish_template.dart';
-import '../../providers/expandable_fab_interactor.dart';
+import '../../providers/core_providers.dart';
+import '../../providers/dish_stock/dish_stock_providers.dart';
+import '../../providers/dish_template/dish_template_providers.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/template_list.dart';
 import '../../utils/screen_utils.dart';
@@ -42,7 +42,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
   }
 
   void _removeTemplate(DishTemplate template) {
-    ref.watch(dishTemplateInteractorProvider).remove(template.id);
+    ref.watch(DishTemplateProviders.interactor).remove(template.id);
   }
 
   void _editTemplate(DishTemplate? recipe) {
@@ -53,7 +53,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
   }
 
   void _addDishStock(DishTemplate template) {
-    ref.read(dishStockInteractorProvider).addByDishTemplate(template);
+    ref.read(DishStockProviders.interactor).addByDishTemplate(template);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Блюдо ${template.title} добавлено')),
     );
@@ -130,7 +130,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
           ),
         ),
       ),
-      floatingActionButton: ExpandableFabInteractor.getExpandableFab(type:2, context: context),
+      floatingActionButton: ref.read(CoreProviders.expandableFabInteractor).getExpandableFab(type:2, context: context),
     );
   }
 }

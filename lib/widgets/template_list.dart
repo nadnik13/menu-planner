@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/dish_template/dish_template.dart';
-import '../providers/dish_template/dish_template_provider.dart';
+import '../providers/dish_template/dish_template_providers.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';
 
@@ -37,7 +37,7 @@ class TemplateList extends ConsumerWidget {
       large: const EdgeInsets.all(20),   // Pro Max - просторнее
     );
     
-    final templates = ref.watch(dishTemplateProvider);
+    final templates = ref.watch(DishTemplateProviders.provider);
     if (templates.isEmpty) {
       return const Center(child: Text('Нет добавленных блюд'));
     }

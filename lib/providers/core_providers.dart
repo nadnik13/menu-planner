@@ -1,0 +1,28 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_planner/providers/selected_date_notifier.dart';
+
+import 'daily_plan/daily_plan_view_interactor.dart';
+import 'expandable_fab_interactor.dart';
+
+abstract class CoreProviders {
+  CoreProviders._();
+
+  static final tabIndexProvider =
+      StateNotifierProvider<TabIndexProviderNotifier, int>(
+        (ref) => TabIndexProviderNotifier(),
+      );
+
+  static final selectedDateProvider =
+      NotifierProvider<SelectedDateNotifier, DateTime>(
+        () =>
+            throw UnimplementedError(
+              'Провайдер должен быть переопределен в дочернем скоупе',
+            ),
+      );
+
+  static final expandableFabInteractor = Provider<ExpandableFabInteractor>((
+      ref,
+      ) {
+    return ExpandableFabInteractor();
+  });
+}

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/providers/daily_plan/daily_plan_interactor.dart';
 import '../dish_stock/dish_stock_interactor.dart';
 
@@ -22,10 +21,3 @@ class DailyPlanSaveInteractor {
     }
   }
 }
-
-final dailyPlanSaveInteractorProvider = Provider((ref) {
-  return DailyPlanSaveInteractor(
-    ref.read(dailyPlanInteractorProvider),
-    ref.read(dishStockInteractorProvider),
-  );
-});
