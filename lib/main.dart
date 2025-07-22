@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/core/navigation/app_routes.dart';
-import 'package:my_recipe_app/screens/daily_plan/daily_plan_editor.dart';
-import 'package:my_recipe_app/screens/daily_plan/daily_plan_screen.dart';
-import 'package:my_recipe_app/screens/dish_template/dish_template_screen.dart';
-import 'package:my_recipe_app/screens/startup_screen.dart';
+import 'package:food_planner/core/navigation/app_routes.dart';
+import 'package:food_planner/screens/daily_plan/daily_plan_editor.dart';
+import 'package:food_planner/screens/daily_plan/daily_plan_screen.dart';
+import 'package:food_planner/screens/dish_template/dish_template_screen.dart';
+import 'package:food_planner/screens/startup_screen.dart';
 
 import 'core/extensions/app_initializer.dart';
 

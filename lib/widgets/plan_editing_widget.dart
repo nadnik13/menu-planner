@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_recipe_app/models/daily_plan/daily_plan.dart';
-import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_save_interactor.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_interactor.dart';
-import 'package:my_recipe_app/widgets/styled_button.dart';
+import 'package:food_planner/models/daily_plan/daily_plan.dart';
+import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_save_interactor.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_interactor.dart';
+import 'package:food_planner/widgets/styled_button.dart';
 import '../models/dish_stock/dish_stock.dart';
 import '../utils/emoji_utils.dart';
 
@@ -42,7 +42,7 @@ class _PlannedDishItem {
           meal.id,
           meal.title,
           plannedDishPortionsByDate ?? 0,
-          meal.availablePortion,
+          meal.availablePortion + (plannedDishPortionsByDate ?? 0),
         ),
       );
     }
@@ -62,8 +62,8 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
   }
 
   void _loadDishes() {
-    final availableDishes =
-        ref.read(dishStockInteractorProvider).getAvailableValues();
+    final dishes =
+        ref.read(dishStockInteractorProvider).getValues();
     final selectedDate = widget.selectedDate;
     final planByDate = ref
         .read(dailyPlanInteractorProvider)
@@ -74,14 +74,16 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
     changedDishPortions.clear();
     //:TODO можно ли убрать выгрузку из интерактора в функцию генерации?
     final items = _PlannedDishItem.generateFromMeal(
-      availableDishes,
+      dishes,
       planByDate,
     );
     for (final mealItem in items) {
       if (mealItem.usedPortion > 0) {
         selectedDishes.add(mealItem);
       } else {
-        availableDishesToAdd.add(mealItem);
+        if (mealItem.availablePortion > 0) {
+          availableDishesToAdd.add(mealItem);
+        }
       }
     }
   }

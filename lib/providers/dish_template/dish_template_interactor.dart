@@ -1,21 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:my_recipe_app/core/logger.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_json_load_interactor.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_provider.dart';
-import 'package:my_recipe_app/providers/dish_template/dish_template_repository.dart';
+import 'package:food_planner/core/logger.dart';
+import 'package:food_planner/providers/dish_template/dish_template_json_load_interactor.dart';
+import 'package:food_planner/providers/dish_template/dish_template_provider.dart';
+import 'package:food_planner/providers/dish_template/dish_template_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/dish_template/dish_template.dart';
 
 class DishTemplateInteractor {
-  final DishTemplateRepository repo;
   final DishTemplateNotifier notifier;
   final DishTemplateJsonLoadInteractor jsonInteractor;
 
-  DishTemplateInteractor(this.repo, this.notifier, this.jsonInteractor);
+  DishTemplateInteractor(this.notifier, this.jsonInteractor);
 
   Future<void> _add(DishTemplate template) async {
-    await repo.addOrReplace(template);
     notifier.addOrReplace(template);
   }
 
@@ -53,26 +51,11 @@ class DishTemplateInteractor {
   }
 
   Future<void> addValues(Set<DishTemplate> newValues) async {
-    final values = notifier.fetchAllValues;
-    final unloadedValues = newValues.where((e) => !values.contains(e)).toSet();
-    logger.d(
-      "addValues: ${values.length}/${newValues.length}/${unloadedValues.length} (old/new/unload)",
-    );
-    await repo.addValues(unloadedValues);
-    notifier.addValues(unloadedValues);
+    notifier.addValues(newValues);
   }
+
   Future<void> load() async =>
     checkFirstLaunchAndLoad();
-
-
-  Future<void> defaultLoad() async {
-    final templates = await repo.fetchAllValues();
-
-    if (templates.isEmpty) {
-      templates.addAll(await jsonInteractor.loadFromJson());
-    }
-    await addValues(templates);
-  }
 
   Future<void> checkFirstLaunchAndLoad() async {
     final prefs = await SharedPreferences.getInstance();
@@ -80,7 +63,7 @@ class DishTemplateInteractor {
     final isFirstLaunch = prefs.getBool('first_launch_done') ?? false;
     logger.d('isFirstLaunch: $isFirstLaunch');
 
-    final templates = await repo.fetchAllValues();
+    final templates = notifier.fetchAllValues;
 
     if (!isFirstLaunch){
       final data = await jsonInteractor.loadFromFireStore();
@@ -91,12 +74,7 @@ class DishTemplateInteractor {
   }
 
   Future<void> remove(String id) async {
-    await repo.remove(id);
-    final values = await repo.fetchAllValues();
-
-    logger.d("templates ${values.length}");
     await notifier.remove(id);
-    logger.d("templates ${notifier.fetchAllValues.length}");
   }
 }
 
@@ -106,8 +84,7 @@ final dishTemplateRepositoryProvider = Provider((ref) {
 });
 
 final dishTemplateInteractorProvider = Provider<DishTemplateInteractor>((ref) {
-  final repo = ref.watch(dishTemplateRepositoryProvider);
   final notifier = ref.watch(dishTemplateProvider.notifier);
   final jsonInteractor = ref.watch(dishTemplateJsonLoaderInteraptor);
-  return DishTemplateInteractor(repo, notifier, jsonInteractor);
+  return DishTemplateInteractor(notifier, jsonInteractor);
 });

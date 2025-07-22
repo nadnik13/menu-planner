@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_recipe_app/core/extensions/date_extensions.dart';
-import 'package:my_recipe_app/core/navigation/app_routes.dart';
-import 'package:my_recipe_app/models/daily_plan/daily_plan.dart';
-import 'package:my_recipe_app/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:my_recipe_app/providers/daily_plan/daily_plan_view_interactor.dart';
+import 'package:food_planner/core/extensions/date_extensions.dart';
+import 'package:food_planner/core/navigation/app_routes.dart';
+import 'package:food_planner/models/daily_plan/daily_plan.dart';
+import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_view_interactor.dart';
 import '../core/logger.dart';
 import '../providers/daily_plan/daily_plan_provider.dart';
 import '../utils/emoji_utils.dart';

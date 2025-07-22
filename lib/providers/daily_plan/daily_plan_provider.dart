@@ -1,35 +1,62 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_planner/core/extensions/date_extensions.dart';
 import '../../models/daily_plan/daily_plan.dart';
+import 'daily_plan_interactor.dart';
+import 'daily_plan_repository.dart';
 
 class DailyPlanNotifier extends StateNotifier<List<DailyPlan>> {
-  DailyPlanNotifier() : super(<DailyPlan>[]);
+  DailyPlanNotifier(this._repository) : super(<DailyPlan>[]);
+  final DailyPlanRepository _repository;
 
   List<DailyPlan> get fetchAllMealPlans => state;
 
-  void loadValues(List<DailyPlan> plans) {
+  Future<void> loadValues() async {
+    final plans = await _repository.fetchAllValues();
     state = plans;
   }
 
-  void addOrReplace(DailyPlan plan) {
+  Future<void> addOrReplace(DailyPlan plan) async {
+    await _repository.addOrReplace(plan);
     state = state.where((e) => e.date != plan.date).toList();
     state = [...state, plan];
   }
 
-  void removeByKey(DateTime date) {
+  Future<void> removeByKey(DateTime date) async {
+    await _repository.removeByKey(date.dateKey);
     state = state.where((e) => e.date != date).toList();
   }
 
-  DailyPlan? getByDate(DateTime date) =>
-      state.where((e) => e.date == date).firstOrNull;
+  Future<void> removeMealFromPlans(String mealId) async {
+    final plans = fetchAllMealPlans;
+    for (final plan in plans) {
+      if (plan.portions.containsKey(mealId)) {
+        plan.portions.remove(mealId);
+        if (plan.portions.isEmpty) {
+          await _repository.removeByKey(plan.date.dateKey);
+        } else {
+          await _repository.addOrReplace(plan);
+        }
+        addOrReplace(plan);
+      }
+    }
+  }
+
+  DailyPlan? getByDate(DateTime date) {
+    final plan =  state
+        .where((e) => e.date == date)
+        .firstOrNull;
+    return plan;
+  }
 
   int cntPlansOnFuture() =>
       state.where((e) => e.date.isAfter(DateTime.now())).length;
 }
 
 final dailyPlanProvider =
-    StateNotifierProvider<DailyPlanNotifier, List<DailyPlan>>(
-      (ref) => DailyPlanNotifier(),
-    );
+    StateNotifierProvider<DailyPlanNotifier, List<DailyPlan>>((ref) {
+      final repo = ref.watch(dailyPlanRepositoryProvider);
+      return DailyPlanNotifier(repo);
+    });
 
 final daysPlanProvider = Provider<Map<DateTime, DailyPlan>>((ref) {
   final plans = ref.watch(dailyPlanProvider);
