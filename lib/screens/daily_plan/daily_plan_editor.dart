@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:food_planner/core/extensions/date_extensions.dart';
-import 'package:food_planner/providers/selected_date_notifier.dart';
+import 'package:my_recipe_app/core/extensions/date_extensions.dart';
+import 'package:my_recipe_app/providers/selected_date_notifier.dart';
+import '../../core/logger.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/plan_editing_widget.dart';
 import '../../utils/screen_utils.dart';
@@ -21,6 +22,7 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
   @override
   void initState() {
     super.initState();
+    logger.d("PlanScreenState initState ${widget.date}");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final date = widget.date;
       if (date != null) {
@@ -31,50 +33,39 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d("PlanScreenState build selectedDate: ${widget.date}");
     final DateTime selectedDate = ref.watch(selectedDateProvider);
-
+    
     // Адаптивные отступы
     final screenPadding = ScreenUtils.adaptivePadding(
       context,
-      small: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
-      // iPhone 12 mini
-      medium: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
-      // iPhone 12/13/14
-      large: const EdgeInsets.symmetric(
-        vertical: 20.0,
-        horizontal: 28,
-      ), // Pro Max
+      small: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),  // iPhone 12 mini
+      medium: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24), // iPhone 12/13/14
+      large: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 28),  // Pro Max
     );
-
-    final calendarDate = widget.date ?? DateTime.now();
-
-    return ProviderScope(
-      overrides: [
-        selectedDateProvider.overrideWith(
-          () => SelectedDateNotifier(calendarDate),
-        ),
-      ],
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Padding(
-            padding: screenPadding,
-            child: Column(
-              children: [
-                const CommonHeader(title: 'Редактировать план'),
-                const SizedBox(height: 20),
-                _DatePickerRow(
-                  selectedDate: calendarDate,
-                  onDateChanged: (value) {
-                    ref.read(selectedDateProvider.notifier).update(value);
-                  },
-                  isAvailableChangeDate: widget.date == null,
-                ),
-                const SizedBox(height: 16),
-                Expanded(child: PlanEditingWidget(selectedDate: selectedDate)),
-                const SizedBox(height: 16),
-              ],
-            ),
+    
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: screenPadding,
+          child: Column(
+            children: [
+              const CommonHeader(title: 'Редактировать план'),
+              const SizedBox(height: 20),
+              _DatePickerRow(
+                selectedDate: selectedDate,
+                onDateChanged: (value) {
+                  ref.read(selectedDateProvider.notifier).update(value);
+                },
+                isAvailableChangeDate: widget.date == null,
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: PlanEditingWidget(selectedDate: selectedDate),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
       ),
@@ -104,9 +95,9 @@ class _DatePickerRow extends StatelessWidget {
             style: TextStyle(
               fontSize: ScreenUtils.adaptiveFontSize(
                 context,
-                small: 16.0, // iPhone 12 mini
-                medium: 18.0, // iPhone 12/13/14
-                large: 20.0, // Pro Max
+                small: 16.0,   // iPhone 12 mini
+                medium: 18.0,  // iPhone 12/13/14
+                large: 20.0,   // Pro Max
               ),
               fontWeight: FontWeight.w500,
             ),
@@ -125,7 +116,10 @@ class _DatePickerRow extends StatelessWidget {
                 onDateChanged(picked);
               }
             },
-            icon: const Icon(Icons.edit, color: Color(0xFF0F676E)),
+            icon: const Icon(
+              Icons.edit,
+              color: Color(0xFF0F676E),
+            ),
           ),
       ],
     );

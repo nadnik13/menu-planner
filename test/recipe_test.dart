@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:food_planner/models/dish_template/dish_template.dart';
+import 'package:my_recipe_app/models/dish_template/dish_template.dart';
 import 'dart:io';
 
 import 'package:uuid/uuid.dart';

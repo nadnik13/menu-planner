@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:food_planner/core/extensions/date_extensions.dart';
+import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 import '../../models/daily_plan/daily_plan.dart';
 
 class DailyPlanRepository {

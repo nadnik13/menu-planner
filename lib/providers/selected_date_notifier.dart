@@ -1,12 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SelectedDateNotifier extends Notifier<DateTime> {
-  final DateTime initialDate;
-
-  SelectedDateNotifier(this.initialDate);
-
   @override
-  DateTime build() => initialDate;
+  DateTime build() => DateTime.now();
 
   void update(DateTime newDate) {
     state = newDate;
@@ -14,8 +10,7 @@ class SelectedDateNotifier extends Notifier<DateTime> {
 }
 
 final selectedDateProvider = NotifierProvider<SelectedDateNotifier, DateTime>(
-  () =>
-      throw UnimplementedError(
-        'Провайдер должен быть переопределен в дочернем скоупе',
-      ),
+  () {
+    return SelectedDateNotifier();
+  },
 );

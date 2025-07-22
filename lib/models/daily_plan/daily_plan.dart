@@ -1,4 +1,4 @@
-import 'package:food_planner/core/extensions/date_extensions.dart';
+import 'package:my_recipe_app/core/extensions/date_extensions.dart';
 
 import 'package:hive/hive.dart';
 import '../hive_type_ids.dart';

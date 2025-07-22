@@ -1,11 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/dish_template/dish_template.dart';
-import 'dish_template_interactor.dart';
-import 'dish_template_repository.dart';
 
 class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
-  DishTemplateNotifier(this.repo) : super(<DishTemplate>{});
-  final DishTemplateRepository repo;
+  DishTemplateNotifier() : super(<DishTemplate>{});
 
   void loadValues(Set<DishTemplate> templates) {
     state = templates;
@@ -14,8 +11,6 @@ class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
   Set<DishTemplate> get fetchAllValues => state;
 
   Future<void> addValues(Set<DishTemplate> templates) async {
-    final unloadedValues = state.where((e) => !state.contains(e)).toSet();
-    await repo.addValues(unloadedValues);
     state = {...state, ...templates};
   }
 
@@ -25,12 +20,10 @@ class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
 
 
   Future<void> remove(String id) async {
-    await repo.remove(id);
     state = state.where((e) => e.id != id).toSet();
   }
 
   Future<void> addOrReplace(DishTemplate template) async {
-    await repo.addOrReplace(template);
     final templates = state.where((e) => e.id != template.id).toSet();
     state = {...templates, template};
   }
@@ -44,8 +37,6 @@ class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
   }
 }
 
-final dishTemplateProvider =
-    StateNotifierProvider<DishTemplateNotifier, Set<DishTemplate>>((ref) {
-      final repo = ref.watch(dishTemplateRepositoryProvider);
-      return DishTemplateNotifier(repo);
-    });
+final dishTemplateProvider = StateNotifierProvider<DishTemplateNotifier, Set<DishTemplate>>(
+      (ref) => DishTemplateNotifier(),
+);

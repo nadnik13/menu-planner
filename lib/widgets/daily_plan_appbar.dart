@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_provider.dart';
-import 'package:food_planner/utils/pluralize_utils.dart';
+import 'package:my_recipe_app/providers/dish_stock/dish_stock_provider.dart';
+import 'package:my_recipe_app/utils/pluralize_utils.dart';
 import '../utils/screen_utils.dart';
 
 import '../providers/daily_plan/daily_plan_provider.dart';
