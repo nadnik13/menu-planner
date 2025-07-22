@@ -18,8 +18,7 @@ class DishTemplateEditor extends ConsumerStatefulWidget {
 class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
   late TextEditingController _titleController;
   late int _portion;
-  bool isActive = false;
-  late bool isNewFood;
+  bool _isActive = false;
 
   @override
   void initState() {
@@ -27,9 +26,8 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
     _titleController = TextEditingController(
       text: widget.template?.title ?? "",
     );
-    isNewFood = widget.template?.title != null ? false : true;
     _portion = widget.template?.portion ?? 1;
-    isActive = _isValid;
+    _isActive = _isValid;
 
     _titleController.addListener(_updateActiveState);
   }
@@ -38,9 +36,9 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
 
   void _updateActiveState() {
     final valid = _isValid;
-    if (valid != isActive) {
+    if (valid != _isActive) {
       setState(() {
-        isActive = valid;
+        _isActive = valid;
       });
     }
   }
@@ -82,22 +80,22 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
             ),
             const SizedBox(height: 16),
             Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(child: Text('Кол-во порций')),
-                  IconButton(
-                    onPressed:
-                        _portion > 1 ? () => setState(() => _portion--) : null,
-                    icon: Icon(Icons.remove),
-                  ),
-                  Text('$_portion'),
-                  IconButton(
-                    onPressed:
-                        _portion < 99 ? () => setState(() => _portion++) : null,
-                    icon: Icon(Icons.add),
-                  ),
-                ],
-              ),
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(child: Text('Кол-во порций')),
+                IconButton(
+                  onPressed:
+                      _portion > 1 ? () => setState(() => _portion--) : null,
+                  icon: Icon(Icons.remove),
+                ),
+                Text('$_portion'),
+                IconButton(
+                  onPressed:
+                      _portion < 99 ? () => setState(() => _portion++) : null,
+                  icon: Icon(Icons.add),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -118,7 +116,7 @@ class _RecipeEditorState extends ConsumerState<DishTemplateEditor> {
             SizedBox(width: 4),
             Expanded(
               child: StyledButton(
-                isActive: isActive,
+                isActive: _isActive,
                 onPress: _save,
                 text: 'Сохранить',
                 type: ButtonType.dark,

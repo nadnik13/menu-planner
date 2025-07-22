@@ -37,4 +37,3 @@ class DailyPlanInteractor {
     _notifier.addOrReplace(plan);
   }
 }
-

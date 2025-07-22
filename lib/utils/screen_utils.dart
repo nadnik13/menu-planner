@@ -7,7 +7,7 @@ class ScreenUtils {
   /// Определяет размер экрана на основе ширины
   static ScreenSize getScreenSize(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    
+
     if (width < 380) {
       return ScreenSize.small; // iPhone 12 mini, SE
     } else if (width < 415) {
@@ -23,7 +23,8 @@ class ScreenUtils {
   }
 
   /// Адаптивный размер шрифта
-  static double adaptiveFontSize(BuildContext context, {
+  static double adaptiveFontSize(
+    BuildContext context, {
     required double small,
     required double medium,
     double? large,
@@ -40,7 +41,8 @@ class ScreenUtils {
   }
 
   /// Адаптивные отступы
-  static EdgeInsets adaptivePadding(BuildContext context, {
+  static EdgeInsets adaptivePadding(
+    BuildContext context, {
     required EdgeInsets small,
     required EdgeInsets medium,
     EdgeInsets? large,
@@ -57,7 +59,8 @@ class ScreenUtils {
   }
 
   /// Адаптивное значение
-  static T adaptiveValue<T>(BuildContext context, {
+  static T adaptiveValue<T>(
+    BuildContext context, {
     required T small,
     required T medium,
     T? large,
@@ -75,7 +78,9 @@ class ScreenUtils {
 }
 
 enum ScreenSize {
-  small,  // < 380 (iPhone 12 mini, SE)
+  small, // < 380 (iPhone 12 mini, SE)
   medium, // 380-414 (iPhone 12/13/14)
-  large,  // > 414 (Pro Max, iPad)
-} 
+  large, // > 414 (Pro Max, iPad)
+}
+
+const int cntItemsOnScreen = 5;

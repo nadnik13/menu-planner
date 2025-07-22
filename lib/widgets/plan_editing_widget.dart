@@ -50,9 +50,9 @@ class _PlannedDishItem {
 }
 
 class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
-  final List<_PlannedDishItem> selectedDishes = [];
-  final List<_PlannedDishItem> availableDishesToAdd = [];
-  final changedDishPortions = <String, int>{};
+  final List<_PlannedDishItem> _selectedDishes = [];
+  final List<_PlannedDishItem> _availableDishesToAdd = [];
+  final _changedDishPortions = <String, int>{};
 
   @override
   void initState() {
@@ -68,20 +68,20 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
         .read(DailyPlanProviders.interactor)
         .getPlanByDate(selectedDate);
 
-    selectedDishes.clear();
-    availableDishesToAdd.clear();
-    changedDishPortions.clear();
-    //:TODO можно ли убрать выгрузку из интерактора в функцию генерации?
+    _selectedDishes.clear();
+    _availableDishesToAdd.clear();
+    _changedDishPortions.clear();
+
     final items = _PlannedDishItem.generateFromMeal(
       dishes,
       planByDate,
     );
     for (final mealItem in items) {
       if (mealItem.usedPortion > 0) {
-        selectedDishes.add(mealItem);
+        _selectedDishes.add(mealItem);
       } else {
         if (mealItem.availablePortion > 0) {
-          availableDishesToAdd.add(mealItem);
+          _availableDishesToAdd.add(mealItem);
         }
       }
     }
@@ -100,8 +100,8 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
         .read(DailyPlanProviders.saveInteractor)
         .save(
           date: widget.selectedDate,
-          changedDishStockPortions: changedDishPortions,
-          dishStockCntMap: {for (var e in selectedDishes) e.id: e.usedPortion},
+          changedDishStockPortions: _changedDishPortions,
+          dishStockCntMap: {for (var e in _selectedDishes) e.id: e.usedPortion},
         );
     Navigator.pop(context);
 
@@ -117,11 +117,11 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
       children: [
         _buildSectionTitle('Выбранные блюда'),
         SizedBox(height: 8),
-        _buildMealList(selectedDishes, isBusyList: true),
+        _buildMealList(_selectedDishes, isBusyList: true),
         SizedBox(height: 16),
         _buildSectionTitle('Для добавления'),
         SizedBox(height: 8),
-        _buildMealList(availableDishesToAdd, isBusyList: false),
+        _buildMealList(_availableDishesToAdd, isBusyList: false),
         Row(
           children: [
             Expanded(
@@ -186,10 +186,10 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
                                   entity.usedPortion--;
                                   if (entity.usedPortion == 0 && isBusyList) {
                                     meals.removeAt(i);
-                                    availableDishesToAdd.add(entity);
+                                    _availableDishesToAdd.add(entity);
                                   }
-                                  changedDishPortions[entity.id] =
-                                      (changedDishPortions[entity.id] ?? 0) - 1;
+                                  _changedDishPortions[entity.id] =
+                                      (_changedDishPortions[entity.id] ?? 0) - 1;
                                 })
                                 : null,
                     icon: Icon(Icons.remove),
@@ -203,10 +203,10 @@ class _PlanEditingWidgetState extends ConsumerState<PlanEditingWidget> {
                                   entity.usedPortion++;
                                   if (entity.usedPortion == 1 && !isBusyList) {
                                     meals.removeAt(i);
-                                    selectedDishes.add(entity);
+                                    _selectedDishes.add(entity);
                                   }
-                                  changedDishPortions[entity.id] =
-                                      (changedDishPortions[entity.id] ?? 0) + 1;
+                                  _changedDishPortions[entity.id] =
+                                      (_changedDishPortions[entity.id] ?? 0) + 1;
                                 })
                                 : null,
                     icon: Icon(Icons.add),

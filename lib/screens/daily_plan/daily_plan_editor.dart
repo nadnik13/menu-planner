@@ -7,21 +7,18 @@ import '../../widgets/plan_editing_widget.dart';
 import '../../utils/screen_utils.dart';
 
 class PlanEditor extends ConsumerStatefulWidget {
-  final DateTime date;
-  final bool isAvailableChangeDate;
+  final bool _isAvailableChangeDate;
 
   const PlanEditor({
     super.key,
-    required this.date,
-    required this.isAvailableChangeDate,
-  });
+    required bool isAvailableChangeDate,
+  }) : _isAvailableChangeDate = isAvailableChangeDate;
 
   @override
   ConsumerState<PlanEditor> createState() => PlanScreenState();
 }
 
 class PlanScreenState extends ConsumerState<PlanEditor> {
-  int portion = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,7 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
                       .read(CoreProviders.selectedDateProvider.notifier)
                       .update(value);
                 },
-                isAvailableChangeDate: widget.isAvailableChangeDate,
+                isAvailableChangeDate: widget._isAvailableChangeDate,
               ),
               const SizedBox(height: 16),
               Expanded(child: PlanEditingWidget(selectedDate: selectedDate)),
@@ -69,19 +66,19 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
 }
 
 class _DatePickerRow extends StatelessWidget {
-  final DateTime selectedDate;
-  final ValueChanged<DateTime> onDateChanged;
-  final bool isAvailableChangeDate;
+  final DateTime _selectedDate;
+  final ValueChanged<DateTime> _onDateChanged;
+  final bool _isAvailableChangeDate;
 
   const _DatePickerRow({
-    required this.selectedDate,
-    required this.onDateChanged,
-    required this.isAvailableChangeDate,
-  });
+    required DateTime selectedDate,
+    required void Function(DateTime) onDateChanged,
+    required bool isAvailableChangeDate,
+  }) : _isAvailableChangeDate = isAvailableChangeDate, _onDateChanged = onDateChanged, _selectedDate = selectedDate;
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = selectedDate.formatDMY();
+    final formattedDate = _selectedDate.formatDMY();
     return Row(
       children: [
         Expanded(
@@ -98,17 +95,17 @@ class _DatePickerRow extends StatelessWidget {
             ),
           ),
         ),
-        if (isAvailableChangeDate)
+        if (_isAvailableChangeDate)
           IconButton(
             onPressed: () async {
               final picked = await showDatePicker(
                 context: context,
-                initialDate: selectedDate,
-                firstDate: selectedDate.subtract(const Duration(days: 60)),
-                lastDate: selectedDate.add(const Duration(days: 305)),
+                initialDate: _selectedDate,
+                firstDate: _selectedDate.subtract(const Duration(days: 60)),
+                lastDate: _selectedDate.add(const Duration(days: 305)),
               );
               if (picked != null) {
-                onDateChanged(picked);
+                _onDateChanged(picked);
               }
             },
             icon: const Icon(Icons.edit, color: Color(0xFF0F676E)),

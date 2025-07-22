@@ -19,8 +19,8 @@ class DishTemplateScreen extends ConsumerStatefulWidget {
 }
 
 class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
-  final searchController = TextEditingController();
-  String searchQuery = '';
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
 
   void _printBox() {
     final box = Hive.box<DishTemplate>('dishTemplateBox');
@@ -33,9 +33,9 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
   @override
   void initState() {
     super.initState();
-    searchController.addListener(() {
+    _searchController.addListener(() {
       setState(() {
-        searchQuery = searchController.text.toLowerCase();
+        _searchQuery = _searchController.text.toLowerCase();
       });
     });
     _printBox();
@@ -83,7 +83,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
                 const CommonHeader(title: 'Еда'),
                 const SizedBox(height: 8), // Фиксированный отступ между заголовком и поиском
                 TextField(
-                  controller: searchController,
+                  controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Поиск...',
                     hintStyle: TextStyle(
@@ -122,7 +122,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
                     onRemove: _removeTemplate,
                     onAdd: _addDishStock,
                     onEdit: _editTemplate,
-                    searchQuery: searchQuery,
+                    searchQuery: _searchQuery,
                   ),
                 ),
               ],

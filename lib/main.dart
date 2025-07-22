@@ -13,14 +13,11 @@ import 'core/extensions/app_initializer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppInitializer.initialize();
-
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: FoodPlanner()));
 }
 
-final counterProvider = StateProvider<int>((ref) => 0);
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FoodPlanner extends StatelessWidget {
+  const FoodPlanner({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +42,7 @@ class MyApp extends StatelessWidget {
                             () => SelectedDateNotifier(selectedDate),
                       ),
                     ],
-                    child: PlanEditor(date: selectedDate, isAvailableChangeDate: date == null));
+                    child: PlanEditor(isAvailableChangeDate: date == null));
               },
               settings: settings,
             );

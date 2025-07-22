@@ -26,7 +26,8 @@ class TabIndexProviderNotifier extends StateNotifier<int> {
 
 class DailyPlanViewInteractor {
   final DailyPlanIsHideEmptyDaysNotifier isHideEmptyDaysNotifier;
-  final DailyPlanIsHideUnavailableStocksNotifier isHideUnavailableStocksNotifier;
+  final DailyPlanIsHideUnavailableStocksNotifier
+  isHideUnavailableStocksNotifier;
   final TabIndexProviderNotifier tabIndexNotifier;
 
   DailyPlanViewInteractor(

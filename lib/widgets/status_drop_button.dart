@@ -4,46 +4,48 @@ import '../core/logger.dart';
 import '../models/dish_stock/dish_stock_status_types.dart';
 import '../providers/dish_stock/dish_stock_providers.dart';
 
-class StatusDropButton extends ConsumerStatefulWidget{
-  final String mealId;
-  final DishStockStatusType status;
+class StatusDropButton extends ConsumerStatefulWidget {
+  final String _mealId;
+  final DishStockStatusType _status;
+
   const StatusDropButton({
     super.key,
-    required this.mealId,
-    required this.status,
-  });
+    required String mealId,
+    required DishStockStatusType status,
+  }) : _status = status,
+       _mealId = mealId;
+
   @override
   ConsumerState<StatusDropButton> createState() => _StatusDropButtonState();
 }
 
-class _StatusDropButtonState extends ConsumerState<StatusDropButton>{
-  late DishStockStatusType selectedStatus;
+class _StatusDropButtonState extends ConsumerState<StatusDropButton> {
+  late DishStockStatusType _selectedStatus;
 
   @override
   void initState() {
     super.initState();
-    logger.d("_MyMealListState initState ${widget.status.label}");
-    selectedStatus = widget.status;
+    logger.d("_MyMealListState initState ${widget._status.label}");
+    _selectedStatus = widget._status;
   }
 
   @override
   void didUpdateWidget(covariant StatusDropButton oldWidget) {
-
     super.didUpdateWidget(oldWidget);
-    logger.d("didUpdateWidget ${oldWidget.key}, ${oldWidget.mealId} ${oldWidget.status} ${widget.status} ");
+    logger.d(
+      "didUpdateWidget ${oldWidget.key}, ${oldWidget._mealId} ${oldWidget._status} ${widget._status} ",
+    );
 
     // Обновляем статус, если он изменился снаружи
-    if (widget.status != oldWidget.status) {
-      selectedStatus = widget.status;
+    if (widget._status != oldWidget._status) {
+      _selectedStatus = widget._status;
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    logger.d("_MyMealListState build ${widget.status.label}");
-    //final dish_stock = ref.watch(mealProvider.notifier).getMealByKey(widget.mealId);
-    //logger.d("_MyMealListState build ${dish_stock?.title} ${dish_stock?.status}");
     return DropdownButton<DishStockStatusType>(
-      value: selectedStatus,
+      value: _selectedStatus,
       isExpanded: false,
       style: const TextStyle(fontSize: 14, color: Colors.black),
       underline: const SizedBox(),
@@ -51,19 +53,25 @@ class _StatusDropButtonState extends ConsumerState<StatusDropButton>{
       dropdownColor: Colors.white,
       onChanged: (DishStockStatusType? value) {
         if (value != null) {
-          logger.d("_MyMealListState onChanged $value");
+          logger.d("_MealListState changed: $value");
           setState(() {
-            selectedStatus = value;
-            ref.read(DishStockProviders.interactor).updateStatusByKey(key: widget.mealId, status: selectedStatus);
+            _selectedStatus = value;
+            ref
+                .read(DishStockProviders.interactor)
+                .updateStatusByKey(
+                  key: widget._mealId,
+                  status: _selectedStatus,
+                );
           });
         }
       },
-      items: DishStockStatusType.values.map((status) {
-        return DropdownMenuItem<DishStockStatusType>(
-          value: status,
-          child: Text(status.label),
-        );
-      }).toList(),
+      items:
+          DishStockStatusType.values.map((status) {
+            return DropdownMenuItem<DishStockStatusType>(
+              value: status,
+              child: Text(status.label),
+            );
+          }).toList(),
     );
   }
 }

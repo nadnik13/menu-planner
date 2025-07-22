@@ -18,16 +18,16 @@ class DayList extends ConsumerStatefulWidget {
 }
 
 class _DayListState extends ConsumerState<DayList> {
-  final int range = 5;
+  final int _range = cntItemsOnScreen;
   final ScrollController _scrollController = ScrollController();
   late List<GlobalKey> _itemKeys;
 
   @override
   void initState() {
     super.initState();
-    _itemKeys = List.generate(2 * range + 1, (_) => GlobalKey());
+    _itemKeys = List.generate(2 * _range + 1, (_) => GlobalKey());
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final int todayIndex = range;
+      final int todayIndex = _range;
       final keyContext = _itemKeys[todayIndex].currentContext;
       if (keyContext != null) {
         Scrollable.ensureVisible(
@@ -67,10 +67,10 @@ class _DayListState extends ConsumerState<DayList> {
                 : ClampingScrollPhysics(),
         controller: _scrollController,
         scrollDirection: Axis.vertical,
-        itemCount: 2 * range + 1,
+        itemCount: 2 * _range + 1,
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
-          final offset = index - range;
+          final offset = index - _range;
           final date = today.add(Duration(days: offset));
           final mealPlanOrNull = mealPlans[date];
           if (isHideEmptyDays && (mealPlanOrNull == null)) {

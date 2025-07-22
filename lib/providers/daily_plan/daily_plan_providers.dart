@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/providers/core_providers.dart';
 import 'package:hive/hive.dart';
@@ -14,20 +13,20 @@ import 'daily_plan_view_interactor.dart';
 abstract class DailyPlanProviders {
   DailyPlanProviders._();
 
-  static final repository = Provider((ref) {
+  static final _repository = Provider((ref) {
     final box = Hive.box<DailyPlan>('DailyPlanBox');
     return DailyPlanRepository(box);
   });
 
+  static final planProvider =
+      StateNotifierProvider<DailyPlanNotifier, List<DailyPlan>>((ref) {
+        final repo = ref.watch(DailyPlanProviders._repository);
+        return DailyPlanNotifier(repo);
+      });
+
   static final interactor = Provider<DailyPlanInteractor>((ref) {
     final notifier = ref.watch(planProvider.notifier);
     return DailyPlanInteractor(notifier);
-  });
-
-  static final planProvider =
-  StateNotifierProvider<DailyPlanNotifier, List<DailyPlan>>((ref) {
-    final repo = ref.watch(DailyPlanProviders.repository);
-    return DailyPlanNotifier(repo);
   });
 
   static final daysProvider = Provider<Map<DateTime, DailyPlan>>((ref) {
@@ -47,16 +46,15 @@ abstract class DailyPlanProviders {
     );
   });
 
-
   static final isHideUnavailableStocksStateProvider =
-  StateNotifierProvider<DailyPlanIsHideUnavailableStocksNotifier, bool>(
+      StateNotifierProvider<DailyPlanIsHideUnavailableStocksNotifier, bool>(
         (ref) => DailyPlanIsHideUnavailableStocksNotifier(),
-  );
+      );
 
   static final isHideEmptyDaysStateProvider =
-  StateNotifierProvider<DailyPlanIsHideEmptyDaysNotifier, bool>(
+      StateNotifierProvider<DailyPlanIsHideEmptyDaysNotifier, bool>(
         (ref) => DailyPlanIsHideEmptyDaysNotifier(),
-  );
+      );
 
   static final viewInteractor = Provider((ref) {
     final isHideEmptyDaysNotifier = ref.read(
@@ -65,7 +63,9 @@ abstract class DailyPlanProviders {
     final isHideUnavailableStocksNotifier = ref.read(
       isHideUnavailableStocksStateProvider.notifier,
     );
-    final tabIndexProviderNotifier = ref.read(CoreProviders.tabIndexProvider.notifier);
+    final tabIndexProviderNotifier = ref.read(
+      CoreProviders.tabIndexProvider.notifier,
+    );
     return DailyPlanViewInteractor(
       isHideEmptyDaysNotifier,
       isHideUnavailableStocksNotifier,

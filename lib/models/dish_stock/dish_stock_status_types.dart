@@ -14,7 +14,6 @@ enum DishStockStatusType {
   const DishStockStatusType(this.label, this.color);
 }
 
-
 class DishStockStatusTypeAdapter extends TypeAdapter<DishStockStatusType> {
   @override
   final int typeId = HiveTypeId.dishStockStatus; // Уникальный ID
