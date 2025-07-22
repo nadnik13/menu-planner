@@ -26,7 +26,8 @@ class TabIndexProviderNotifier extends StateNotifier<int> {
 
 class DailyPlanViewInteractor {
   final DailyPlanIsHideEmptyDaysNotifier isHideEmptyDaysNotifier;
-  final DailyPlanIsHideUnavailableStocksNotifier isHideUnavailableStocksNotifier;
+  final DailyPlanIsHideUnavailableStocksNotifier
+  isHideUnavailableStocksNotifier;
   final TabIndexProviderNotifier tabIndexNotifier;
 
   DailyPlanViewInteractor(
@@ -53,32 +54,3 @@ class DailyPlanViewInteractor {
   void changeIsHideUnavailableStocks() =>
       isHideUnavailableStocksNotifier.changeValue();
 }
-
-final dailyPlanIsHideUnavailableStocksStateProvider =
-    StateNotifierProvider<DailyPlanIsHideUnavailableStocksNotifier, bool>(
-      (ref) => DailyPlanIsHideUnavailableStocksNotifier(),
-    );
-
-final dailyPlanIsHideEmptyDaysStateProvider =
-    StateNotifierProvider<DailyPlanIsHideEmptyDaysNotifier, bool>(
-      (ref) => DailyPlanIsHideEmptyDaysNotifier(),
-    );
-
-final tabIndexProvider = StateNotifierProvider<TabIndexProviderNotifier, int>(
-  (ref) => TabIndexProviderNotifier(),
-);
-
-final dailyPlanViewInteractorProvider = Provider((ref) {
-  final isHideEmptyDaysNotifier = ref.read(
-    dailyPlanIsHideEmptyDaysStateProvider.notifier,
-  );
-  final isHideUnavailableStocksNotifier = ref.read(
-    dailyPlanIsHideUnavailableStocksStateProvider.notifier,
-  );
-  final tabIndexProviderNotifier = ref.read(tabIndexProvider.notifier);
-  return DailyPlanViewInteractor(
-    isHideEmptyDaysNotifier,
-    isHideUnavailableStocksNotifier,
-    tabIndexProviderNotifier,
-  );
-});

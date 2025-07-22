@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/dish_template/dish_template.dart';
-import '../providers/dish_template/dish_template_provider.dart';
+import '../providers/dish_template/dish_template_providers.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';
 
 class TemplateList extends ConsumerWidget {
-  final void Function(DishTemplate) onRemove;
-  final void Function(DishTemplate) onEdit;
-  final void Function(DishTemplate) onAdd;
-  final String searchQuery;
+  final void Function(DishTemplate) _onRemove;
+  final void Function(DishTemplate) _onEdit;
+  final void Function(DishTemplate) _onAdd;
+  final String _searchQuery;
 
   const TemplateList({
     super.key,
-    required this.onRemove,
-    required this.onAdd,
-    required this.onEdit,
-    required this.searchQuery,
-  });
+    required void Function(DishTemplate) onRemove,
+    required void Function(DishTemplate) onAdd,
+    required void Function(DishTemplate) onEdit,
+    required String searchQuery,
+  }) : _searchQuery = searchQuery, _onAdd = onAdd, _onEdit = onEdit, _onRemove = onRemove;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,13 +37,13 @@ class TemplateList extends ConsumerWidget {
       large: const EdgeInsets.all(20),   // Pro Max - просторнее
     );
     
-    final templates = ref.watch(dishTemplateProvider);
+    final templates = ref.watch(DishTemplateProviders.provider);
     if (templates.isEmpty) {
       return const Center(child: Text('Нет добавленных блюд'));
     }
     final filteredTemplates =
         templates.where((recipe) {
-          return recipe.title.toLowerCase().contains(searchQuery.toLowerCase());
+          return recipe.title.toLowerCase().contains(_searchQuery.toLowerCase());
         }).toList();
 
     if (filteredTemplates.isEmpty) {
@@ -109,11 +109,11 @@ class TemplateList extends ConsumerWidget {
                               ),
                             ),
                             IconButton(
-                              onPressed: () => onEdit(template),
+                              onPressed: () => _onEdit(template),
                               icon: const Icon(Icons.edit),
                             ),
                             IconButton(
-                              onPressed: () => onRemove(template),
+                              onPressed: () => _onRemove(template),
                               icon: const Icon(Icons.delete),
                             ),
                           ],
@@ -138,7 +138,7 @@ class TemplateList extends ConsumerWidget {
                 ],
               ),
               GestureDetector(
-                onTap: () => onAdd(template),
+                onTap: () => _onAdd(template),
                 child: Text(
                   'Добавить в запасы >',
                   style: TextStyle(

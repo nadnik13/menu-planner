@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_planner/providers/core_providers.dart';
+import 'package:food_planner/providers/daily_plan/daily_plan_providers.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_provider.dart';
 import 'package:food_planner/utils/pluralize_utils.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import '../utils/screen_utils.dart';
 
-import '../providers/daily_plan/daily_plan_provider.dart';
-import '../providers/daily_plan/daily_plan_view_interactor.dart';
 import 'more_button.dart';
 
 class DailyPlanAppBar extends ConsumerWidget {
@@ -40,19 +40,19 @@ class DailyPlanAppBar extends ConsumerWidget {
     
     final topPadding = safeAreaTop + (ScreenUtils.isSmallScreen(context) ? 16 : 20);
     
-    final cntPortion = ref.watch(availablePortionsCountProvider);
-    final cntPlans = ref.watch(futurePlansCountProvider);
-    final tabIndex = ref.watch(tabIndexProvider);
+    final cntPortion = ref.watch(DishStockProviders.availablePortionsCountProvider);
+    final cntPlans = ref.watch(DailyPlanProviders.futurePlansCountProvider);
+    final tabIndex = ref.watch(CoreProviders.tabIndexProvider);
     
     String moreButtonText = '';
     if (tabIndex == 0) {
       moreButtonText =
-          ref.watch(dailyPlanIsHideEmptyDaysStateProvider)
+          ref.watch(DailyPlanProviders.isHideEmptyDaysStateProvider)
               ? 'Показать дни без плана'
               : 'Скрыть дни без плана';
     } else {
       moreButtonText =
-          ref.watch(dailyPlanIsHideUnavailableStocksStateProvider)
+          ref.watch(DailyPlanProviders.isHideUnavailableStocksStateProvider)
               ? 'Показать все запасы'
               : 'Скрыть недоступные запасы';
     }
@@ -121,7 +121,7 @@ class DailyPlanAppBar extends ConsumerWidget {
                   onMenuSelected: (value) {
                     if (value == 'toggle_hide') {
                       ref
-                          .watch(dailyPlanViewInteractorProvider)
+                          .watch(DailyPlanProviders.viewInteractor)
                           .changeIsHideValue(tabIndex);
                     }
                   },

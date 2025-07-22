@@ -1,37 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
-import 'package:food_planner/providers/selected_date_notifier.dart';
+import '../../providers/core_providers.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/plan_editing_widget.dart';
 import '../../utils/screen_utils.dart';
 
 class PlanEditor extends ConsumerStatefulWidget {
-  final DateTime? date;
+  final bool _isAvailableChangeDate;
 
-  const PlanEditor({super.key, this.date});
+  const PlanEditor({
+    super.key,
+    required bool isAvailableChangeDate,
+  }) : _isAvailableChangeDate = isAvailableChangeDate;
 
   @override
   ConsumerState<PlanEditor> createState() => PlanScreenState();
 }
 
 class PlanScreenState extends ConsumerState<PlanEditor> {
-  int portion = 1;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final date = widget.date;
-      if (date != null) {
-        ref.read(selectedDateProvider.notifier).update(date);
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final DateTime selectedDate = ref.watch(selectedDateProvider);
+    final DateTime selectedDate = ref.watch(CoreProviders.selectedDateProvider);
 
     // Адаптивные отступы
     final screenPadding = ScreenUtils.adaptivePadding(
@@ -45,36 +36,28 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
         horizontal: 28,
       ), // Pro Max
     );
-
-    final calendarDate = widget.date ?? DateTime.now();
-
-    return ProviderScope(
-      overrides: [
-        selectedDateProvider.overrideWith(
-          () => SelectedDateNotifier(calendarDate),
-        ),
-      ],
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Padding(
-            padding: screenPadding,
-            child: Column(
-              children: [
-                const CommonHeader(title: 'Редактировать план'),
-                const SizedBox(height: 20),
-                _DatePickerRow(
-                  selectedDate: calendarDate,
-                  onDateChanged: (value) {
-                    ref.read(selectedDateProvider.notifier).update(value);
-                  },
-                  isAvailableChangeDate: widget.date == null,
-                ),
-                const SizedBox(height: 16),
-                Expanded(child: PlanEditingWidget(selectedDate: selectedDate)),
-                const SizedBox(height: 16),
-              ],
-            ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: screenPadding,
+          child: Column(
+            children: [
+              const CommonHeader(title: 'Редактировать план'),
+              const SizedBox(height: 20),
+              _DatePickerRow(
+                selectedDate: selectedDate,
+                onDateChanged: (value) {
+                  ref
+                      .read(CoreProviders.selectedDateProvider.notifier)
+                      .update(value);
+                },
+                isAvailableChangeDate: widget._isAvailableChangeDate,
+              ),
+              const SizedBox(height: 16),
+              Expanded(child: PlanEditingWidget(selectedDate: selectedDate)),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
       ),
@@ -83,19 +66,19 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
 }
 
 class _DatePickerRow extends StatelessWidget {
-  final DateTime selectedDate;
-  final ValueChanged<DateTime> onDateChanged;
-  final bool isAvailableChangeDate;
+  final DateTime _selectedDate;
+  final ValueChanged<DateTime> _onDateChanged;
+  final bool _isAvailableChangeDate;
 
   const _DatePickerRow({
-    required this.selectedDate,
-    required this.onDateChanged,
-    required this.isAvailableChangeDate,
-  });
+    required DateTime selectedDate,
+    required void Function(DateTime) onDateChanged,
+    required bool isAvailableChangeDate,
+  }) : _isAvailableChangeDate = isAvailableChangeDate, _onDateChanged = onDateChanged, _selectedDate = selectedDate;
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = selectedDate.formatDMY();
+    final formattedDate = _selectedDate.formatDMY();
     return Row(
       children: [
         Expanded(
@@ -112,17 +95,17 @@ class _DatePickerRow extends StatelessWidget {
             ),
           ),
         ),
-        if (isAvailableChangeDate)
+        if (_isAvailableChangeDate)
           IconButton(
             onPressed: () async {
               final picked = await showDatePicker(
                 context: context,
-                initialDate: selectedDate,
-                firstDate: selectedDate.subtract(const Duration(days: 60)),
-                lastDate: selectedDate.add(const Duration(days: 305)),
+                initialDate: _selectedDate,
+                firstDate: _selectedDate.subtract(const Duration(days: 60)),
+                lastDate: _selectedDate.add(const Duration(days: 305)),
               );
               if (picked != null) {
-                onDateChanged(picked);
+                _onDateChanged(picked);
               }
             },
             icon: const Icon(Icons.edit, color: Color(0xFF0F676E)),

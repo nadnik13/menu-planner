@@ -4,10 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
 import 'package:food_planner/core/navigation/app_routes.dart';
 import 'package:food_planner/models/daily_plan/daily_plan.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_view_interactor.dart';
 import '../core/logger.dart';
-import '../providers/daily_plan/daily_plan_provider.dart';
+import '../providers/daily_plan/daily_plan_providers.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';
 
@@ -19,16 +18,16 @@ class DayList extends ConsumerStatefulWidget {
 }
 
 class _DayListState extends ConsumerState<DayList> {
-  final int range = 5;
+  final int _range = cntItemsOnScreen;
   final ScrollController _scrollController = ScrollController();
   late List<GlobalKey> _itemKeys;
 
   @override
   void initState() {
     super.initState();
-    _itemKeys = List.generate(2 * range + 1, (_) => GlobalKey());
+    _itemKeys = List.generate(2 * _range + 1, (_) => GlobalKey());
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final int todayIndex = range;
+      final int todayIndex = _range;
       final keyContext = _itemKeys[todayIndex].currentContext;
       if (keyContext != null) {
         Scrollable.ensureVisible(
@@ -43,8 +42,8 @@ class _DayListState extends ConsumerState<DayList> {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now().dateOnly;
-    final mealPlans = ref.watch(daysPlanProvider);
-    final isHideEmptyDays = ref.watch(dailyPlanIsHideEmptyDaysStateProvider);
+    final mealPlans = ref.watch(DailyPlanProviders.daysProvider);
+    final isHideEmptyDays = ref.watch(DailyPlanProviders.isHideEmptyDaysStateProvider);
 
     return ShaderMask(
       shaderCallback: (Rect bounds) {
@@ -68,10 +67,10 @@ class _DayListState extends ConsumerState<DayList> {
                 : ClampingScrollPhysics(),
         controller: _scrollController,
         scrollDirection: Axis.vertical,
-        itemCount: 2 * range + 1,
+        itemCount: 2 * _range + 1,
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
-          final offset = index - range;
+          final offset = index - _range;
           final date = today.add(Duration(days: offset));
           final mealPlanOrNull = mealPlans[date];
           if (isHideEmptyDays && (mealPlanOrNull == null)) {
@@ -115,7 +114,7 @@ class _DayCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //TODO можно перенести в generateFromMealPlan()?
-    final mealMap = ref.watch(dishStockInteractorProvider).getTitleMap();
+    final mealMap = ref.watch(DishStockProviders.interactor).getTitleMap();
     logger.d("_DayCard build $mealMap");
     final mealList = _MealItem.generateFromMealPlan(mealPlan.portions, mealMap);
     logger.d("_DayCard mealList ${mealList}");

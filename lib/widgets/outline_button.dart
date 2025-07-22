@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import '../utils/screen_utils.dart';
 
 class OutlineButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPress;
+  final String _text;
+  final VoidCallback _onPress;
 
   const OutlineButton({
     super.key,
-    required this.text,
-    required this.onPress,
-  });
+    required String text,
+    required void Function() onPress,
+  }) : _onPress = onPress, _text = text;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPress,
+      onTap: _onPress,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         decoration: BoxDecoration(
@@ -22,7 +22,7 @@ class OutlineButton extends StatelessWidget {
           border: Border.all(color: Colors.black12),
         ),
         child: Text(
-          text, 
+          _text,
           style: TextStyle(
             color: Colors.black87, 
             fontSize: ScreenUtils.adaptiveFontSize(
