@@ -25,22 +25,30 @@
 
 ```
 lib/
-├ core/                                         # утилиты, расширения, роутинг, инициализация
+├ core/
 │  ├ extensions/
-│  └ services/                                  # logger.dart, hive_initializer.dart
+│  ├ navigation/
+│  └ services/
 │
-├ features/                                     # функциональные модули
-│  ├ dish_template/ {                           # шаблоны блюд
-│  │    models/, data/, domain/, presentation/
-│  ├ dish_stock/  {                             # запасы блюд
-│  │    models/, data/, domain/, presentation/
-│  └ daily_plan/   {                            # план питания
-│       models/, data/, domain/, presentation/
+├ models/
+│  ├ daily_plan/
+│  ├ dish_stock/
+│  └ dish_template/
 │
-├ screens/                                      # экраны (startup, templates, stock, planning)
+├ providers/
+│  ├ shared/
+│  ├ daily_plan/
+│  ├ dish_stock/
+│  └ dish_template/
 │
-├ widgets/                                      # общие компоненты
-└ utils/                                        # вспомогательные функции
+├ screens/
+│  ├ startup/
+│  ├ templates/
+│  ├ stock/
+│  └ planning/
+│
+├ widgets/
+└ utils/
 ```
 
 ---
