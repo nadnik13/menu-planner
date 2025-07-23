@@ -2,38 +2,15 @@
 
 > **Демонстрация профессиональной архитектуры Flutter-приложения с Riverpod**
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev/)
-[![Riverpod](https://img.shields.io/badge/Riverpod-2.x-green.svg)](https://riverpod.dev/)
-[![Hive](https://img.shields.io/badge/Hive-Local%20Storage-orange.svg)](https://hivedb.dev/)
-[![Architecture](https://img.shields.io/badge/Architecture-Clean%20+%20MVVM-purple.svg)](#архитектура)
+[![Flutter 3.16+](https://img.shields.io/badge/Flutter-3.16%2B-blue.svg)](https://flutter.dev/) 
+[![Dart 3.2+](https://img.shields.io/badge/Dart-3.2%2B-blueviolet.svg)](https://dart.dev/) 
+[![Riverpod 2.4+](https://img.shields.io/badge/Riverpod-2.4%2B-green.svg)](https://riverpod.dev/) 
+[![Architecture: Clean](https://img.shields.io/badge/Architecture-Clean%20Architecture-purple.svg)](#архитектура)
+[![Hive 4.0+](https://img.shields.io/badge/Hive-4.0%2B-orange.svg)](https://hivedb.dev/) 
+[![Cloud Firestore](https://img.shields.io/badge/Firestore-Cloud%20Firestore-blue?logo=googlecloud)](https://firebase.google.com/docs/firestore)
+
 
 📱 **Мобильное приложение** для планирования питания по методу `batch cooking`
----
-
-## 🎯 Техническая витрина
-- **💾 Local-First Architecture** - Hive c автогенерацией
-- **🔄 Reactive State Management** - Layered Architecture c Riverpod
-
-```mermaid
-flowchart LR
-  subgraph Presentation
-    C[Consumer]
-    SN[StateNotifier]
-  end
-
-  subgraph Domain
-    I[Interactor]
-  end
-
-  subgraph Data
-    R[Repository]
-  end
-
-  C --> SN
-  SN --> R
-  C --> I
-```
-
 ---
 
 ## 🚀 Функциональность
@@ -48,35 +25,54 @@ flowchart LR
 
 ```
 lib/
-├── 📁 core/                   # Общая функциональность
-│   ├── extensions/            # DateTime, String extensions
-│   ├── navigation/            # AppRoutes
-│   └── logger.dart            # Логирование
-│   └── app_initializer.dart   # Инициализация Hive
-├── 📁 models/                 # Бизнес-модели
-│   ├── dish_template/     
-│   ├── dish_stock/        
-│   └── daily_plan/        
-├── 📁 providers/              # State Management
-│   ├── dish_template/         # Template logic
-│   │   ├── notifier.dart      # StateNotifier
-│   │   ├── interactor.dart    # Business logic
-│   │   └── repository.dart    # Data access
-│   │   └── providers.dart     # Providers
-│   ├── dish_stock/           # Stock logic
-│   └── daily_plan/           # Planning logic
-│   └── core_providers/       # Core logic
-├── 📁 screens/               # UI экраны
-│   ├── startup_screen.dart   # Инициализация
-│   ├── dish_template/        # Управление блюдами
-│   └── daily_plan/           # Планирование
-├── 📁 utils/
-└── 📁 widgets/               # Переиспользуемые компоненты
-    ├── common_header.dart
-    └── styled_button.dart
-    └── ...
+├ core/                                         # утилиты, расширения, роутинг, инициализация
+│  ├ extensions/
+│  └ services/                                  # logger.dart, hive_initializer.dart
+│
+├ features/                                     # функциональные модули
+│  ├ dish_template/ {                           # шаблоны блюд
+│  │    models/, data/, domain/, presentation/
+│  ├ dish_stock/  {                             # запасы блюд
+│  │    models/, data/, domain/, presentation/
+│  └ daily_plan/   {                            # план питания
+│       models/, data/, domain/, presentation/
+│
+├ screens/                                      # экраны (startup, templates, stock, planning)
+│
+├ widgets/                                      # общие компоненты
+└ utils/                                        # вспомогательные функции
 ```
 
+---
+
+## 🎯 Ключевые архитектурные решения
+- **💾 Local-First Architecture** - Hive c автогенерацией
+- **🔄 Reactive State Management** - Layered Architecture c Riverpod
+
+```mermaid
+flowchart LR
+  subgraph UI
+    C[ConsumerWidget]
+  end
+  subgraph State
+    SN[StateNotifier]
+  end
+  subgraph Domain
+    I[Interactor]
+  end
+  subgraph Data
+    R[Repository]
+  end
+
+  C --> SN
+  C --> I
+  SN --> R
+
+```
+- **ConsumerWidget** — подписывается на состояние и вызывает Interactors  
+- **StateNotifier** — хранит UI‑state, инжектит Repository  
+- **Interactor** — бизнес‑логика
+- **Repository** — источник данных
 ---
 
 ## 🛠️ Технический стек
@@ -92,16 +88,12 @@ lib/
 
 ### Data & Persistence
 - **Hive 4.0+** - Fast NoSQL database
-- **Freezed 2.4+** - Immutable data classes
-- **JSON Annotation** - Serialization
+- **Cloud Firestore 5.6.11** – Remote NoSQL for recipe catalog and first‑launch sync
 
-### UI & UX
-- **Material Design 3** - Modern design system
-- **Google Fonts** - Typography
-- **Custom Animations** - Smooth transitions
-
----
-
+### Code Generation
+- **build_runner  ^2.3.3**  - запускает все кодогенераторы  
+- **hive_generator  ^2.0.1**  - генерирует адаптеры Hive
+  
 ## 🚀 Установка и запуск
 
 ### Требования
@@ -117,8 +109,9 @@ cd food_planner
 # Установка зависимостей
 flutter pub get
 
-# Генерация кода (Freezed, Hive adapters)
-flutter packages pub run build_runner build
+# Генерация кода
+flutter pub get \
+  && flutter pub run build_runner build --delete-conflicting-outputs
 
 # Запуск
 flutter run
@@ -148,22 +141,18 @@ flutter build web --release
 
 ## 📸 Скриншоты
 
-### Главный экран с статистикой
-<img src="screenshots/main_screen.png" width="300" alt="Главный экран"/>
+<img src="screenshots/main_screen.png" width="300" alt="Главный экран с статистикой"/>
 
 *Реактивная статистика автоматически обновляется при изменении данных*
 
-### Список блюд с поиском
-<img src="screenshots/dish_list.png" width="300" alt="Список блюд"/>
+<img src="screenshots/dish_list.png" width="300" alt="Список блюд с поиском"/>
 
 *Умный поиск и фильтрация по статусу наличия*
 
-### Создание плана питания
-<img src="screenshots/plan_creation.png" width="300" alt="Создание плана"/>
+<img src="screenshots/plan_creation.png" width="300" alt="Создание плана питания"/>
 
 *Интуитивный интерфейс планирования с date picker*
 
-### Управление запасами
 <img src="screenshots/stock_management.png" width="300" alt="Управление запасами"/>
 
 *Цветовое кодирование статусов и быстрое редактирование*
