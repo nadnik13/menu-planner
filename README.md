@@ -1,4 +1,4 @@
-# 🍽️ Food Planner - Flutter State Management Demo
+# 🍽️ Food Planner - мобильное приложение для планирования питания по методу `batch cooking`
 
 > **Демонстрация профессиональной архитектуры Flutter-приложения с Riverpod**
 
@@ -9,8 +9,6 @@
 [![Hive 4.0+](https://img.shields.io/badge/Hive-4.0%2B-orange.svg)](https://hivedb.dev/) 
 [![Cloud Firestore](https://img.shields.io/badge/Firestore-Cloud%20Firestore-blue?logo=googlecloud)](https://firebase.google.com/docs/firestore)
 
-
-📱 **Мобильное приложение** для планирования питания по методу `batch cooking`
 ---
 
 ## 🚀 Функциональность
