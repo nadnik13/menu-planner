@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/providers/selected_date_notifier.dart';
 
-import 'daily_plan/daily_plan_view_interactor.dart';
+import 'daily_plan/view_interactor.dart';
 import 'expandable_fab_interactor.dart';
 
 abstract class CoreProviders {

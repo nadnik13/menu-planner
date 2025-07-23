@@ -1,5 +1,5 @@
-import 'package:food_planner/providers/daily_plan/daily_plan_interactor.dart';
-import '../dish_stock/dish_stock_interactor.dart';
+import 'package:food_planner/providers/daily_plan/interactor.dart';
+import '../dish_stock/interactor.dart';
 
 class DailyPlanSaveInteractor {
   final DailyPlanInteractor planInteractor;

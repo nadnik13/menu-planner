@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/providers/core_providers.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_providers.dart';
+import 'package:food_planner/providers/daily_plan/providers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:food_planner/utils/pluralize_utils.dart';
-import '../providers/dish_stock/dish_stock_providers.dart';
+import '../providers/dish_stock/providers.dart';
 import '../utils/screen_utils.dart';
 
 import 'more_button.dart';

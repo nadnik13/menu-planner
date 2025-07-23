@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/models/daily_plan/daily_plan.dart';
 import 'package:food_planner/widgets/styled_button.dart';
 import '../models/dish_stock/dish_stock.dart';
-import '../providers/daily_plan/daily_plan_providers.dart';
-import '../providers/dish_stock/dish_stock_providers.dart';
+import '../providers/daily_plan/providers.dart';
+import '../providers/dish_stock/providers.dart';
 import '../utils/emoji_utils.dart';
 
 class PlanEditingWidget extends ConsumerStatefulWidget {

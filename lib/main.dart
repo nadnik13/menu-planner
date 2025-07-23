@@ -8,7 +8,7 @@ import 'package:food_planner/screens/daily_plan/daily_plan_screen.dart';
 import 'package:food_planner/screens/dish_template/dish_template_screen.dart';
 import 'package:food_planner/screens/startup_screen.dart';
 
-import 'core/extensions/app_initializer.dart';
+import 'core/app_initializer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

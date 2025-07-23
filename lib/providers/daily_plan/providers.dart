@@ -3,12 +3,12 @@ import 'package:food_planner/providers/core_providers.dart';
 import 'package:hive/hive.dart';
 
 import '../../models/daily_plan/daily_plan.dart';
-import '../dish_stock/dish_stock_providers.dart';
-import 'daily_plan_interactor.dart';
-import 'daily_plan_notifier.dart';
-import 'daily_plan_repository.dart';
-import 'daily_plan_save_interactor.dart';
-import 'daily_plan_view_interactor.dart';
+import '../dish_stock/providers.dart';
+import 'interactor.dart';
+import 'notifier.dart';
+import 'repository.dart';
+import 'save_interactor.dart';
+import 'view_interactor.dart';
 
 abstract class DailyPlanProviders {
   DailyPlanProviders._();

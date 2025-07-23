@@ -1,6 +1,6 @@
 import 'package:food_planner/core/logger.dart';
-import 'package:food_planner/providers/dish_template/dish_template_json_load_interactor.dart';
-import 'package:food_planner/providers/dish_template/dish_template_notifier.dart';
+import 'package:food_planner/providers/dish_template/json_load_interactor.dart';
+import 'package:food_planner/providers/dish_template/notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/dish_template/dish_template.dart';
 

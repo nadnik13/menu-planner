@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/screens/daily_plan/daily_plan_screen.dart';
 
-import '../providers/daily_plan/daily_plan_providers.dart';
-import '../providers/dish_stock/dish_stock_providers.dart';
-import '../providers/dish_template/dish_template_providers.dart';
+import '../providers/daily_plan/providers.dart';
+import '../providers/dish_stock/providers.dart';
+import '../providers/dish_template/providers.dart';
 
 class StartupScreen extends StatelessWidget {
   const StartupScreen({super.key});

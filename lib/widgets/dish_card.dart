@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/dish_stock/dish_stock.dart';
-import '../providers/dish_stock/dish_stock_providers.dart';
+import '../providers/dish_stock/providers.dart';
 import 'status_drop_button.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';

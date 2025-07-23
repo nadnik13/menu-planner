@@ -1,4 +1,4 @@
-# 🍽️ Recipe Planner - Flutter State Management Demo
+# 🍽️ Food Planner - Flutter State Management Demo
 
 > **Демонстрация профессиональной архитектуры Flutter-приложения с Riverpod**
 
@@ -7,126 +7,74 @@
 [![Hive](https://img.shields.io/badge/Hive-Local%20Storage-orange.svg)](https://hivedb.dev/)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20+%20MVVM-purple.svg)](#архитектура)
 
-📱 **Мобильное приложение** для планирования питания с интуитивным интерфейсом и реактивной архитектурой
+📱 **Мобильное приложение** для планирования питания по методу `batch cooking`
 ---
 
 ## 🎯 Техническая витрина
+- **💾 Local-First Architecture** - Hive c автогенерацией
+- **🔄 Reactive State Management** - Layered Architecture c Riverpod
 
-### Архитектурные решения
-- **🏗️ Clean Architecture** - разделение на слои (Domain, Data, Presentation)
-- **🔄 Reactive State Management** - Riverpod с автоматическим пересчетом UI
-- **📱 MVVM Pattern** - StateNotifier + Provider + Consumer
-- **💾 Local-First Architecture** - Hive для оффлайн работы
-- **🧩 Modular Design** - четкое разделение ответственности
+```mermaid
+flowchart LR
+  subgraph Presentation
+    C[Consumer]
+    SN[StateNotifier]
+  end
 
-### State Management паттерны
-```dart
-// ✅ Реактивный провайдер - автоматически обновляет UI
-final availablePortionsCountProvider = Provider<int>((ref) {
-  final stocks = ref.watch(dishStockProvider);
-  return stocks
-      .where((e) => e.availablePortion > 0)
-      .map((e) => e.availablePortion)
-      .sum;
-});
+  subgraph Domain
+    I[Interactor]
+  end
 
-// ✅ StateNotifier с простым состоянием
-class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
-  void loadTemplates(Set<DishTemplate> templates) => state = templates;
-  void addTemplate(DishTemplate template) => state = {...state, template};
-}
+  subgraph Data
+    R[Repository]
+  end
+
+  C --> SN
+  SN --> R
+  C --> I
 ```
 
 ---
 
-## 🚀 Возможности
-
-### Функциональность
-- ✅ **Управление рецептами** - CRUD операции с валидацией
-- ✅ **Планирование питания** - календарь на месяц с drag&drop
-- ✅ **Управление запасами** - отслеживание продуктов и порций
-- ✅ **Статистика в реальном времени** - реактивные вычисления
-- ✅ **Offline-first** - работа без интернета
-- ✅ **Material Design 3** - современный адаптивный UI
-
-### Техническая реализация
-- 🔄 **Автоматический пересчет статистики** при изменении данных
-- 📊 **Реактивные computed providers** для производных состояний
-- 💽 **Персистентность данных** через Hive с TypeAdapter'ами
-- 🎨 **Компонентный подход** к UI с повторным использованием
-- 🧪 **Типобезопасность** с Freezed и code generation
+## 🚀 Функциональность
+- ✅ **Управление заготовками** - CRUD операции с валидацией
+- ✅ **Планирование питания на день** - скрол дней с отображением запланированного питания
+- ✅ **Управление запасами** - скрол карточек запасов со статусом и количеством доступных заготовок 
+- ✅ **Статистика в реальном времени** - количество распланированных дней на будущем и незапланированных порций еды
 
 ---
 
-## 🏗️ Архитектура
+## 🏗️ Структура проекта
 
-### Структура проекта
 ```
 lib/
-├── 📁 core/                    # Общая функциональность
-│   ├── extensions/             # DateTime, String extensions
-│   └── logger.dart            # Централизованное логирование
+├── 📁 core/                   # Общая функциональность
+│   ├── extensions/            # DateTime, String extensions
+│   ├── navigation/            # AppRoutes
+│   └── logger.dart            # Логирование
+│   └── app_initializer.dart   # Инициализация Hive
 ├── 📁 models/                 # Бизнес-модели
-│   ├── dish_template.dart     # Freezed + Hive модели
-│   ├── dish_stock.dart        # Типобезопасные данные
-│   └── daily_plan.dart        # Domain entities
+│   ├── dish_template/     
+│   ├── dish_stock/        
+│   └── daily_plan/        
 ├── 📁 providers/              # State Management
-│   ├── dish_template/         # Template CRUD логика
+│   ├── dish_template/         # Template logic
 │   │   ├── notifier.dart      # StateNotifier
 │   │   ├── interactor.dart    # Business logic
 │   │   └── repository.dart    # Data access
-│   ├── dish_stock/           # Stock management
+│   │   └── providers.dart     # Providers
+│   ├── dish_stock/           # Stock logic
 │   └── daily_plan/           # Planning logic
+│   └── core_providers/       # Core logic
 ├── 📁 screens/               # UI экраны
 │   ├── startup_screen.dart   # Инициализация
-│   ├── dish_template/        # Управление рецептами
+│   ├── dish_template/        # Управление блюдами
 │   └── daily_plan/           # Планирование
+├── 📁 utils/
 └── 📁 widgets/               # Переиспользуемые компоненты
-    ├── dish_list.dart        # Reactive списки
-    └── daily_plan_appbar.dart # Статистика в реальном времени
-```
-
-### Слои архитектуры
-
-#### 1. Presentation Layer (UI)
-```dart
-// Reactive UI components
-class DishList extends ConsumerWidget {
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dishes = ref.watch(dishTemplateProvider);  // 🔄 Автоматическое обновление
-    return ListView.builder(...);
-  }
-}
-```
-
-#### 2. Business Logic Layer
-```dart
-// StateNotifier для управления состоянием
-class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
-  void addTemplate(DishTemplate template) {
-    state = {...state, template};  // 🔄 Immutable updates
-  }
-}
-
-// Interactor для бизнес-логики
-class DishTemplateInteractor {
-  Future<void> addTemplate(DishTemplate template) async {
-    await _repository.saveTemplate(template);
-    _notifier.addTemplate(template);
-  }
-}
-```
-
-#### 3. Data Layer
-```dart
-// Repository для работы с данными
-class DishTemplateRepository {
-  final Box<DishTemplate> _box;
-  
-  Future<void> saveTemplate(DishTemplate template) async {
-    await _box.put(template.id, template);
-  }
-}
+    ├── common_header.dart
+    └── styled_button.dart
+    └── ...
 ```
 
 ---
@@ -154,14 +102,6 @@ class DishTemplateRepository {
 
 ---
 
-### Архитектурные принципы
-1. **Single Source of Truth** - каждый кусок состояния имеет единственный источник
-2. **Immutable Updates** - состояние обновляется immutable способом
-3. **Reactive Dependencies** - автоматическое отслеживание зависимостей
-4. **Separation of Concerns** - четкое разделение UI, логики и данных
-
----
-
 ## 🚀 Установка и запуск
 
 ### Требования
@@ -171,8 +111,8 @@ class DishTemplateRepository {
 ### Быстрый старт
 ```bash
 # Клонирование
-git clone https://github.com/username/recipe_planner.git
-cd recipe_planner
+git clone https://github.com/username/food_planner.git
+cd food_planner
 
 # Установка зависимостей
 flutter pub get
@@ -195,43 +135,6 @@ flutter build ios --release
 # Web
 flutter build web --release
 ```
-
----
-
-## 🎨 UI/UX Highlights
-
-### Adaptive Design
-- **Responsive Layout** - адаптация под разные экраны
-- **Material You** - динамическая цветовая схема
-- **Smooth Animations** - плавные переходы между состояниями
-
-### Performance Optimizations
-- **Lazy Loading** - ленивая загрузка списков
-- **Efficient Rebuilds** - минимальные перестроения UI
-- **Memory Management** - правильная работа с ресурсами
-
----
-
-## 📈 Performance Metrics
-
-- **Cold Start:** ~800ms
-- **Frame Rate:** 60 FPS на средних устройствах
-- **Memory Usage:** <100MB при нормальном использовании
-- **Bundle Size:** ~12MB (release APK)
-
-### Архитектурные улучшения
-- Упрощение StateNotifier до простых типов данных
-- Создание computed providers для статистики
-- Устранение over-engineering с избыточными абстракциями
-
-### Исправленные проблемы
-- ✅ **Реактивная статистика** - автоматическое обновление при изменении данных
-- ✅ **Корректное редактирование** - обновление вместо дублирования
-- ✅ **Правильная навигация** - логичные переходы между экранами
-- ✅ **Валидация данных** - предотвращение дублирования блюд
-
-📋 **Подробности:** [Bug Fixes Documentation](docs/BUGFIXES.md)
-
 ---
 
 ## 🤝 Контакты

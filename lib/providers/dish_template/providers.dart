@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 import '../../models/dish_template/dish_template.dart';
-import 'dish_template_interactor.dart';
-import 'dish_template_json_load_interactor.dart';
-import 'dish_template_notifier.dart';
-import 'dish_template_repository.dart';
+import 'interactor.dart';
+import 'json_load_interactor.dart';
+import 'notifier.dart';
+import 'repository.dart';
 
 abstract class DishTemplateProviders {
   DishTemplateProviders._();

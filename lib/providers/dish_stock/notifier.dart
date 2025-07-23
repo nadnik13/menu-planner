@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/dish_stock/dish_stock.dart';
 import 'package:collection/collection.dart';
 
-import 'dish_stock_repository.dart';
+import 'repository.dart';
 
 class DishStockNotifier extends StateNotifier<Set<DishStock>> {
   DishStockNotifier(this.repo) : super(<DishStock>{});

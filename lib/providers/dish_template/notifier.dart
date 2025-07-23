@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/dish_template/dish_template.dart';
-import 'dish_template_repository.dart';
+import 'repository.dart';
 
 class DishTemplateNotifier extends StateNotifier<Set<DishTemplate>> {
   DishTemplateNotifier(this.repo) : super(<DishTemplate>{});

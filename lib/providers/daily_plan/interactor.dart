@@ -1,5 +1,5 @@
 import 'package:food_planner/core/extensions/date_extensions.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_notifier.dart';
+import 'package:food_planner/providers/daily_plan/notifier.dart';
 import '../../models/daily_plan/daily_plan.dart';
 
 class DailyPlanInteractor {

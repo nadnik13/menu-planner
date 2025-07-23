@@ -1,13 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_providers.dart';
+import 'package:food_planner/providers/daily_plan/providers.dart';
 import 'package:hive/hive.dart';
 
 import '../../models/dish_stock/dish_stock.dart';
-import 'dish_stock_interactor.dart';
-import 'dish_stock_notifier.dart';
-import 'dish_stock_remove_interactor.dart';
-import 'dish_stock_repository.dart';
+import 'interactor.dart';
+import 'notifier.dart';
+import 'remove_interactor.dart';
+import 'repository.dart';
 
 abstract class DishStockProviders {
   DishStockProviders._();

@@ -3,7 +3,7 @@ import 'package:food_planner/core/logger.dart';
 import 'package:food_planner/models/dish_stock/dish_stock_status_types.dart';
 import 'package:food_planner/models/dish_template/dish_template.dart';
 import '../../models/dish_stock/dish_stock.dart';
-import 'dish_stock_notifier.dart';
+import 'notifier.dart';
 import 'package:collection/collection.dart';
 
 class DishStockInteractor {

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
 import '../../models/daily_plan/daily_plan.dart';
-import 'daily_plan_repository.dart';
+import 'repository.dart';
 
 class DailyPlanNotifier extends StateNotifier<List<DailyPlan>> {
   DailyPlanNotifier(this._repository) : super(<DailyPlan>[]);

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/widgets/styled_button.dart';
 
 import '../../models/dish_template/dish_template.dart';
-import '../../providers/dish_template/dish_template_providers.dart';
+import '../../providers/dish_template/providers.dart';
 
 class DishTemplateEditor extends ConsumerStatefulWidget {
   final DishTemplate? template;
