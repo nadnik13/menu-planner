@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:food_planner/core/logger.dart';
+import 'package:food_planner/core/services/logger.dart';
 import 'package:food_planner/models/dish_stock/dish_stock_status_types.dart';
 import 'package:food_planner/models/dish_template/dish_template.dart';
 import '../../models/dish_stock/dish_stock.dart';

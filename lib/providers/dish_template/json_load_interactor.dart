@@ -1,27 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import '../../core/logger.dart';
+import '../../core/services/logger.dart';
 import '../../models/dish_template/dish_template.dart';
-import 'dart:convert';
 
-class DishTemplateJsonLoadInteractor {
+class DishTemplateLoadInteractor {
   final AssetBundle bundle;
 
-  DishTemplateJsonLoadInteractor(this.bundle);
-
-  Future<Set<DishTemplate>> loadFromJson() async {
-    try {
-      final jsonString = await bundle.loadString('assets/templates.json');
-      final List<dynamic> jsonList = json.decode(jsonString);
-      final loaded = jsonList.map((e) => DishTemplate.fromJson(e)).toSet();
-      logger.d('Загружено ${loaded.length} рецептов из assets');
-      return loaded;
-    } catch (e, st) {
-      logger.d('❌ Ошибка при загрузке рецептов: $e');
-      logger.d(st);
-      return {};
-    }
-  }
+  DishTemplateLoadInteractor(this.bundle);
 
   Future<Set<DishTemplate>> loadFromFireStore() async {
     final firestore = FirebaseFirestore.instance;

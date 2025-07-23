@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:food_planner/models/dish_stock/dish_stock.dart';
+import 'package:food_planner/models/dish_stock/dish_stock_status_types.dart';
 import 'package:hive/hive.dart';
 import 'dart:io';
 
@@ -12,6 +13,7 @@ void main() async {
   Hive.init(tempDir.path);
   Hive.registerAdapter(DishTemplateAdapter());
   Hive.registerAdapter(DishStockAdapter());
+  Hive.registerAdapter(DishStockStatusTypeAdapter());
   final box = await Hive.openBox<DishStock>('testMealBox');
 
   tearDown() async {
@@ -32,10 +34,10 @@ void main() async {
 
   test('Удаление блюда', () async {
     final plan = DishStock.add(DishTemplate.add(title: 'Борщь', portion: 5));
-    final key = await box.add(plan);
+    await box.put(plan.id, plan);
     expect(box.length, 1);
 
-    box.delete(key);
+    box.delete(plan.id);
     final allMeals = box.values.toList();
     expect(allMeals.length, 0);
     tearDown();

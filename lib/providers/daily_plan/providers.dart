@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_planner/providers/core_providers.dart';
+import 'package:food_planner/providers/shared/providers.dart';
 import 'package:hive/hive.dart';
 
 import '../../models/daily_plan/daily_plan.dart';
@@ -64,7 +64,7 @@ abstract class DailyPlanProviders {
       isHideUnavailableStocksStateProvider.notifier,
     );
     final tabIndexProviderNotifier = ref.read(
-      CoreProviders.tabIndexProvider.notifier,
+      SharedProviders.tabIndexProvider.notifier,
     );
     return DailyPlanViewInteractor(
       isHideEmptyDaysNotifier,

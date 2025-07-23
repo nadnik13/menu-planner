@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:food_planner/core/extensions/date_extensions.dart';
 import 'package:food_planner/models/dish_stock/dish_stock.dart';
 import 'package:food_planner/models/daily_plan/daily_plan.dart';
 import 'package:hive/hive.dart';
@@ -23,7 +24,7 @@ void main() async {
     final plan = DailyPlan(date: DateTime.now(), portions: {meal.id: 2});
 
     expect(box.length, 0);
-    await box.add(plan);
+    await box.put(plan.date.dateKey, plan);
 
     final allMealPlans = box.values.toList();
     expect(allMealPlans.length, 1);
@@ -35,9 +36,9 @@ void main() async {
     final meal = DishStock.add(DishTemplate.add(title: 'Борщ', portion: 5));
     final plan = DailyPlan(date: DateTime.now(), portions: {meal.id: 1});
 
-    final key = await box.add(plan);
+    await box.put(plan.date.dateKey, plan);
     expect(box.length, 1);
-    box.delete(key);
+    box.delete(plan.date.dateKey);
     final allMealPlans = box.values.toList();
     expect(allMealPlans.length, 0);
     tearDown();

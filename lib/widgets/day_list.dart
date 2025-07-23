@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
 import 'package:food_planner/core/navigation/app_routes.dart';
 import 'package:food_planner/models/daily_plan/daily_plan.dart';
-import '../core/logger.dart';
+import '../core/services/logger.dart';
 import '../providers/daily_plan/providers.dart';
 import '../providers/dish_stock/providers.dart';
 import '../utils/emoji_utils.dart';

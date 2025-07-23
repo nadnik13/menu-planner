@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:food_planner/core/extensions/date_extensions.dart';
-import '../../providers/core_providers.dart';
+import '../../providers/shared/providers.dart';
 import '../../widgets/common_header.dart';
 import '../../widgets/plan_editing_widget.dart';
 import '../../utils/screen_utils.dart';
@@ -22,7 +22,7 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime selectedDate = ref.watch(CoreProviders.selectedDateProvider);
+    final DateTime selectedDate = ref.watch(SharedProviders.selectedDateProvider);
 
     // Адаптивные отступы
     final screenPadding = ScreenUtils.adaptivePadding(
@@ -49,7 +49,7 @@ class PlanScreenState extends ConsumerState<PlanEditor> {
                 selectedDate: selectedDate,
                 onDateChanged: (value) {
                   ref
-                      .read(CoreProviders.selectedDateProvider.notifier)
+                      .read(SharedProviders.selectedDateProvider.notifier)
                       .update(value);
                 },
                 isAvailableChangeDate: widget._isAvailableChangeDate,

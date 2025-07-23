@@ -16,11 +16,11 @@ abstract class DishTemplateProviders {
     return DishTemplateRepository(box);
   });
 
-  static final jsonLoaderInteraptor = Provider<DishTemplateJsonLoadInteractor>((
+  static final jsonLoaderInteraptor = Provider<DishTemplateLoadInteractor>((
     ref,
   ) {
     final bundle = rootBundle;
-    return DishTemplateJsonLoadInteractor(bundle);
+    return DishTemplateLoadInteractor(bundle);
   });
 
   static final interactor = Provider<DishTemplateInteractor>((ref) {

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:food_planner/providers/core_providers.dart';
+import 'package:food_planner/providers/shared/providers.dart';
 import 'package:food_planner/widgets/day_list.dart';
 import '../../providers/daily_plan/providers.dart';
 import '../../widgets/dish_list.dart';
@@ -86,7 +86,7 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen>
           ],
         ),
       ),
-      floatingActionButton: ref.read(CoreProviders.expandableFabInteractor).getExpandableFab(
+      floatingActionButton: ref.read(SharedProviders.expandableFabInteractor).getExpandableFab(
         type: 1, 
         context: context,
       ),

@@ -1,4 +1,4 @@
-import 'package:food_planner/core/logger.dart';
+import 'package:food_planner/core/services/logger.dart';
 import 'package:food_planner/providers/dish_template/json_load_interactor.dart';
 import 'package:food_planner/providers/dish_template/notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,9 +6,9 @@ import '../../models/dish_template/dish_template.dart';
 
 class DishTemplateInteractor {
   final DishTemplateNotifier notifier;
-  final DishTemplateJsonLoadInteractor jsonInteractor;
+  final DishTemplateLoadInteractor loadInteractor;
 
-  DishTemplateInteractor(this.notifier, this.jsonInteractor);
+  DishTemplateInteractor(this.notifier, this.loadInteractor);
 
   Future<void> _add(DishTemplate template) async {
     notifier.addOrReplace(template);
@@ -62,7 +62,7 @@ class DishTemplateInteractor {
     final templates = notifier.fetchAllValues;
 
     if (!isFirstLaunch) {
-      final data = await jsonInteractor.loadFromFireStore();
+      final data = await loadInteractor.loadFromFireStore();
       templates.addAll(data);
       await prefs.setBool('first_launch_done', true);
     }

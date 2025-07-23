@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../core/logger.dart';
+import '../core/services/logger.dart';
 import '../models/dish_stock/dish_stock_status_types.dart';
 import '../providers/dish_stock/providers.dart';
 

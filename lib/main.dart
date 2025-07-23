@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_planner/core/navigation/app_routes.dart';
-import 'package:food_planner/providers/core_providers.dart';
-import 'package:food_planner/providers/selected_date_notifier.dart';
+import 'package:food_planner/providers/shared/providers.dart';
+import 'package:food_planner/providers/shared/selected_date_notifier.dart';
 import 'package:food_planner/screens/daily_plan/daily_plan_editor.dart';
 import 'package:food_planner/screens/daily_plan/daily_plan_screen.dart';
 import 'package:food_planner/screens/dish_template/dish_template_screen.dart';
 import 'package:food_planner/screens/startup_screen.dart';
 
-import 'core/app_initializer.dart';
+import 'core/services/app_initializer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +38,7 @@ class FoodPlanner extends StatelessWidget {
                 final selectedDate = date??DateTime.now();
                 return ProviderScope(
                     overrides: [
-                      CoreProviders.selectedDateProvider.overrideWith(
+                      SharedProviders.selectedDateProvider.overrideWith(
                             () => SelectedDateNotifier(selectedDate),
                       ),
                     ],

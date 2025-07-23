@@ -5,11 +5,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:logger/logger.dart';
 
-import '../firebase_options.dart';
-import '../models/dish_stock/dish_stock.dart';
-import '../models/daily_plan/daily_plan.dart';
-import '../models/dish_stock/dish_stock_status_types.dart';
-import '../models/dish_template/dish_template.dart';
+import '../../firebase_options.dart';
+import '../../models/dish_stock/dish_stock.dart';
+import '../../models/daily_plan/daily_plan.dart';
+import '../../models/dish_stock/dish_stock_status_types.dart';
+import '../../models/dish_template/dish_template.dart';
 
 class AppInitializer {
   AppInitializer._(); // Приватный конструктор

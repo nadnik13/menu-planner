@@ -2,9 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:food_planner/screens/dish_template/dish_template_editor.dart';
-import '../../core/logger.dart';
+import '../../core/services/logger.dart';
 import '../../models/dish_template/dish_template.dart';
-import '../../providers/core_providers.dart';
+import '../../providers/shared/providers.dart';
 import '../../providers/dish_stock/providers.dart';
 import '../../providers/dish_template/providers.dart';
 import '../../widgets/common_header.dart';
@@ -130,7 +130,7 @@ class _DishTemplateScreenState extends ConsumerState<DishTemplateScreen> {
           ),
         ),
       ),
-      floatingActionButton: ref.read(CoreProviders.expandableFabInteractor).getExpandableFab(type:2, context: context),
+      floatingActionButton: ref.read(SharedProviders.expandableFabInteractor).getExpandableFab(type:2, context: context),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_planner/core/navigation/app_routes.dart';
 import 'package:food_planner/widgets/expandable_fab.dart';
 
-import '../screens/dish_template/dish_template_editor.dart';
+import '../../screens/dish_template/dish_template_editor.dart';
 
 class ExpandableFabInteractor {
 
