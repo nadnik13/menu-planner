@@ -11,7 +11,8 @@ String getEmojiForMeal(String title) {
       t.contains('солянк') ||
       t.contains('харчо') ||
       t.contains('минестроне') ||
-      t.contains('пюре') && t.contains('суп')) return '🍲';
+      t.contains('пюре') && t.contains('суп'))
+    return '🍲';
   if (t.contains('овсянк') ||
       t.contains('каша') ||
       t.contains('мюсли') ||

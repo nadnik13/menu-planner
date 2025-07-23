@@ -26,12 +26,12 @@ extension DateUtils on DateTime {
     } else if (date == today.subtract(Duration(days: 1))) {
       textdDay = 'Вчера';
     } else {
-      textdDay = capitalize(DateFormat('EEEE', 'ru').format(this));
+      textdDay = _capitalize(DateFormat('EEEE', 'ru').format(this));
     }
     final formattedDate = DateFormat('d MMMM', 'ru').format(this);
     return '$textdDay, $formattedDate'; // "Вторник, 23 мая"
   }
 
-  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+  String _capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 }

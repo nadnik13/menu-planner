@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/dish_stock/dish_stock.dart';
-import '../providers/dish_stock/dish_stock_remove_interactor.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
 import 'status_drop_button.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/screen_utils.dart';
 
 class DishCard extends ConsumerWidget {
-  final DishStock meal;
-  const DishCard(this.meal, {super.key});
+  final DishStock _meal;
+  const DishCard(this._meal, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +20,7 @@ class DishCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              getEmojiForMeal(meal.title),
+              getEmojiForMeal(_meal.title),
               style: TextStyle(
                 fontSize: ScreenUtils.adaptiveFontSize(
                   context,
@@ -36,7 +36,7 @@ class DishCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    meal.title,
+                    _meal.title,
                     style: TextStyle(
                       fontSize: ScreenUtils.adaptiveFontSize(
                         context,
@@ -49,7 +49,7 @@ class DishCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Порций: ${meal.addedCntPortion} (план ${meal.usedCntPortion})',
+                    'Порций: ${_meal.addedCntPortion} (план ${_meal.usedCntPortion})',
                     style: TextStyle(
                       fontSize: ScreenUtils.adaptiveFontSize(
                         context,
@@ -65,14 +65,14 @@ class DishCard extends ConsumerWidget {
               ),
             ),
             IconButton(
-              onPressed: () => ref.read(dishStockRemoveInteractorProvider).remove(meal),
+              onPressed: () => ref.read(DishStockProviders.removeInteractor).remove(_meal),
               icon: const Icon(Icons.delete, size: 20),
             ),
           ],
         ),
         const SizedBox(height: 12),
         //:TODO надо оonChange выносить не знаю как
-        StatusDropButton(mealId: meal.id, status: meal.status),
+        StatusDropButton(mealId: _meal.id, status: _meal.status),
       ],
     );
   }

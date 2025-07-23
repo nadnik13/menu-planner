@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_planner/providers/dish_stock/dish_stock_interactor.dart';
-import 'package:food_planner/providers/daily_plan/daily_plan_interactor.dart';
 import 'package:food_planner/screens/daily_plan/daily_plan_screen.dart';
 
-import '../providers/dish_template/dish_template_interactor.dart';
+import '../providers/daily_plan/daily_plan_providers.dart';
+import '../providers/dish_stock/dish_stock_providers.dart';
+import '../providers/dish_template/dish_template_providers.dart';
 
 class StartupScreen extends StatelessWidget {
   const StartupScreen({super.key});
 
   Future<void> loadData(WidgetRef ref) async {
-    await ref.read(dishTemplateInteractorProvider).load();
-    await ref.read(dishStockInteractorProvider).loadValues();
-    await ref.read(dailyPlanInteractorProvider).loadValues();
+    await ref.read(DishTemplateProviders.interactor).load();
+    await ref.read(DishStockProviders.interactor).loadValues();
+    await ref.read(DailyPlanProviders.interactor).loadValues();
   }
 
   @override
